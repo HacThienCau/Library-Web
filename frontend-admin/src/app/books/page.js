@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 
-
 const page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [bookList, setBookList] = useState(null);
