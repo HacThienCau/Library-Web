@@ -3,7 +3,7 @@ import { Button } from "@/app/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginUser } from "@/service/auth.service";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import { motion } from "framer-motion";
 import { LogIn } from "lucide-react";
@@ -26,12 +26,11 @@ const Page = () => {
         resolver: yupResolver(loginSchema),
     });
 
-    const onSubmit = async (data) => {
+    const onSubmit = async () => {
         setLoading(true);
         try {
-            const response = await loginUser(data);
             toast.success("Đăng nhập thành công");
-            router.push("/admin/dashboard");
+            router.push("/dashboard");
         } catch (error) {
             toast.error("Đăng nhập thất bại. Kiểm tra lại email và mật khẩu");
         } finally {
@@ -45,10 +44,10 @@ const Page = () => {
                 <Card className="w-[400px] max-w-lg border border-blue-500 shadow-lg p-6">
                     <CardHeader className="text-center">
                         <CardTitle>
-                            <img src="/images/logo.png" alt="Admin Panel" className="w-24 mx-auto" />
+                            <img src="/images/logo.jpg" alt="Admin Panel" className="w-24 mx-auto" />
                         </CardTitle>
                         <CardDescription className="text-center text-[#1CA2C1] text-[16px]">
-                            Đăng nhập vào tài khoản quản trị Vibely
+                            Đăng nhập vào tài khoản quản trị 
                         </CardDescription>
                     </CardHeader>
                     <CardContent>

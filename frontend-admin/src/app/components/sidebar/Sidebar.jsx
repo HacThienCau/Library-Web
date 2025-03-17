@@ -1,22 +1,26 @@
-"use client"
-import { Button } from "@/app/components/ui/button";
+"use client";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import useSidebarStore from "@/store/sideBarStore";
+import { LogOut } from "lucide-react";
+
 
 import { useRouter, usePathname } from "next/navigation";
 
 const SidebarItem = ({ path, icon, label }) => {
-    const router = useRouter();
-    const pathname = usePathname();
-    const { isSidebarOpen, toggleSidebar } = useSidebarStore();
+  const router = useRouter();
+  const pathname = usePathname();
+  const { isSidebarOpen, toggleSidebar } = useSidebarStore();
 
-    const isActive = pathname === path;
+  const isActive = pathname === path;
 
-    const handleClick = () => {
-        router.push(path);
-        if (isSidebarOpen) {
-            toggleSidebar();
-        }
-    };
+  const handleClick = () => {
+    router.push(path);
+    if (isSidebarOpen) {
+      toggleSidebar();
+    }
+  };
+
 
     return (
         <Button
@@ -33,20 +37,20 @@ const SidebarItem = ({ path, icon, label }) => {
             <span>{label}</span>
         </Button>
     );
-};
+
 
 const Sidebar = () => {
-    const { isSidebarOpen } = useSidebarStore();
+  const { isSidebarOpen } = useSidebarStore();
 
+  const menuItems = [
+    { path: "/dashboard", icon: "/svg/dashboard.svg", label: "Dashboard" },
+    { path: "/users", icon: "/svg/user_admin.svg", label: "Người dùng" },
+    { path: "/books", icon: "/svg/book_admin.svg", label: "Sách" },
+    { path: "/borrow", icon: "/svg/return_admin.svg", label: "Mượn/Trả" },
+    { path: "/fine", icon: "/svg/fine_admin.svg", label: "Phiếu phạt" },
+    { path: "/setting", icon: "/svg/setting.svg", label: "Cài đặt" },
+  ];
 
-    const menuItems = [
-        { path: "/dashboard", icon: "/svg/dashboard.svg", label: "Dashboard" },
-        { path: "/users", icon: "/svg/user_admin.svg", label: "Người dùng" },
-        { path: "/books", icon: "/svg/book_admin.svg", label: "Sách" },
-        { path: "/borrow", icon: "/svg/return_admin.svg", label: "Mượn/Trả" },
-        { path: "/fine", icon: "/svg/fine_admin.svg", label: "Phiếu phạt" },
-        { path: "/setting", icon: "/svg/setting.svg", label: "Cài đặt" },
-    ];
 
     return (
         <aside
@@ -60,20 +64,26 @@ const Sidebar = () => {
                 </div>
                 <hr className="border-t border-gray-100 mb-6" />
 
-                {/* Navigation */}
-                <nav className="space-y-3 flex-grow">
-                    {menuItems.map((item) => (
-                        <SidebarItem key={item.path} {...item} />
-                    ))}
-                </nav>
+        {/* Navigation */}
+        <nav className="space-y-3 flex-grow">
+          {menuItems.map((item) => (
+            <SidebarItem key={item.path} {...item} />
+          ))}
+        </nav>
 
-                {/* Footer Image */}
-                <div className="mt-auto flex flex-col items-center pb-4">
-                    <img src="/images/end_sidebar.png" alt="Vibely Logo" className="w-42" />
-                </div>
-            </div>
-        </aside>
-    );
+
+        <div className="mb-16">
+          <Separator className="my-4" />
+          <div className="text-xs text-muted-foreground space-y-1">
+            <Button variant="ghost" className="cursor-pointer -ml-4 ">
+              <LogOut />{" "}
+              <span className="ml-2 font-bold text-md">Đăng xuất</span>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
 };
 
 export default Sidebar;
