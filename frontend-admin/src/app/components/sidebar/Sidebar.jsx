@@ -40,12 +40,12 @@ const Sidebar = () => {
 
 
     const menuItems = [
-        { path: "/admin/dashboard", icon: "/svg/dashboard.svg", label: "Dashboard" },
-        { path: "/admin/users", icon: "/svg/user_admin.svg", label: "Người dùng" },
-        { path: "/admin/posts", icon: "/svg/book_admin.svg", label: "Sách" },
-        { path: "/admin/posts", icon: "/svg/return_admin.svg", label: "Mượn/Trả" },
-        { path: "/admin/documents", icon: "/svg/fine_admin.svg", label: "Phiếu phạt" },
-        { path: "/admin/supports", icon: "/svg/setting.svg", label: "Hỗ trợ" },
+        { path: "/dashboard", icon: "/svg/dashboard.svg", label: "Dashboard" },
+        { path: "/users", icon: "/svg/user_admin.svg", label: "Người dùng" },
+        { path: "/books", icon: "/svg/book_admin.svg", label: "Sách" },
+        { path: "/borrow", icon: "/svg/return_admin.svg", label: "Mượn/Trả" },
+        { path: "/fine", icon: "/svg/fine_admin.svg", label: "Phiếu phạt" },
+        { path: "/setting", icon: "/svg/setting.svg", label: "Cài đặt" },
     ];
 
     return (
