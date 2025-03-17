@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import useSidebarStore from "@/store/sideBarStore";
 import { LogOut } from "lucide-react";
@@ -38,7 +38,7 @@ const SidebarItem = ({ path, icon, label }) => {
         </Button>
     );
 
-
+}
 const Sidebar = () => {
   const { isSidebarOpen } = useSidebarStore();
 
