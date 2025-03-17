@@ -1,6 +1,6 @@
 "use client"
-import { Button } from "@/components/ui/button";
-import useSidebarStore from "@/store/sidebarStore";
+import { Button } from "@/app/components/ui/button";
+import useSidebarStore from "@/store/sideBarStore";
 
 import { useRouter, usePathname } from "next/navigation";
 
@@ -21,14 +21,14 @@ const SidebarItem = ({ path, icon, label }) => {
     return (
         <Button
             variant="ghost"
-            className={`w-full justify-start mb-3 cursor-pointer flex items-center text-[15px] ${isActive ? "text-black" : "text-[#A3AED0]"
+            className={`w-full justify-start mb-3 cursor-pointer flex items-center text-[15px] ${isActive ? "text-white bg-[#062D76] " : "text-black bg-transparent"
                 }`}
             onClick={handleClick}
         >
             <img
                 src={icon}
                 alt={label}
-                className={`mr-3 w-5 h-6 ${isActive ? "filter brightness-0 invert-[10%]" : ""}`}
+                className={`mr-3 w-5 h-6 ${isActive ? "filter brightness-0 invert" : ""}`}
             />
             <span>{label}</span>
         </Button>
@@ -50,8 +50,8 @@ const Sidebar = () => {
 
     return (
         <aside
-            className={`fixed left-0 h-full w-52 p-4 transform transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 ${isSidebarOpen ? "translate-x-0 bg-white shadow-lg " : "-translate-x-full"
-                } ${isSidebarOpen ? "md:hidden" : ""} md:bg-white md:shadow-none`}
+            className={`fixed left-0 h-full w-52 p-4 transform bg-white transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 shadow-lg ${isSidebarOpen ? "translate-x-0  " : "-translate-x-full"
+                } ${isSidebarOpen ? "md:hidden" : ""} md:shadow-none`}
         >
             <div className="flex flex-col h-full overflow-y-auto">
                 {/* Logo */}
