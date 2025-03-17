@@ -1,7 +1,7 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/app/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { yupResolver } from "@hookform/resolvers/yup";
