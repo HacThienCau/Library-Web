@@ -132,7 +132,7 @@ const page = () => {
   };
 
   return (
-    <div className="flex flex-row w-full h-full bg-[#EFF3FB]">
+    <div className="flex flex-row w-full min-h-screen h-full  bg-[#EFF3FB]">
       <Sidebar />
       <div className="flex w-full flex-col py-6 md:ml-52 relative mt-5 gap-2 items-center px-10">
         <div className="flex w-full items-center h-[10px] justify-between mb-10">

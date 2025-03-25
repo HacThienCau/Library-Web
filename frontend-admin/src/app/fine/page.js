@@ -1,13 +1,223 @@
-import React from 'react'
-import Sidebar from '../components/sidebar/Sidebar'
-
+"use client";
+import React, { useEffect, useState } from "react";
+import Sidebar from "../components/sidebar/Sidebar";
+import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
+import { useRouter } from "next/navigation";
+import { Plus, Search, ReceiptText, Timer, DollarSign } from "lucide-react";
+import { OrbitProgress } from "react-loading-indicators";
+import toast from "react-hot-toast";
 
 const page = () => {
-    return (
-        <div className="flex flex-row w-full h-screen bg-[#F4F7FE]">
-            <Sidebar />
-        </div>
-    )
-}
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterFines, setFilterFines] = useState([]);
+  const [needToPay, setNeedToPay] = useState([]);
+  const [paid, setPaid] = useState([]);
+  const [mode, setMode] = useState(0); //0 là chưa thanh toán, 1 là đã thanh toán
+  const [loading, setLoading] = useState(false);
 
-export default page
+  const handleSearch = () => {
+    //Hàm tìm kiếm
+    if (searchQuery) {
+      setLoading(true);
+      const fineList = mode === 0 ? needToPay : paid;
+      const filterFine = fineList.filter((book) =>
+        book.MaPhieuPhat.toString() === searchQuery || //tìm theo id
+        book?.MaNguoiDung.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo tên sách
+          ? book
+          : null
+      );
+      setFilterFines(filterFine);
+      setLoading(false);
+      if (filterFine.length < 1) toast.error("Không tìm thấy kết quả");
+    } else {
+      setFilterFines([]);
+    }
+  };
+
+  const route = useRouter();
+  const handleAddFine = () => {
+    //Chuyển sang trang thêm phiếu phạt
+    route.push(`/fine/addFine`);
+  };
+  const handleDetail = (MaPhat) => {
+    //Chuyển sang trang chi tiết phiếu phạt
+    route.push(`/fine/${MaPhat}`);
+  };
+
+  const fetchFine = async () => {
+    //Hàm lấy ds phiếu phạt, sau đó chia theo status
+    setLoading(true);
+    needToPay.length = 0; //reset mảng
+    paid.length = 0;
+    const test =
+      //thay API vào đây
+      [
+        {
+          MaPhieuPhat: "1",
+          MaNguoiDung: "userId 1",
+          SoTien: 20000,
+          NoiDung: "Trả sách trễ hạn",
+          MaPhieuMuon: "2",
+          Status: "Đã Thanh Toán",
+        },
+        {
+          MaPhieuPhat: "2",
+          MaNguoiDung: "userId 2",
+          SoTien: 15000,
+          NoiDung: "Trả sách trễ hạn",
+          MaPhieuMuon: "122",
+          Status: "Đã Thanh Toán",
+        },
+        {
+          MaPhieuPhat: "3",
+          MaNguoiDung: "userId 3",
+          SoTien: 750000,
+          NoiDung: "Làm mất sách",
+          MaPhieuMuon: "123", //Nếu nội dung là làm mất/hư hỏng sách thì MaPhieuMuon chứa id sách
+          Status: "Đã Thanh Toán",
+        },
+        {
+          MaPhieuPhat: "4",
+          MaNguoiDung: "userId 2",
+          SoTien: 150000,
+          NoiDung: "Trả sách trễ hạn",
+          MaPhieuMuon: "2",
+          Status: "Chưa Thanh Toán",
+        },
+      ];
+    test.map((fine) => {
+      fine.Status === "Chưa Thanh Toán"
+        ? needToPay.push(fine)
+        : paid.push(fine);
+    });
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchFine();
+    setMode(0);
+    setSearchQuery("");
+    handleSearch();
+  }, []);
+
+  const FineCard = ({ fine }) => {  //Component phiếu phạt
+    return (
+      <div className="flex bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 gap-[20px] md:gap-[50px] items-center">
+        <div className="flex flex-col gap-[10px] relative w-full">
+          <p className="font-bold">ID:&nbsp;{fine.MaPhieuPhat}</p>
+          <p className="">User ID:&nbsp;{fine.MaNguoiDung}</p>
+          <p className="font-bold">Số Tiền:&nbsp;{fine.SoTien}&nbsp;đồng</p>
+          <p className="">Nội Dung:&nbsp;{fine.NoiDung}</p>
+        </div>
+        <div className="w-full flex justify-end mr-10">
+          <Button
+            title={"Xem Chi Tiết"}
+            className="w-15 md:w-60 h-10 bg-[#062D76] hover:bg-gray-700 cursor-pointer"
+            onClick={() => {
+              handleDetail(fine.MaPhieuPhat);
+            }}
+          >
+            <ReceiptText className="w-5 h-5" color="white" />
+            <p className="hidden md:block">Xem chi tiết</p>
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex flex-row w-full min-h-screen h-full bg-[#EFF3FB]"> 
+      <Sidebar />
+      <div className="flex w-full flex-col py-6 md:ml-52 relative mt-5 gap-2 items-center px-10"> {/*Main*/}
+        <div className="flex w-full items-center h-[10px] justify-between mb-10"> {/*Thanh Trên*/}
+          <div className="flex w-1/2 gap-10"> {/*Bên Trái*/}
+            <Button
+              title={"Chưa Thanh Toán"}
+              className={`w-50 h-10 cursor-pointer ${
+                mode === 0 ? "bg-[#062D76]" : "bg-[#b6cefa]"
+              } hover:bg-gray-500 font-bold rounded-[10px] overflow-hidden`}
+              onClick={() => {
+                setMode(0);
+                setSearchQuery("");
+                filterFines.length = 0;
+              }}
+            >
+              <Timer className="w-5 h-5" color="white" />
+              Chưa Thanh Toán
+            </Button>
+            <Button
+              title={"Đã Thanh Toán"}
+              className={`w-50 h-10 cursor-pointer ${
+                mode === 1 ? "bg-[#062D76]" : "bg-[#b6cefa]"
+              }  hover:bg-gray-500 font-bold rounded-[10px] overflow-hidden`}
+              onClick={() => {
+                setMode(1);
+                setSearchQuery("");
+                filterFines.length = 0;
+              }}
+            >
+              <DollarSign className="w-5 h-5" color="white" />
+              Đã Thanh Toán
+            </Button>
+          </div>
+          <div className="flex gap-5"> {/*Bên Phải*/}
+            <Input
+              type="text"
+              placeholder="Tìm kiếm"
+              className="w-xs md:w-2xl h-10 font-thin italic text-black text-2xl bg-white rounded-[10px]"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Button
+              title={"Tìm kiếm"}
+              className="w-10 h-10 cursor-pointer text-[20px] bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
+              onClick={() => {
+                handleSearch();
+              }}
+            >
+              <Search className="w-10 h-10" color="white" />
+            </Button>
+          </div>
+        </div>
+        {loading ? (
+          <div className="flex w-full h-full justify-center">
+            <OrbitProgress color="#062D76" size="medium" />
+          </div>
+        ) : mode === 0 ? (
+          filterFines.length > 0 ? ( //nếu đang search thì hiện danh sách lọc
+            filterFines.map((fine) => {
+              return <FineCard key={fine?.MaPhieuPhat} fine={fine} />;
+            })
+          ) : (
+            needToPay.map((fine) => {
+              return <FineCard key={fine?.MaPhieuPhat} fine={fine} />;
+            })
+          )
+        ) : filterFines.length > 0 ? ( //nếu đang search thì hiện danh sách lọc
+          filterFines.map((fine) => {
+            return <FineCard key={fine?.MaPhieuPhat} fine={fine} />;
+          })
+        ) : (
+          paid.map((fine) => {
+            return <FineCard key={fine?.MaPhieuPhat} fine={fine} />;
+          })
+        )}
+         {/*Nút Thêm - Floating Button*/}
+        <div className="absolute bottom-10 right-10 fixed"> 
+        <Button
+        title={"Thêm Phiếu Phạt"}
+        className="bg-[#062D76] rounded-3xl w-12 h-12"
+        onClick={() => {
+            handleAddFine();
+          }}
+        >
+            <Plus className="w-24 h-24" color="white" />
+        </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default page;
