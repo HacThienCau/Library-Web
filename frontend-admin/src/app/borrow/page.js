@@ -1,26 +1,124 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "../components/sidebar/Sidebar";
+import { useRouter } from "next/navigation";
 
-const BorrowingDashboard = () => {
-  const borrowings = [
-    { id: 12, userId: 71, borrowDate: "10/03/2025", returnDate: "17/03/2025" },
-    { id: 11, userId: 18, borrowDate: "09/03/2025", returnDate: "16/03/2025" },
-    { id: 10, userId: 21, borrowDate: "09/03/2025", returnDate: "23/03/2025" },
-    { id: 13, userId: 21, borrowDate: "09/03/2025", returnDate: "23/03/2025" },
-    { id: 14, userId: 18, borrowDate: "09/03/2025", returnDate: "16/03/2025" },
-    { id: 15, userId: 21, borrowDate: "09/03/2025", returnDate: "23/03/2025" },
-    { id: 16, userId: 21, borrowDate: "09/03/2025", returnDate: "23/03/2025" },
-  ];
+const page = () => {
+  const initData = {
+    borrowed: [
+      {
+        id: 13,
+        userId: 21,
+        borrowDate: "09/03/2025",
+        returnDate: "23/03/2025",
+      },
+      {
+        id: 14,
+        userId: 18,
+        borrowDate: "09/03/2025",
+        returnDate: "16/03/2025",
+      },
+      {
+        id: 15,
+        userId: 21,
+        borrowDate: "09/03/2025",
+        returnDate: "23/03/2025",
+      },
+      {
+        id: 16,
+        userId: 21,
+        borrowDate: "09/03/2025",
+        returnDate: "23/03/2025",
+      },
+    ],
+    returned: [
+      {
+        id: 12,
+        userId: 71,
+        borrowDate: "10/03/2025",
+        returnedDate: "17/03/2025",
+      },
+      {
+        id: 11,
+        userId: 18,
+        borrowDate: "09/03/2025",
+        returnedDate: "16/03/2025",
+      },
+      {
+        id: 10,
+        userId: 21,
+        borrowDate: "09/03/2025",
+        returnedDate: "23/03/2025",
+      },
+      {
+        id: 19,
+        userId: 21,
+        borrowDate: "09/03/2025",
+        returnedDate: "23/03/2025",
+      },
+    ],
+  };
+
+  const [selectedButton, setSelectedButton] = useState("borrowed");
+  const [borrowings, setBorrowings] = useState(initData.borrowed);
+
+  //   const fetchBorrowedData = async () => {
+  //   try {
+  //     const response = await fetch("/api/borrowed"); // API dữ liệu đã mượn
+  //     const data = await response.json();
+  //     setBorrowings(data);
+  //   } catch (error) {
+  //     console.error("Lỗi khi lấy dữ liệu đã mượn:", error);
+  //   }
+  // };
+
+  const fetchBorrowedData = () => {
+    setBorrowings(initData.borrowed);
+  };
+
+  const [returned, setReturned] = useState(initData.returned);
+
+  //   const fetchReturnedData = async () => {
+  //   try {
+  //     const response = await fetch("/api/returned"); // API dữ liệu đã mượn
+  //     const data = await response.json();
+  //     setReturned(data);
+  //   } catch (error) {
+  //     console.error("Lỗi khi lấy dữ liệu đã mượn:", error);
+  //   }
+  // };
+
+  const fetchReturnedData = () => {
+    setReturned(initData.returned);
+  };
+
+  const handleButtonClick = (buttonType) => {
+    setSelectedButton(buttonType);
+    if (buttonType === "borrowed") {
+      setBorrowings(initData.borrowed);
+    } else if (buttonType === "returned") {
+      setReturned(initData.returned);
+    }
+  };
+
+  const route = useRouter();
+  const handleDetails = (id) => {
+    route.push(`/borrow/${id}`);
+  };
 
   return (
     <div>
       <Sidebar />
       <main className="p-5 w-full bg-neutral-100 min-h-[screen]">
         <div className="mx-auto max-w-[1420px]">
-          <header className="flex gap-10 max-md:flex-col max-md:gap-4">
+          <header className="flex gap-10 max-md:flex-col max-md:gap-4 ">
             {/* Current Borrowings Status */}
-            <section className="flex flex-1 gap-5 justify-center items-center bg-red-400 rounded-3xl h-[50px]">
+            <section
+              className={`flex flex-1 gap-5 justify-center items-center rounded-3xl h-[50px] cursor-pointer ${
+                selectedButton === "borrowed" ? "bg-red-400" : "bg-gray-300"
+              }`}
+              onClick={() => handleButtonClick("borrowed")}
+            >
               <div
                 dangerouslySetInnerHTML={{
                   __html:
@@ -31,7 +129,12 @@ const BorrowingDashboard = () => {
             </section>
 
             {/* Returned Status */}
-            <section className="flex flex-1 gap-5 justify-center items-center bg-rose-100 rounded-3xl h-[50px]">
+            <section
+              className={`flex flex-1 gap-5 justify-center items-center rounded-3xl h-[50px] cursor-pointer ${
+                selectedButton === "returned" ? "bg-red-400" : "bg-gray-300"
+              }`}
+              onClick={() => handleButtonClick("returned")}
+            >
               <div
                 dangerouslySetInnerHTML={{
                   __html:
@@ -66,42 +169,51 @@ const BorrowingDashboard = () => {
           </header>
 
           {/* Borrowing Cards Section */}
-          <section className="gap-y-2.5 mt-8">
-            {borrowings.map((borrowing) => (
-              <article
-                key={borrowing.id}
-                className="p-8 bg-white rounded-xl shadow-sm mb-5"
-              >
-                <div className="flex justify-between items-center max-md:flex-col max-md:gap-5 max-md:items-start">
-                  <div className="gap-y-5">
-                    <h3 className="text-2xl font-bold">ID: {borrowing.id}</h3>
-                    <p className="text-2xl font-bold">
-                      User ID: {borrowing.userId}
-                    </p>
-                    <p className="text-2xl font-bold">
-                      Ngày mượn: {borrowing.borrowDate}
-                    </p>
-                    <p className="text-2xl font-bold">
-                      Ngày trả dự kiến: {borrowing.returnDate}
-                    </p>
+          <section className="gap-y-2.5 mt-8 ml-[50px]">
+            {(selectedButton === "borrowed" ? borrowings : returned).map(
+              (borrowing) => (
+                <article
+                  key={borrowing.id}
+                  className="p-8 bg-white rounded-xl shadow-sm mb-5"
+                >
+                  <div className="flex justify-between items-center max-md:flex-col max-md:gap-5 max-md:items-start">
+                    <div className="gap-y-5">
+                      <h3 className="text-2xl font-bold">ID: {borrowing.id}</h3>
+                      <p className="text-2xl font-bold">
+                        User ID: {borrowing.userId}
+                      </p>
+                      <p className="text-2xl font-bold">
+                        Ngày mượn: {borrowing.borrowDate}
+                      </p>
+                      <p className="text-2xl font-bold">
+                        {selectedButton === "borrowed"
+                          ? `Ngày trả dự kiến: ${borrowing.returnDate}`
+                          : `Ngày trả: ${borrowing.returnedDate}`}
+                      </p>
+                    </div>
+                    <button
+                      className="flex gap-5 justify-center items-center px-32 bg-red-400 rounded-3xl h-[50px] max-md:w-full"
+                      aria-label={`View details for borrowing ${borrowing.id}`}
+                    >
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html:
+                            '<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M33.3334 5H6.66671C4.82837 5 3.33337 6.495 3.33337 8.33333V31.6667C3.33337 33.505 4.82837 35 6.66671 35H33.3334C35.1717 35 36.6667 33.505 36.6667 31.6667V8.33333C36.6667 6.495 35.1717 5 33.3334 5ZM6.66671 31.6667V8.33333H33.3334L33.3367 31.6667H6.66671Z" fill="white"/><path d="M10 11.6667H30V15.0001H10V11.6667ZM10 18.3334H30V21.6667H10V18.3334ZM10 25.0001H20V28.3334H10V25.0001Z" fill="white"/></svg>',
+                        }}
+                      />
+                      <span
+                        className="text-2xl font-bold text-white"
+                        onClick={() => {
+                          handleDetails(borrowing.id);
+                        }}
+                      >
+                        Xem Chi Tiết
+                      </span>
+                    </button>
                   </div>
-                  <button
-                    className="flex gap-5 justify-center items-center px-32 bg-red-400 rounded-3xl h-[50px] max-md:w-full"
-                    aria-label={`View details for borrowing ${borrowing.id}`}
-                  >
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html:
-                          '<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M33.3334 5H6.66671C4.82837 5 3.33337 6.495 3.33337 8.33333V31.6667C3.33337 33.505 4.82837 35 6.66671 35H33.3334C35.1717 35 36.6667 33.505 36.6667 31.6667V8.33333C36.6667 6.495 35.1717 5 33.3334 5ZM6.66671 31.6667V8.33333H33.3334L33.3367 31.6667H6.66671Z" fill="white"/><path d="M10 11.6667H30V15.0001H10V11.6667ZM10 18.3334H30V21.6667H10V18.3334ZM10 25.0001H20V28.3334H10V25.0001Z" fill="white"/></svg>',
-                      }}
-                    />
-                    <span className="text-2xl font-bold text-white">
-                      Xem Chi Tiết
-                    </span>
-                  </button>
-                </div>
-              </article>
-            ))}
+                </article>
+              )
+            )}
           </section>
 
           {/* Floating Action Button */}
@@ -122,4 +234,4 @@ const BorrowingDashboard = () => {
   );
 };
 
-export default BorrowingDashboard;
+export default page;
