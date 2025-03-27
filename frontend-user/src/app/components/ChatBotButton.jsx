@@ -58,7 +58,7 @@ const ChatIcon = () => {
 const NotificationBadge = ({ count }) => {
   return (
     <div
-      className="absolute self-center w-[1.5rem] text-[1rem] font-bold text-center justify-center items-center text-white bg-red-600 rounded-full"
+      className="absolute self-center w-[1.5rem] text-[1rem] font-bold text-center justify-center items-center text-white bg-[#F7302E] rounded-full"
       role="status"
       aria-label={`${count} unread messages`}
     >

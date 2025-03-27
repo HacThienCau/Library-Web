@@ -49,14 +49,14 @@ const UserInfo = () => {
         </div>
         <button
           onClick={handleEditClick}
-          className="p-2.5 text-xl text-white bg-sky-900 rounded-xl"
+          className="p-2.5 text-[1.25rem] text-white bg-sky-900 rounded-xl"
         >
           {isEditing ? "Lưu" : "Sửa"}
         </button>
       </div>
       {showUploadButton && <UploadButton />}
       <div className="mt-6">
-        <h3 className="px-5 py-2.5 text-[1.25rem] text-sky-900 rounded-lg bg-slate-200 w-fit">
+        <h3 className="px-5 py-2.5 text-[1.25rem] text-[#062D76] rounded-lg bg-slate-200 w-fit">
           Thông tin cá nhân
         </h3>
         <div className="grid grid-cols-2 max-sm:gap-6 gap-14 mt-6 max-sm:grid-cols-1">
@@ -132,17 +132,17 @@ const UserInfo = () => {
 const BorrowingStats = () => {
   return (
     <div className="mt-6">
-      <h3 className="px-5 py-2.5 text-[1.25rem] text-sky-900 rounded-lg bg-slate-200 w-fit">
+      <h3 className="px-5 py-2.5 text-[1.25rem] text-[#062D76] rounded-lg bg-slate-200 w-fit">
         Thông tin mượn sách
       </h3>
       <div className="flex gap-3 mt-6 max-sm:flex-col">
         <article className="flex flex-col flex-1 gap-5 p-5 rounded-xl bg-slate-200">
-          <p className="text-[1.25rem] text-sky-900">8</p>
-          <p className="text-[1.125rem] text-sky-900">Tài liệu đang mượn</p>
+          <p className="text-[1.25rem] text-[#062D76]">8</p>
+          <p className="text-[1.125rem] text-[#062D76]">Tài liệu đang mượn</p>
         </article>
         <article className="flex flex-col flex-1 gap-5 p-5 rounded-xl bg-slate-200">
-          <p className="text-[1.25rem] text-sky-900">4</p>
-          <p className="text-[1.125rem] text-sky-900">Tài liệu quá hạn</p>
+          <p className="text-[1.25rem] text-[#062D76]">4</p>
+          <p className="text-[1.125rem] text-[#062D76]">Tài liệu quá hạn</p>
         </article>
       </div>
     </div>

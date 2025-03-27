@@ -46,7 +46,7 @@ const ChatInput = ({ message, onMessageChange, onSend }) => {
         value={message}
         onChange={(e) => onMessageChange(e.target.value)}
         placeholder="Type your message..."
-        className="flex-1 text-lg leading-8 text-gray-500 outline-none"
+        className="flex-1 text-[1.125rem] leading-8 text-gray-500 outline-none"
       />
       <button
         onClick={onSend}

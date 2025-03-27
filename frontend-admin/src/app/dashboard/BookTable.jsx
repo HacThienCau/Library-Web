@@ -4,7 +4,7 @@ import BookTableRow from "./BookTableRow";
 const BookTable = () => {
   return (
     <section className="flex flex-col mt-6 w-full text-[1rem] text-neutral-900 max-md:max-w-full">
-      <header className="flex shrink overflow-hidden w-full rounded-t-3xl bg-[#05245E] min-h-[3.5rem] max-md:max-w-full">
+      <header className="flex shrink overflow-hidden w-full rounded-t-3xl bg-[#05245E] min-h-[3rem] max-md:max-w-full">
         <div className="flex basis-1/4 min-w-0 justify-center items-center bg-[#EBF1F9]">
           <h3 className="gap-2.5 self-stretch text-center my-auto">ID</h3>
         </div>

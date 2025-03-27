@@ -43,8 +43,8 @@ const UserInfo = ({ name, email }) => {
         </svg>
       </div>
       <div className="flex flex-col gap-3 max-sm:items-center">
-        <h1 className="text-2xl font-bold text-neutral-900">{name}</h1>
-        <p className="text-lg text-neutral-900 text-opacity-50">{email}</p>
+        <h1 className="text-[1.5rem] font-bold text-neutral-900">{name}</h1>
+        <p className="text-[1.125rem] text-neutral-900 text-opacity-50">{email}</p>
       </div>
     </article>
   );

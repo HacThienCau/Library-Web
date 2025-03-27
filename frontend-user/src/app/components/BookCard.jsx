@@ -8,7 +8,7 @@ const StatusIndicator = ({ available }) => {
       </span>
       <div className="self-stretch my-auto w-4">
         <div
-          className={`flex shrink-0 w-4 h-4 ${available ? "bg-green-400" : "bg-red-600"} rounded-full`}
+          className={`flex shrink-0 w-4 h-4 ${available ? "bg-green-400" : "bg-[#F7302E]"} rounded-full`}
         />
       </div>
     </div>
@@ -32,7 +32,7 @@ const BookCard = ({
         />
         <div className="flex flex-col flex-1 shrink self-end basis-0">
           <StatusIndicator available={available} />
-          <h3 className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-lg text-black basis-0">
+          <h3 className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-[1.125rem] text-black basis-0">
             {title}
           </h3>
           <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
