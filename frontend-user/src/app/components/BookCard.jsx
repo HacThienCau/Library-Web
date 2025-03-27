@@ -1,0 +1,52 @@
+import React from "react";
+
+const StatusIndicator = ({ available }) => {
+  return (
+    <div className="flex gap-1.5 justify-center items-center self-start px-2 py-1 rounded bg-slate-200">
+      <span className="self-stretch my-auto text-sm font-medium text-[#062D76]">
+        {available ? "Còn sẵn" : "Đã hết"}
+      </span>
+      <div className="self-stretch my-auto w-4">
+        <div
+          className={`flex shrink-0 w-4 h-4 ${available ? "bg-green-400" : "bg-red-600"} rounded-full`}
+        />
+      </div>
+    </div>
+  );
+};
+
+const BookCard = ({
+    imageSrc,
+    available,
+    title,
+    author,
+    publisher,
+    borrowCount,
+  }) => {
+    return (
+      <article className="flex grow shrink gap-3 min-w-60 ">
+        <img
+          src={imageSrc}
+          alt={title}
+          className="object-cover shrink rounded-sm aspect-[0.67] w-[100px]"
+        />
+        <div className="flex flex-col flex-1 shrink self-end basis-0">
+          <StatusIndicator available={available} />
+          <h3 className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-lg text-black basis-0">
+            {title}
+          </h3>
+          <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
+            Tác giả: {author}
+          </p>
+          <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
+            NXB: {publisher}
+          </p>
+          <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
+            Lượt mượn: {borrowCount}
+          </p>
+        </div>
+      </article>
+    );
+};
+
+export default BookCard;
