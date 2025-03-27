@@ -26,9 +26,9 @@ const page = () => {
       },
       {
         id: 16,
-        userId: 21,
-        borrowDate: "09/03/2025",
-        returnDate: "23/03/2025",
+        userId: 22,
+        borrowDate: "10/03/2025",
+        returnDate: "24/03/2025",
       },
     ],
     returned: [
@@ -52,15 +52,23 @@ const page = () => {
       },
       {
         id: 19,
-        userId: 21,
-        borrowDate: "09/03/2025",
-        returnedDate: "23/03/2025",
+        userId: 23,
+        borrowDate: "11/03/2025",
+        returnedDate: "20/03/2025",
       },
+    ],
+    requested: [
+      { id: 20, userId: 25, requestDate: "12/03/2025" },
+      { id: 21, userId: 26, requestDate: "12/03/2025" },
+      { id: 22, userId: 27, requestDate: "13/03/2025" },
+      { id: 23, userId: 28, requestDate: "14/03/2025" },
     ],
   };
 
-  const [selectedButton, setSelectedButton] = useState("borrowed");
+  const [selectedButton, setSelectedButton] = useState("requested");
   const [borrowings, setBorrowings] = useState(initData.borrowed);
+  const [returned, setReturned] = useState(initData.returned);
+  const [requested, setRequested] = useState(initData.requested);
 
   //   const fetchBorrowedData = async () => {
   //   try {
@@ -75,8 +83,6 @@ const page = () => {
   const fetchBorrowedData = () => {
     setBorrowings(initData.borrowed);
   };
-
-  const [returned, setReturned] = useState(initData.returned);
 
   //   const fetchReturnedData = async () => {
   //   try {
@@ -98,6 +104,8 @@ const page = () => {
       setBorrowings(initData.borrowed);
     } else if (buttonType === "returned") {
       setReturned(initData.returned);
+    } else if (buttonType === "requested") {
+      setRequested(initData.requested);
     }
   };
 
@@ -113,6 +121,21 @@ const page = () => {
         <div className="mx-auto max-w-[1420px]">
           <header className="flex gap-10 max-md:flex-col max-md:gap-4 ">
             {/* Current Borrowings Status */}
+            <section
+              className={`flex flex-1 gap-5 justify-center items-center rounded-3xl h-[50px] cursor-pointer ${
+                selectedButton === "requested" ? "bg-red-400" : "bg-gray-300"
+              }`}
+              onClick={() => handleButtonClick("requested")}
+            >
+              <div
+                dangerouslySetInnerHTML={{
+                  __html:
+                    '<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.6667 19.995C14.6667 18.3716 15.9817 17.0566 17.6 17.0566C19.22 17.0566 20.5333 18.3733 20.5333 19.995C20.5333 21.6183 19.22 22.935 17.6 22.935C15.9817 22.935 14.6667 21.6183 14.6667 19.995ZM36.3833 15.1683L34.355 19.2566L33.0417 15.3916H33.04C32.9244 15.054 32.7165 14.7555 32.4397 14.5303C32.163 14.305 31.8285 14.1619 31.4745 14.1172C31.1204 14.0726 30.7609 14.1283 30.4369 14.2778C30.1129 14.4274 29.8374 14.6649 29.6417 14.9633C28.765 16.3 27.8917 17.6466 27.0183 18.9866L26.555 15.7266C26.5253 15.4723 26.4447 15.2266 26.3181 15.0041C26.1915 14.7816 26.0214 14.5868 25.8179 14.4314C25.6144 14.276 25.3818 14.1631 25.1338 14.0995C24.8858 14.0359 24.6275 14.0228 24.3744 14.0611C24.1212 14.0993 23.8784 14.1881 23.6602 14.3222C23.4421 14.4563 23.2532 14.6329 23.1048 14.8414C22.9563 15.05 22.8514 15.2864 22.7961 15.5364C22.7409 15.7864 22.7365 16.0449 22.7833 16.2966L22.865 16.8433C22.3198 15.9275 21.545 15.1698 20.6172 14.6451C19.6894 14.1204 18.6408 13.8469 17.575 13.8516C16.5092 13.8563 15.463 14.1391 14.5399 14.672C13.6168 15.2048 12.8488 15.9693 12.3117 16.89L12.4283 16.3183C12.4789 16.0799 12.4819 15.8339 12.437 15.5944C12.3921 15.3549 12.3002 15.1266 12.1667 14.9228C12.0332 14.719 11.8607 14.5436 11.659 14.4067C11.4574 14.2699 11.2307 14.1743 10.992 14.1254C10.7532 14.0766 10.5072 14.0755 10.268 14.1222C10.0289 14.1689 9.8013 14.2625 9.59847 14.3976C9.39564 14.5326 9.22155 14.7065 9.08622 14.9091C8.9509 15.1118 8.85701 15.3392 8.80999 15.5783L8.01666 19.475L5.09666 14.945C4.89839 14.6378 4.61324 14.3964 4.27746 14.2517C3.94169 14.107 3.57046 14.0654 3.21098 14.1322C2.8515 14.199 2.52002 14.3713 2.25868 14.627C1.99734 14.8827 1.81795 15.2104 1.74332 15.5683L0.038324 23.9216C-0.0176547 24.1908 -0.0129319 24.4691 0.0521489 24.7362C0.11723 25.0033 0.241032 25.2526 0.414551 25.4659C0.58807 25.6791 0.806942 25.851 1.05525 25.9691C1.30355 26.0871 1.57505 26.1484 1.84999 26.1483C2.70499 26.155 3.47666 25.5516 3.65666 24.6616L4.44999 20.765C5.43666 22.3016 6.42555 23.8372 7.41666 25.3716C7.62855 25.6678 7.92329 25.8948 8.26382 26.0239C8.60436 26.1531 8.97547 26.1786 9.33049 26.0974C9.68551 26.0162 10.0086 25.8318 10.2591 25.5674C10.5096 25.303 10.6763 24.9705 10.7383 24.6116L11.52 20.775C11.707 22.2559 12.4277 23.6179 13.5469 24.6055C14.6662 25.5932 16.1073 26.1387 17.6 26.14C18.9699 26.139 20.3001 25.6795 21.3784 24.8346C22.4568 23.9898 23.2213 22.8082 23.55 21.4783L23.9867 24.41C24.11 25.375 24.9 26.1383 25.8883 26.1383C26.6 26.1383 27.1817 25.73 27.55 25.165L30.6917 20.34L32.2 24.7816C32.47 25.5733 33.1667 26.1383 34.0267 26.1383C34.825 26.1383 35.4517 25.6583 35.7933 24.945L39.7983 16.87C40.0244 16.4163 40.0616 15.8915 39.9016 15.4104C39.7417 14.9294 39.3977 14.5313 38.945 14.3033C38.72 14.1908 38.4749 14.1239 38.2239 14.1066C37.973 14.0893 37.721 14.1219 37.4827 14.2024C37.2444 14.283 37.0244 14.41 36.8354 14.5761C36.6464 14.7421 36.4922 14.944 36.3817 15.17" fill="white"/></svg>',
+                }}
+              />
+              <h2 className="text-2xl font-bold text-white">Yêu cầu</h2>
+            </section>
+
             <section
               className={`flex flex-1 gap-5 justify-center items-center rounded-3xl h-[50px] cursor-pointer ${
                 selectedButton === "borrowed" ? "bg-red-400" : "bg-gray-300"
@@ -143,77 +166,84 @@ const page = () => {
               />
               <h2 className="text-2xl font-bold text-white">Đã Trả</h2>
             </section>
-
-            {/* Search Section */}
-            <section className="flex flex-1 gap-2.5">
-              <div className="flex flex-1 items-center px-2.5 bg-white rounded-3xl border border-stone-300 h-[50px]">
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm..."
-                  className="w-full text-3xl font-thin"
-                  aria-label="Search borrowings"
-                />
-              </div>
-              <button
-                className="flex justify-center items-center w-20 bg-red-400 rounded-3xl border border-stone-300 h-[50px]"
-                aria-label="Search"
-              >
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      '<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.8333 26.6667C12.8056 26.6667 10.2433 25.6178 8.14667 23.52C6.05 21.4222 5.00111 18.86 5 15.8333C4.99889 12.8067 6.04778 10.2444 8.14667 8.14667C10.2456 6.04889 12.8078 5 15.8333 5C18.8589 5 21.4217 6.04889 23.5217 8.14667C25.6217 10.2444 26.67 12.8067 26.6667 15.8333C26.6667 17.0556 26.4722 18.2083 26.0833 19.2917C25.6944 20.375 25.1667 21.3333 24.5 22.1667L33.8333 31.5C34.1389 31.8056 34.2917 32.1944 34.2917 32.6667C34.2917 33.1389 34.1389 33.5278 33.8333 33.8333C33.5278 34.1389 33.1389 34.2917 32.6667 34.2917C32.1944 34.2917 31.8056 34.1389 31.5 33.8333L22.1667 24.5C21.3333 25.1667 20.375 25.6944 19.2917 26.0833C18.2083 26.4722 17.0556 26.6667 15.8333 26.6667ZM15.8333 23.3333C17.9167 23.3333 19.6878 22.6044 21.1467 21.1467C22.6056 19.6889 23.3344 17.9178 23.3333 15.8333C23.3322 13.7489 22.6033 11.9783 21.1467 10.5217C19.69 9.065 17.9189 8.33556 15.8333 8.33333C13.7478 8.33111 11.9772 9.06056 10.5217 10.5217C9.06611 11.9828 8.33667 13.7533 8.33333 15.8333C8.33 17.9133 9.05945 19.6844 10.5217 21.1467C11.9839 22.6089 13.7544 23.3378 15.8333 23.3333Z" fill="white"/></svg>',
-                  }}
-                />
-              </button>
-            </section>
           </header>
+
+          {/* Search Section */}
+          <section className="flex flex-1 gap-2.5 mt-10">
+            <div className="flex flex-1 items-center px-2.5 bg-white rounded-3xl border border-stone-300 h-[50px] ml-10">
+              <input
+                type="text"
+                placeholder="Tìm kiếm..."
+                className="w-full text-3xl font-thin"
+                aria-label="Search borrowings"
+              />
+            </div>
+            <button
+              className="flex justify-center items-center w-20 bg-red-400 rounded-3xl border border-stone-300 h-[50px]"
+              aria-label="Search"
+            >
+              <div
+                dangerouslySetInnerHTML={{
+                  __html:
+                    '<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.8333 26.6667C12.8056 26.6667 10.2433 25.6178 8.14667 23.52C6.05 21.4222 5.00111 18.86 5 15.8333C4.99889 12.8067 6.04778 10.2444 8.14667 8.14667C10.2456 6.04889 12.8078 5 15.8333 5C18.8589 5 21.4217 6.04889 23.5217 8.14667C25.6217 10.2444 26.67 12.8067 26.6667 15.8333C26.6667 17.0556 26.4722 18.2083 26.0833 19.2917C25.6944 20.375 25.1667 21.3333 24.5 22.1667L33.8333 31.5C34.1389 31.8056 34.2917 32.1944 34.2917 32.6667C34.2917 33.1389 34.1389 33.5278 33.8333 33.8333C33.5278 34.1389 33.1389 34.2917 32.6667 34.2917C32.1944 34.2917 31.8056 34.1389 31.5 33.8333L22.1667 24.5C21.3333 25.1667 20.375 25.6944 19.2917 26.0833C18.2083 26.4722 17.0556 26.6667 15.8333 26.6667ZM15.8333 23.3333C17.9167 23.3333 19.6878 22.6044 21.1467 21.1467C22.6056 19.6889 23.3344 17.9178 23.3333 15.8333C23.3322 13.7489 22.6033 11.9783 21.1467 10.5217C19.69 9.065 17.9189 8.33556 15.8333 8.33333C13.7478 8.33111 11.9772 9.06056 10.5217 10.5217C9.06611 11.9828 8.33667 13.7533 8.33333 15.8333C8.33 17.9133 9.05945 19.6844 10.5217 21.1467C11.9839 22.6089 13.7544 23.3378 15.8333 23.3333Z" fill="white"/></svg>',
+                }}
+              />
+            </button>
+          </section>
 
           {/* Borrowing Cards Section */}
           <section className="gap-y-2.5 mt-8 ml-[50px]">
-            {(selectedButton === "borrowed" ? borrowings : returned).map(
-              (borrowing) => (
-                <article
-                  key={borrowing.id}
-                  className="p-8 bg-white rounded-xl shadow-sm mb-5"
-                >
-                  <div className="flex justify-between items-center max-md:flex-col max-md:gap-5 max-md:items-start">
-                    <div className="gap-y-5">
-                      <h3 className="text-2xl font-bold">ID: {borrowing.id}</h3>
-                      <p className="text-2xl font-bold">
-                        User ID: {borrowing.userId}
-                      </p>
+            {(selectedButton === "borrowed"
+              ? borrowings
+              : selectedButton === "returned"
+              ? returned
+              : requested
+            ).map((borrowing) => (
+              <article
+                key={borrowing.id}
+                className="p-8 bg-white rounded-xl shadow-sm mb-5"
+              >
+                <div className="flex justify-between items-center max-md:flex-col max-md:gap-5 max-md:items-start">
+                  <div className="gap-y-5">
+                    <h3 className="text-2xl font-bold">ID: {borrowing.id}</h3>
+                    <p className="text-2xl font-bold">
+                      User ID: {borrowing.userId}
+                    </p>
+                    {selectedButton !== "requested" && (
                       <p className="text-2xl font-bold">
                         Ngày mượn: {borrowing.borrowDate}
                       </p>
-                      <p className="text-2xl font-bold">
-                        {selectedButton === "borrowed"
-                          ? `Ngày trả dự kiến: ${borrowing.returnDate}`
-                          : `Ngày trả: ${borrowing.returnedDate}`}
-                      </p>
-                    </div>
-                    <button
-                      className="flex gap-5 justify-center items-center px-32 bg-red-400 rounded-3xl h-[50px] max-md:w-full"
-                      aria-label={`View details for borrowing ${borrowing.id}`}
-                    >
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html:
-                            '<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M33.3334 5H6.66671C4.82837 5 3.33337 6.495 3.33337 8.33333V31.6667C3.33337 33.505 4.82837 35 6.66671 35H33.3334C35.1717 35 36.6667 33.505 36.6667 31.6667V8.33333C36.6667 6.495 35.1717 5 33.3334 5ZM6.66671 31.6667V8.33333H33.3334L33.3367 31.6667H6.66671Z" fill="white"/><path d="M10 11.6667H30V15.0001H10V11.6667ZM10 18.3334H30V21.6667H10V18.3334ZM10 25.0001H20V28.3334H10V25.0001Z" fill="white"/></svg>',
-                        }}
-                      />
-                      <span
-                        className="text-2xl font-bold text-white"
-                        onClick={() => {
-                          handleDetails(borrowing.id);
-                        }}
-                      >
-                        Xem Chi Tiết
-                      </span>
-                    </button>
+                    )}
+                    <p className="text-2xl font-bold">
+                      {selectedButton === "borrowed"
+                        ? `Ngày trả dự kiến: ${borrowing.returnDate}`
+                        : selectedButton === "returned"
+                        ? `Ngày trả: ${borrowing.returnedDate}`
+                        : `Ngày yêu cầu: ${borrowing.requestDate}`}
+                    </p>
                   </div>
-                </article>
-              )
-            )}
+                  <button
+                    className="flex gap-5 justify-center items-center px-32 bg-red-400 rounded-3xl h-[50px] max-md:w-full"
+                    aria-label={`View details for borrowing ${borrowing.id}`}
+                  >
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          '<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M33.3334 5H6.66671C4.82837 5 3.33337 6.495 3.33337 8.33333V31.6667C3.33337 33.505 4.82837 35 6.66671 35H33.3334C35.1717 35 36.6667 33.505 36.6667 31.6667V8.33333C36.6667 6.495 35.1717 5 33.3334 5ZM6.66671 31.6667V8.33333H33.3334L33.3367 31.6667H6.66671Z" fill="white"/><path d="M10 11.6667H30V15.0001H10V11.6667ZM10 18.3334H30V21.6667H10V18.3334ZM10 25.0001H20V28.3334H10V25.0001Z" fill="white"/></svg>',
+                      }}
+                    />
+                    <span
+                      className="text-2xl font-bold text-white"
+                      onClick={() => {
+                        handleDetails(borrowing.id);
+                      }}
+                    >
+                      Xem Chi Tiết
+                    </span>
+                  </button>
+                </div>
+              </article>
+            ))}
           </section>
 
           {/* Floating Action Button */}

@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import { useRouter } from "next/navigation";
-
-
+import { Button } from "@/app/components/ui/button";
+import toast from "react-hot-toast";
 const BackIcon = () => (
   <svg
     width="40"
@@ -139,53 +139,72 @@ const BorrowingInfo = ({ info }) => {
   );
 };
 
-const ControlButtons = () => {
-  return (
-    <section className="fixed bottom-0 flex overflow-hidden flex-wrap gap-5 justify-between px-8 py-2.5 mt-56 w-[79.5%] text-xl font-bold text-center text-white bg-white rounded-xl shadow-[0px_4px_4px_rgba(0,0,0,0.25)] max-md:px-5 max-md:mt-10 max-md:max-w-full">
-      <div className="flex gap-8 whitespace-nowrap">
-        <button className="flex overflow-hidden gap-5 px-4 py-5 bg-red-400 rounded-xl">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/4a9fe9521807de35e7f966d307fab010b947a5c6?placeholderIfAbsent=true&apiKey=a8e29767c993435da0efe792c3bd4a1c"
-            className="object-contain shrink-0 w-10 aspect-square"
-            alt="Delete icon"
-          />
-          <span className="my-auto">Xóa</span>
-        </button>
-
-        <button className="flex overflow-hidden gap-5 px-4 py-5 bg-red-400 rounded-xl">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/0cfa36efe08c5adbfdab9b59497b3efa4940b258?placeholderIfAbsent=true&apiKey=a8e29767c993435da0efe792c3bd4a1c"
-            className="object-contain shrink-0 w-10 aspect-square"
-            alt="Edit icon"
-          />
-          <span className="my-auto">Sửa</span>
-        </button>
-      </div>
-
-      <div className="flex flex-wrap gap-8">
-        <button className="flex overflow-hidden flex-auto gap-5 px-14 py-5 bg-rose-100 rounded-xl max-md:px-5">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/b1a2603ec9f943ddb9911ddb834948874e1a7df8?placeholderIfAbsent=true&apiKey=a8e29767c993435da0efe792c3bd4a1c"
-            className="object-contain shrink-0 self-start w-10 aspect-square"
-            alt="Delivery icon"
-          />
-          <span className="basis-auto">Đã Giao</span>
-        </button>
-
-        <button className="flex overflow-hidden flex-auto gap-8 px-12 py-5 bg-red-400 rounded-xl max-md:px-5">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/db540d6e6a07d00a70b13ac958a47e13501d75aa?placeholderIfAbsent=true&apiKey=a8e29767c993435da0efe792c3bd4a1c"
-            className="object-contain shrink-0 w-10 aspect-square"
-            alt="Return icon"
-          />
-          <span className="my-auto basis-auto">Trả Sách</span>
-        </button>
-      </div>
-    </section>
-  );
-};
-
 const ChiTietPhieuMuonDangMuon = () => {
+  const [popUpOpen, setPopUpOpen] = useState(false);
+  const [deleteOne, setDeleteOne] = useState(null);
+
+  const handleDelete = async (info) => {
+    //Gọi API...
+    //await fetchBook()
+    setDeleteOne(null);
+    setPopUpOpen(false);
+    toast.success("Xóa phiếu thành công");
+  };
+
+  const ControlButtons = (info) => {
+    return (
+      <section className="fixed bottom-0 flex overflow-hidden flex-wrap gap-5 justify-between px-8 py-2.5 mt-56 w-[79.5%] text-xl font-bold text-center text-white bg-white rounded-xl shadow-[0px_4px_4px_rgba(0,0,0,0.25)] max-md:px-5 max-md:mt-10 max-md:max-w-full">
+        <div className="flex gap-8 whitespace-nowrap">
+          <button className="flex overflow-hidden gap-5 px-4 py-5 bg-red-400 rounded-xl">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/4a9fe9521807de35e7f966d307fab010b947a5c6?placeholderIfAbsent=true&apiKey=a8e29767c993435da0efe792c3bd4a1c"
+              className="object-contain shrink-0 w-10 aspect-square"
+              alt="Delete icon"
+            />
+            <span
+              className="my-auto"
+              onClick={() => {
+                setDeleteOne(info.info);
+                setPopUpOpen(true);
+              }}
+            >
+              Xóa
+            </span>
+          </button>
+  
+          <button className="flex overflow-hidden gap-5 px-4 py-5 bg-red-400 rounded-xl">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/0cfa36efe08c5adbfdab9b59497b3efa4940b258?placeholderIfAbsent=true&apiKey=a8e29767c993435da0efe792c3bd4a1c"
+              className="object-contain shrink-0 w-10 aspect-square"
+              alt="Edit icon"
+            />
+            <span className="my-auto">Sửa</span>
+          </button>
+        </div>
+  
+        <div className="flex flex-wrap gap-8">
+          <button className="flex overflow-hidden flex-auto gap-5 px-14 py-5 bg-rose-100 rounded-xl max-md:px-5">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/b1a2603ec9f943ddb9911ddb834948874e1a7df8?placeholderIfAbsent=true&apiKey=a8e29767c993435da0efe792c3bd4a1c"
+              className="object-contain shrink-0 self-start w-10 aspect-square"
+              alt="Delivery icon"
+            />
+            <span className="basis-auto">Đã Giao</span>
+          </button>
+  
+          <button className="flex overflow-hidden flex-auto gap-8 px-12 py-5 bg-red-400 rounded-xl max-md:px-5">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/db540d6e6a07d00a70b13ac958a47e13501d75aa?placeholderIfAbsent=true&apiKey=a8e29767c993435da0efe792c3bd4a1c"
+              className="object-contain shrink-0 w-10 aspect-square"
+              alt="Return icon"
+            />
+            <span className="my-auto basis-auto">Trả Sách</span>
+          </button>
+        </div>
+      </section>
+    );
+  };  
+
   return (
     <main className="overflow-hidden bg-pink-50 pb-[120px]">
       <div className="flex gap-5 max-md:flex-col">
@@ -211,9 +230,43 @@ const ChiTietPhieuMuonDangMuon = () => {
               </section>
             </div>
 
-            <ControlButtons />
+            <ControlButtons key={initData?.borrowingInfo?.ticketId} info={initData.borrowingInfo}/>
           </div>
         </div>
+      </div>
+      <div>
+        {popUpOpen && (
+          <div className="fixed inset-0 items-center justify-center z-100 flex">
+            <div className="w-full h-full bg-black opacity-[80%] absolute top-0 left-0"></div>
+            <div className="bg-white p-6 rounded-lg shadow-lg w-120 fixed">
+              <h2 className="text-lg font-bold mb-4">Xác nhận xóa</h2>
+              <p>Bạn có chắc chắn muốn xóa phiếu này không?</p>
+              <div className="flex bg-white w-full rounded-lg mt-2 relative p-5 gap-[20px] md:gap-[50px] items-center">
+                <div className="flex flex-col gap-[10px] relative w-full">
+                  <p className="">ID:&nbsp;{deleteOne.ticketId}</p>
+                  <p className="font-bold">Ngày mượn: {deleteOne.borrowDate}</p>
+                  <p className="italic">Người mượn:&nbsp;{deleteOne.userName}</p>
+                </div>
+              </div>
+              <div className="flex justify-end mt-4 gap-4">
+                <Button
+                  className="bg-gray-500 hover:bg-gray-700 text-white"
+                  onClick={() => setPopUpOpen(false)}
+                >
+                  Hủy
+                </Button>
+                <Button
+                  className="bg-red-500 hover:bg-red-700 text-white"
+                  onClick={() => {
+                    handleDelete(deleteOne);
+                  }}
+                >
+                  Xóa
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );
