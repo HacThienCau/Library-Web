@@ -45,7 +45,7 @@ const ChatMessage = ({ message, isVisitor, timestamp, isRead }) => {
     <div className={`flex flex-col ${isVisitor ? "items-end" : "items-start"}`}>
 
       {isVisitor && (
-        <time className="text-xs leading-8 text-right text-sky-900">
+        <time className="text-xs leading-8 text-right text-[#062D76]">
           {timestamp}
         </time>
       )}
@@ -59,7 +59,7 @@ const ChatMessage = ({ message, isVisitor, timestamp, isRead }) => {
         {message}
       </div>
       {isVisitor && isRead && (
-        <span className="text-xs leading-8 text-sky-900">Read</span>
+        <span className="text-xs leading-8 text-[#062D76]">Read</span>
       )}
     </div>
     </div>

@@ -10,11 +10,11 @@ const CategoryFilters =() =>{
         <button className="gap-2.5 self-stretch px-[1.25rem] py-[0.625rem] text-white bg-sky-900 rounded-lg">
           Sách tiếng việt
         </button>
-        <button className="gap-2.5 self-stretch px-[1.25rem] py-[0.625rem] text-sky-900 rounded-lg bg-zinc-200">
+        <button className="gap-2.5 self-stretch px-[1.25rem] py-[0.625rem] text-[#062D76] rounded-lg bg-zinc-200">
           Sách ngoại ngữ
         </button>
       </div>
-      <div className="flex flex-wrap gap-2.5 justify-center content-start items-start py-5 mt-3 w-full text-sky-900 bg-white border-t border-solid border-t-[color:var(--foundation-blue-light-active,#B2BED5)] max-md:max-w-full">
+      <div className="flex flex-wrap gap-2.5 justify-center content-start items-start py-5 mt-3 w-full text-[#062D76] bg-white border-t border-solid border-t-[color:var(--foundation-blue-light-active,#B2BED5)] max-md:max-w-full">
         <button className="gap-2.5 self-stretch px-[1.25rem] py-[0.625rem] text-white bg-sky-900 rounded-lg">
           Văn học
         </button>
