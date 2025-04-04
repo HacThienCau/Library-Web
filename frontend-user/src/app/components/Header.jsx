@@ -20,142 +20,118 @@ const navigation = [
   { name: "Liên hệ", href: "/Contact" },
 ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 const Header = () => {
   const pathname = usePathname();
 
   return (
-    <header className="bg-background_header text-foreground shadow-md h-14 fixed top-0 left-0 z-50 w-full">
-      <Disclosure as="nav" className="bg-[#062D76]">
+    <header className="bg-blue-900 text-white shadow-lg fixed top-0 left-0 w-full z-50">
+      <Disclosure as="nav" className="container mx-auto px-4 sm:px-6 lg:px-8">
         {({ open }) => (
           <>
-            <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-0">
-              <div className="relative flex h-16 items-center justify-between">
-                <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                  {/* Mobile menu button */}
-                  <DisclosureButton className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white hover:text-[#062D76] ">
-                    <span className="sr-only">Open main menu</span>
-                    {open ? (
-                      <X className="size-6" />
-                    ) : (
-                      <MenuIcon className="size-6" />
-                    )}
-                  </DisclosureButton>
-                </div>
-                <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                  <div className="flex shrink-0 items-center">
-                    <Image
-                      alt="Your Company"
-                      src="/images/logo.jpg"
-                      width={32}
-                      height={32}
-                      className="h-8 w-auto"
-                    />
-                  </div>
-                  <div className="hidden sm:ml-6 sm:block">
-                    <div className="flex space-x-4">
-                      {navigation.map((item) => (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          className={classNames(
-                            pathname === item.href
-                              ? "bg-white text-[#062D76]"
-                              : "text-gray-300 hover:bg-white hover:text-[#062D76]",
-                            "rounded-md px-3 py-2 text-base font-medium"
-                          )}
-                        >
-                          {item.name}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                  <button
-                    type="button"
-                    className="relative rounded-full bg-[#062D76] p-1 text-white hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-none"
+            <div className="flex justify-between items-center h-16">
+              {/* Logo */}
+              <div className="flex items-center">
+                <Link href="/">
+                  <Image
+                    alt="Logo"
+                    src="/images/logo.jpg"
+                    width={40}
+                    height={40}
+                    className="h-10 w-auto rounded-full"
+                  />
+                </Link>
+              </div>
+              
+              {/* Navigation Links */}
+              <div className="hidden sm:flex space-x-6">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`px-3 py-2 rounded-md text-lg font-medium transition duration-200 ${
+                      pathname === item.href
+                        ? "bg-white text-blue-900"
+                        : "hover:bg-white hover:text-blue-900"
+                    }`}
                   >
-                    <span className="sr-only">View notifications</span>
-                    <Bell className="size-6" />
-                  </button>
-
-                  {/* Profile dropdown */}
-                  <Menu as="div" className="relative ml-3">
-                    <div>
-                      <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-none">
-                        <span className="sr-only">Open user menu</span>
-                        <Image
-                          alt="User"
-                          src="/images/logo.jpg"
-                          width={32}
-                          height={32}
-                          className="size-8 rounded-full"
-                        />
-                      </MenuButton>
-                    </div>
-                    <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 focus:outline-none">
-                      <MenuItem>
-                        {({ active }) => (
-                          <Link
-                            href="/user-profile"
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Hồ sơ của bạn
-                          </Link>
-                        )}
-                      </MenuItem>
-                      <MenuItem>
-                        {({ active }) => (
-                          <Link
-                            href="/settings"
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Cài đặt
-                          </Link>
-                        )}
-                      </MenuItem>
-                      <MenuItem>
-                        {({ active }) => (
-                          <Link
-                            href="/logout"
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Đăng xuất
-                          </Link>
-                        )}
-                      </MenuItem>
-                    </MenuItems>
-                  </Menu>
-                </div>
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+              
+              {/* Right Icons */}
+              <div className="flex items-center space-x-4">
+                <button className="relative p-2 rounded-full hover:bg-blue-700">
+                  <Bell className="size-6" />
+                </button>
+                
+                {/* Profile Dropdown */}
+                <Menu as="div" className="relative">
+                  <MenuButton className="flex rounded-full">
+                    <Image
+                      alt="User"
+                      src="/images/logo.jpg"
+                      width={40}
+                      height={40}
+                      className="size-10 rounded-full border-2 border-white"
+                    />
+                  </MenuButton>
+                  <MenuItems className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black/5">
+                    <MenuItem>
+                      {({ active }) => (
+                        <Link
+                          href="/user-profile"
+                          className={`block px-4 py-2 text-gray-700 ${active && "bg-gray-100"}`}
+                        >
+                          Hồ sơ của bạn
+                        </Link>
+                      )}
+                    </MenuItem>
+                    <MenuItem>
+                      {({ active }) => (
+                        <Link
+                          href="/settings"
+                          className={`block px-4 py-2 text-gray-700 ${active && "bg-gray-100"}`}
+                        >
+                          Cài đặt
+                        </Link>
+                      )}
+                    </MenuItem>
+                    <MenuItem>
+                      {({ active }) => (
+                        <Link
+                          href="/logout"
+                          className={`block px-4 py-2 text-gray-700 ${active && "bg-gray-100"}`}
+                        >
+                          Đăng xuất
+                        </Link>
+                      )}
+                    </MenuItem>
+                  </MenuItems>
+                </Menu>
+              </div>
+              
+              {/* Mobile Menu Button */}
+              <div className="sm:hidden">
+                <DisclosureButton className="p-2 rounded-md hover:bg-blue-700">
+                  {open ? <X className="size-6" /> : <MenuIcon className="size-6" />}
+                </DisclosureButton>
               </div>
             </div>
 
+            {/* Mobile Menu Panel */}
             <DisclosurePanel className="sm:hidden">
-              <div className="space-y-1 px-2 pt-2 pb-3">
+              <div className="px-2 pt-2 pb-3 space-y-1">
                 {navigation.map((item) => (
                   <DisclosureButton
                     key={item.name}
                     as={Link}
                     href={item.href}
-                    className={classNames(
+                    className={`block px-3 py-2 rounded-md text-base font-medium transition ${
                       pathname === item.href
-                        ? "bg-gray-900 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                      "block rounded-md px-3 py-2 text-base font-medium"
-                    )}
+                        ? "bg-white text-blue-900"
+                        : "hover:bg-blue-700 hover:text-gray-100"
+                    }`}
                   >
                     {item.name}
                   </DisclosureButton>
