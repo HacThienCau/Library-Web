@@ -1,0 +1,7 @@
+package com.library_web.library.Respository;
+
+import com.library_web.library.Model.Sach;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface SachRepo extends MongoRepository<Sach, Integer> {
+}
