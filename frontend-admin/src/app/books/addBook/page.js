@@ -45,7 +45,7 @@ function page() {
   ]);
   const [cateList, setCateList] = useState([]);
   useEffect(() => {
-    const fetchCategory = ["Sách Giáo Khoa", "Tiểu Thuyết", "Sách Tham Khảo"];
+    const fetchCategory = ["Sách Giáo Khoa", "Tiểu Thuyết", "Sách Tham Khảo","Truyện Ngắn"];
     setCateList(fetchCategory);
   }, []);
   const [isCateListOpen, setIsCateListOpen] = useState(false);
@@ -64,28 +64,26 @@ function page() {
       return updated;
     });
   };
-  /*  upload các ảnh lên cloudinary để lấy link => up hết
+  /*  upload các ảnh lên cloudinary để lấy link => up hết */
   const uploadImagesToCloudinary = async () => {
     const formData = new FormData();
-    image.forEach((img, index) => {
+    image.forEach((img) => {
       if (img.selectedFile) {
-        formData.append("images", img.selectedFile);
+        formData.append("file", img.selectedFile); // gửi với key "file"
       }
     });
-  
-    const res = await fetch("/api/upload", {
+    const res = await fetch("http://localhost:8081/upload/image", {
       method: "POST",
       body: formData,
     });
-  
+
     if (!res.ok) {
       throw new Error("Upload thất bại");
     }
-  
-    const data = await res.json(); // [{url: "...", index: 0}, ...]
-    return data;
+
+    const data = await res.json();
+    return data
   };
-  */
   const handleSubmit = async () => {
     if (
       bookname === "" ||
@@ -108,14 +106,14 @@ function page() {
       return;
     }
     setLoading(true);
-    /*
     const newImages = await uploadImagesToCloudinary();
-    const updatedImages = image.map((img, index) => {
+
+    const updatedImages = image.map((img) => {
       if (img.selectedFile) {
         return {
           ...img,
-          filePreview: newImages.shift(), // lấy URL đầu tiên từ mảng
-          selectedFile: null, // reset lại
+          filePreview: newImages.shift(), // lấy ra từng url
+          selectedFile: null,
         };
       }
       return img;
@@ -123,37 +121,52 @@ function page() {
     const finalImageURLs = updatedImages
       .filter((img) => img.filePreview)
       .map((img) => img.filePreview);
-    */
-    console.log(
-      "Nội dung sách mới:",
-      "\ntenSach: ",
-      bookname,
-      "\ntenTacGia: ",
-      author, //khi tạo sách nhập tên tác giả, lên backend xử lý đổi thành mã tác giả sau
-      "\ntheLoai: ",
-      category, //khi tạo sách nhập tên thể loại, lên backend xử lý đổi thành mã thể loại sau
-      "\nmoTa: ",
-      description,
-      "\nsoLuongTon: ",
-      quantity,
-      "\nsoLuongMuon: ",
-      0,
-      "\nhinhAnh: ",
-      //finalImageURLS
-    );
-    // API here
-    await delay(4000);
-    setLoading(false);
-    toast.success("Thêm sách thành công");
-    handleGoBack();
+    const bookData = {
+      tenSach: bookname,
+      mota: description,
+      hinhAnh: finalImageURLs,
+      theLoai: category,
+      tenTacGia: author,
+      nam: year,      
+      nxb: publisher,      
+      soLuongTon: quantity,
+      soLuongMuon: 0,      
+    };
+    try {
+      const res = await fetch("http://localhost:8081/addBook", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookData),
+      });
+  
+      if (!res.ok) {
+        throw new Error("Thêm sách thất bại");
+      }
+  
+      const data = await res.json();
+      console.log("Sách đã thêm:", data);
+      setLoading(false);
+      toast.success("Thêm sách thành công");
+      handleGoBack();
+    } catch (error) {
+      console.error("Lỗi:", error.message);
+    }
   };
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms)); // test
+
   return (
     <div className="flex flex-row w-full h-full min-h-screen bg-[#EFF3FB] pb-15">
       <Sidebar />
       {loading ? (
         <div className="flex md:ml-52 w-full h-screen justify-center items-center">
-          <ThreeDot color="#062D76" size="large" text="Vui lòng chờ" variant="bounce" textColor="#062D76"/>
+          <ThreeDot
+            color="#062D76"
+            size="large"
+            text="Vui lòng chờ"
+            variant="bounce"
+            textColor="#062D76"
+          />
         </div>
       ) : (
         <div className="flex w-full flex-col py-6 md:ml-52 relative mt-10 gap-2 items-center px-10">

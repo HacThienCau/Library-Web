@@ -96,7 +96,6 @@ function page() {
         filePreview: hinhAnhArray[index] || null, // Nếu thiếu ảnh thì gán null
       }))
     );
-    console.log(image);
     const fetchCategory = [
       "Sách Giáo Khoa",
       "Tiểu Thuyết",
