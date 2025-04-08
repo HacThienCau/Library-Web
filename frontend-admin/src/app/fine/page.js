@@ -5,7 +5,7 @@ import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { useRouter } from "next/navigation";
 import { Plus, Search, ReceiptText, Timer, DollarSign } from "lucide-react";
-import { OrbitProgress } from "react-loading-indicators";
+import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
 
 const page = () => {
@@ -101,7 +101,8 @@ const page = () => {
     handleSearch();
   }, []);
 
-  const FineCard = ({ fine }) => {  //Component phiếu phạt
+  const FineCard = ({ fine }) => {
+    //Component phiếu phạt
     return (
       <div className="flex bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 gap-[20px] md:gap-[50px] items-center">
         <div className="flex flex-col gap-[10px] relative w-full">
@@ -127,11 +128,17 @@ const page = () => {
   };
 
   return (
-    <div className="flex flex-row w-full min-h-screen h-full bg-[#EFF3FB]"> 
+    <div className="flex flex-row w-full min-h-screen h-full bg-[#EFF3FB]">
       <Sidebar />
-      <div className="flex w-full flex-col py-6 md:ml-52 relative mt-5 gap-2 items-center px-10"> {/*Main*/}
-        <div className="flex w-full items-center h-[10px] justify-between mb-10"> {/*Thanh Trên*/}
-          <div className="flex w-1/2 gap-10"> {/*Bên Trái*/}
+      <div className="flex w-full flex-col py-6 md:ml-52 relative mt-5 gap-2 items-center px-10">
+        {" "}
+        {/*Main*/}
+        <div className="flex w-full items-center h-[10px] justify-between mb-10">
+          {" "}
+          {/*Thanh Trên*/}
+          <div className="flex w-1/2 gap-10">
+            {" "}
+            {/*Bên Trái*/}
             <Button
               title={"Chưa Thanh Toán"}
               className={`w-50 h-10 cursor-pointer ${
@@ -161,7 +168,9 @@ const page = () => {
               Đã Thanh Toán
             </Button>
           </div>
-          <div className="flex gap-5"> {/*Bên Phải*/}
+          <div className="flex gap-5">
+            {" "}
+            {/*Bên Phải*/}
             <Input
               type="text"
               placeholder="Tìm kiếm"
@@ -181,8 +190,14 @@ const page = () => {
           </div>
         </div>
         {loading ? (
-          <div className="flex w-full h-full justify-center">
-            <OrbitProgress color="#062D76" size="medium" />
+          <div className="flex md:ml-52 w-full h-screen justify-center items-center">
+            <ThreeDot
+              color="#062D76"
+              size="large"
+              text="Vui lòng chờ"
+              variant="bounce"
+              textColor="#062D76"
+            />
           </div>
         ) : mode === 0 ? (
           filterFines.length > 0 ? ( //nếu đang search thì hiện danh sách lọc
@@ -203,17 +218,17 @@ const page = () => {
             return <FineCard key={fine?.MaPhieuPhat} fine={fine} />;
           })
         )}
-         {/*Nút Thêm - Floating Button*/}
-        <div className="absolute bottom-10 right-10 fixed"> 
-        <Button
-        title={"Thêm Phiếu Phạt"}
-        className="bg-[#062D76] rounded-3xl w-12 h-12"
-        onClick={() => {
-            handleAddFine();
-          }}
-        >
+        {/*Nút Thêm - Floating Button*/}
+        <div className="absolute bottom-10 right-10 fixed">
+          <Button
+            title={"Thêm Phiếu Phạt"}
+            className="bg-[#062D76] rounded-3xl w-12 h-12"
+            onClick={() => {
+              handleAddFine();
+            }}
+          >
             <Plus className="w-24 h-24" color="white" />
-        </Button>
+          </Button>
         </div>
       </div>
     </div>
