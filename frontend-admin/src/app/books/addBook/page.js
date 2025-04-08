@@ -45,7 +45,7 @@ function page() {
   ]);
   const [cateList, setCateList] = useState([]);
   useEffect(() => {
-    const fetchCategory = ["Sách Giáo Khoa", "Tiểu Thuyết", "Sách Tham Khảo"];
+    const fetchCategory = ["Sách Giáo Khoa", "Tiểu Thuyết", "Sách Tham Khảo","Truyện Ngắn"];
     setCateList(fetchCategory);
   }, []);
   const [isCateListOpen, setIsCateListOpen] = useState(false);
@@ -121,30 +121,40 @@ function page() {
     const finalImageURLs = updatedImages
       .filter((img) => img.filePreview)
       .map((img) => img.filePreview);
-    console.log(
-      "Nội dung sách mới:",
-      "\ntenSach: ",
-      bookname,
-      "\ntenTacGia: ",
-      author, //khi tạo sách nhập tên tác giả, lên backend xử lý đổi thành mã tác giả sau
-      "\ntheLoai: ",
-      category, //khi tạo sách nhập tên thể loại, lên backend xử lý đổi thành mã thể loại sau
-      "\nmoTa: ",
-      description,
-      "\nsoLuongTon: ",
-      quantity,
-      "\nsoLuongMuon: ",
-      0,
-      "\nhinhAnh: ",
-      finalImageURLs
-    );
-    // API here
-    await delay(2000);
-    setLoading(false);
-    toast.success("Thêm sách thành công");
-    handleGoBack();
+    const bookData = {
+      tenSach: bookname,
+      mota: description,
+      hinhAnh: finalImageURLs,
+      theLoai: category,
+      tenTacGia: author,
+      nam: year,      
+      nxb: publisher,      
+      soLuongTon: quantity,
+      soLuongMuon: 0,      
+    };
+    try {
+      const res = await fetch("http://localhost:8081/addBook", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookData),
+      });
+  
+      if (!res.ok) {
+        throw new Error("Thêm sách thất bại");
+      }
+  
+      const data = await res.json();
+      console.log("Sách đã thêm:", data);
+      setLoading(false);
+      toast.success("Thêm sách thành công");
+      handleGoBack();
+    } catch (error) {
+      console.error("Lỗi:", error.message);
+    }
   };
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms)); // test
+
   return (
     <div className="flex flex-row w-full h-full min-h-screen bg-[#EFF3FB] pb-15">
       <Sidebar />

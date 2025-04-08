@@ -16,6 +16,13 @@ public class SachController {
 
     @PostMapping("/addBook")
     public Sach themSach(@RequestBody Sach sach) {
+        // Lấy sách có mã cao nhất
+        Optional<Sach> maxSach = sachRepo.findTopByOrderByMaSachDesc();
+
+        // Tăng mã lên 1, nếu không có sách nào thì gán là 1
+        int newMaSach = maxSach.map(s -> s.getMaSach() + 1).orElse(1);
+        sach.setMaSach(newMaSach);
+
         return sachRepo.save(sach);
     }
 
@@ -42,8 +49,8 @@ public class SachController {
             if (sachMoi.getTenSach() != null) sachCu.setTenSach(sachMoi.getTenSach());
             if (sachMoi.getMoTa() != null) sachCu.setMoTa(sachMoi.getMoTa());
             if (sachMoi.getHinhAnh() != null) sachCu.setHinhAnh(sachMoi.getHinhAnh());
-            if (sachMoi.getMaTheLoai() != null) sachCu.setMaTheLoai(sachMoi.getMaTheLoai());
-            if (sachMoi.getMaTacGia() != null) sachCu.setMaTacGia(sachMoi.getMaTacGia());
+            if (sachMoi.getTheLoai() != null) sachCu.setTheLoai(sachMoi.getTheLoai());
+            if (sachMoi.getTenTacGia() != null) sachCu.setTenTacGia(sachMoi.getTenTacGia());
             if (sachMoi.getSoLuongTon() != null) sachCu.setSoLuongTon(sachMoi.getSoLuongTon());
             if (sachMoi.getSoLuongMuon() != null) sachCu.setSoLuongMuon(sachMoi.getSoLuongMuon());
 
