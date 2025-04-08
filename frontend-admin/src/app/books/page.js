@@ -18,9 +18,10 @@ const page = () => {
   const handleSearch = () => {
     if (searchQuery) {
       const filterBook = bookList.filter((book) =>
-        book.MaSach.toString() === searchQuery || //tìm theo id
-        book?.TenSach.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên sách
-        book?.MaTheLoai?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo nội dung bài viết
+        book.maSach.toString() === searchQuery || //tìm theo id
+        book?.tenSach.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên sách
+        book?.tenTacGia.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên tg
+        book?.theLoai?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo nội dung bài viết
           ? book
           : null
       );
@@ -98,6 +99,7 @@ const page = () => {
           <p className="italic">{book.tenTacGia}</p>
           <p className="italic">{book.theLoai}</p>
           <p className="">Số lượng tồn:&nbsp;{book.soLuongTon}</p>
+          <p className="">Số lượng mượn:&nbsp;{book.soLuongMuon}</p>
           <div className="w-full flex justify-end gap-5 md:gap-10">
             <Button
               className="w-10 md:w-40 h-10 bg-[#062D76] hover:bg-gray-700 cursor-pointer"
