@@ -64,28 +64,26 @@ function page() {
       return updated;
     });
   };
-  /*  upload các ảnh lên cloudinary để lấy link => up hết
+  /*  upload các ảnh lên cloudinary để lấy link => up hết */
   const uploadImagesToCloudinary = async () => {
     const formData = new FormData();
-    image.forEach((img, index) => {
+    image.forEach((img) => {
       if (img.selectedFile) {
-        formData.append("images", img.selectedFile);
+        formData.append("file", img.selectedFile); // gửi với key "file"
       }
     });
-  
-    const res = await fetch("/api/upload", {
+    const res = await fetch("http://localhost:8081/upload/image", {
       method: "POST",
       body: formData,
     });
-  
+
     if (!res.ok) {
       throw new Error("Upload thất bại");
     }
-  
-    const data = await res.json(); // [{url: "...", index: 0}, ...]
-    return data;
+
+    const data = await res.json();
+    return data
   };
-  */
   const handleSubmit = async () => {
     if (
       bookname === "" ||
@@ -108,14 +106,14 @@ function page() {
       return;
     }
     setLoading(true);
-    /*
     const newImages = await uploadImagesToCloudinary();
-    const updatedImages = image.map((img, index) => {
+
+    const updatedImages = image.map((img) => {
       if (img.selectedFile) {
         return {
           ...img,
-          filePreview: newImages.shift(), // lấy URL đầu tiên từ mảng
-          selectedFile: null, // reset lại
+          filePreview: newImages.shift(), // lấy ra từng url
+          selectedFile: null,
         };
       }
       return img;
@@ -123,7 +121,6 @@ function page() {
     const finalImageURLs = updatedImages
       .filter((img) => img.filePreview)
       .map((img) => img.filePreview);
-    */
     console.log(
       "Nội dung sách mới:",
       "\ntenSach: ",
@@ -139,10 +136,10 @@ function page() {
       "\nsoLuongMuon: ",
       0,
       "\nhinhAnh: ",
-      //finalImageURLS
+      finalImageURLs
     );
     // API here
-    await delay(4000);
+    await delay(2000);
     setLoading(false);
     toast.success("Thêm sách thành công");
     handleGoBack();
@@ -153,7 +150,13 @@ function page() {
       <Sidebar />
       {loading ? (
         <div className="flex md:ml-52 w-full h-screen justify-center items-center">
-          <ThreeDot color="#062D76" size="large" text="Vui lòng chờ" variant="bounce" textColor="#062D76"/>
+          <ThreeDot
+            color="#062D76"
+            size="large"
+            text="Vui lòng chờ"
+            variant="bounce"
+            textColor="#062D76"
+          />
         </div>
       ) : (
         <div className="flex w-full flex-col py-6 md:ml-52 relative mt-10 gap-2 items-center px-10">

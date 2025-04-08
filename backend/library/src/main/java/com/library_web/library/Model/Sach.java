@@ -18,6 +18,8 @@ public class Sach {
     private String hinhAnh;
     private Integer maTheLoai;
     private Integer maTacGia;
+    private Integer nam;
+    private String nxb;
     private Integer soLuongTon;
     private Integer soLuongMuon;
 }
