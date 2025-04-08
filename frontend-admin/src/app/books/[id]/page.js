@@ -3,8 +3,7 @@ import Sidebar from "@/app/components/sidebar/Sidebar";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { ArrowUpFromLine, ChevronDown, CircleCheck, Undo2 } from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { ThreeDot } from "react-loading-indicators";
@@ -15,11 +14,13 @@ function page() {
   const handleGoBack = () => {
     route.back();
   };
+  const { id } = useParams();
   const [bookname, setBookname] = useState(""); // Tên sách
   const [author, setAuthor] = useState(""); //Tên tác giả
   const [publisher, setPublisher] = useState(""); //NXB
   const [year, setYear] = useState(""); //Năm XB
-  const [quantity, setQuantity] = useState(""); //SL
+  const [quantity, setQuantity] = useState(""); //SLTon
+  const [br, setBr] = useState(""); //SLMuon
   const [description, setDescription] = useState(""); // Mô tả
   const [category, setCategory] = useState("");
   const fileInputRef = useRef(null);
@@ -47,55 +48,41 @@ function page() {
   const [cateList, setCateList] = useState([]);
   useEffect(() => {
     setLoading(true);
-    const book =
-      //api....
-      [
-        {
-          _id: 1,
-          tenSach: "Lão Hạc",
-          moTa: "Lão Hạc là một truyện ngắn của nhà văn Nam Cao được viết năm 1943. Tác…",
-          hinhAnh:
-            "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1631870884i/43320300.jpg",
-          theLoai: "Truyện Ngắn", // ở backend từ maTheLoai lấy theLoai rồi mới trả về
-          tenTacGia: "Nam Cao", // ở backend từ maTacGia lấy tenTacGia rồi mới trả về
-          nxb: "Kim Đồng",
-          nam: 2021,
-          soLuongTon: 50,
-          soLuongMuon: 10,
-        },
-        {
-          _id: 2,
-          tenSach: "Chí Phèo",
-          moTa: "Chí Phèo – Với những tình tiết hấp hẫn Nam Cao đã đưa người đọc tái hiện bức tranh chân thực nông thôn Việt Nam trước 1945, nghèo đói, xơ xác,... ",
-          hinhAnh: [
-            "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1630749913i/9175777.jpg",
-            "https://cdn1.fahasa.com/media/flashmagazine/images/page_images/chi_pheo___tai_ban_2019_bia_cung/2020_06_18_09_14_47_1-390x510.png",
-          ],
-          theLoai: "Truyện Ngắn", // ở backend từ maTheLoai lấy theLoai rồi mới trả về
-          tenTacGia: "Nam Cao", // ở backend từ maTacGia lấy tenTacGia rồi mới trả về
-          nxb: "Văn Nghệ",
-          nam: 1941,
-          soLuongTon: 20,
-          soLuongMuon: 10,
-        },
-      ];
-    const rd =  Math.round(Math.random()); // có backend r thì xóa cái này đi 
-    setBookname(book[rd].tenSach);
-    setAuthor(book[rd].tenTacGia);
-    setCategory(book[rd].theLoai);
-    setDescription(book[rd].moTa);
-    setPublisher(book[rd].nxb);
-    setYear(book[rd].nam);
-    setQuantity(book[rd].soLuongTon + book[rd].soLuongMuon);
-    const hinhAnhArray = Array.isArray(book[rd].hinhAnh)
-      ? book[rd].hinhAnh
-      : [book[rd].hinhAnh];
-    setImage((prev) =>
-      prev.map((item, index) => ({
+    const getBook = async() =>{
+      try {
+        const response = await fetch(`http://localhost:8081/book/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+    
+        if (!response.ok) {
+          throw new Error(`Lỗi khi lấy sách: ${response.status}`);
+        }
+    
+        const data = await response.json();
+        if(!data) return;
+        setBookname(data.tenSach);
+        setAuthor(data.tenTacGia);
+        setCategory(data.theLoai);
+        setDescription(data.moTa);
+        setPublisher(data.nxb);
+        setYear(data.nam);
+        setQuantity(data.soLuongTon + data.soLuongMuon);
+        setBr(data.soLuongMuon)
+        setImage((prev) =>
+        prev.map((item, index) => ({
         ...item,
-        filePreview: hinhAnhArray[index] || null, // Nếu thiếu ảnh thì gán null
+        filePreview: data.hinhAnh[index] || null, // Nếu thiếu ảnh thì gán null
       }))
-    );
+      );
+      } catch (error) {
+        console.error('Lỗi fetch:', error);
+        return null;
+      }
+    }
+    getBook();
     const fetchCategory = [
       "Sách Giáo Khoa",
       "Tiểu Thuyết",
@@ -121,28 +108,29 @@ function page() {
       return updated;
     });
   };
-  /*  upload các ảnh lên cloudinary để lấy link => ảnh nào thay đổi thì mới up
+  /*  upload các ảnh lên cloudinary để lấy link => up hết */
   const uploadImagesToCloudinary = async () => {
+    var flag = false
     const formData = new FormData();
-    image.forEach((img, index) => {
+    image.forEach((img) => {
       if (img.selectedFile) {
-        formData.append("images", img.selectedFile);
+        formData.append("file", img.selectedFile); // gửi với key "file"
+        flag = true
       }
     });
-  
-    const res = await fetch("/api/upload", {
+    if(!flag) return [];  
+    const res = await fetch("http://localhost:8081/upload/image", {
       method: "POST",
       body: formData,
     });
-  
+
     if (!res.ok) {
       throw new Error("Upload thất bại");
     }
-  
-    const data = await res.json(); // [{url: "...", index: 0}, ...]
-    return data;
+
+    const data = await res.json();
+    return data
   };
-  */
   const handleSubmit = async () => {
     if (
       bookname === "" ||
@@ -160,19 +148,23 @@ function page() {
       toast.error("Số lượng sách phải lớn hơn 0");
       return;
     }
+    if (quantity < br) {
+      toast.error("Số lượng sách phải lớn hơn số lượng sách đang được mượn");
+      return;
+    }
     if (!image[0].filePreview) {
       toast.error("Vui lòng tải ít nhất hình ảnh bìa");
       return;
     }
     setLoading(true);
-    /*
     const newImages = await uploadImagesToCloudinary();
-    const updatedImages = image.map((img, index) => {
+
+    const updatedImages = image.map((img) => {
       if (img.selectedFile) {
         return {
           ...img,
-          filePreview: newImages.shift(), // lấy URL đầu tiên từ mảng
-          selectedFile: null, // reset lại
+          filePreview: newImages.shift(), // lấy ra từng url
+          selectedFile: null,
         };
       }
       return img;
@@ -180,31 +172,38 @@ function page() {
     const finalImageURLs = updatedImages
       .filter((img) => img.filePreview)
       .map((img) => img.filePreview);
-    */
-    console.log(
-      "Nội dung sách mới:",
-      "\ntenSach: ",
-      bookname,
-      "\ntenTacGia: ",
-      author, //khi tạo sách nhập tên tác giả, lên backend xử lý đổi thành mã tác giả sau
-      "\ntheLoai: ",
-      category, //khi tạo sách nhập tên thể loại, lên backend xử lý đổi thành mã thể loại sau
-      "\nmoTa: ",
-      description,
-      "\nsoLuongTon: ",
-      quantity,
-      "\nsoLuongMuon: ",
-      0,
-      "\nhinhAnh: "
-      //finalImageURLS
-    );
-    // API here
-    await delay(4000);
-    setLoading(false);
-    toast.success("Sửa sách thành công");
-    handleGoBack();
+    const bookData = {
+      tenSach: bookname,
+      moTa: description,
+      hinhAnh: finalImageURLs,
+      theLoai: category,
+      tenTacGia: author,
+      nam: year,      
+      nxb: publisher,      
+      soLuongTon: quantity-br,     
+    };
+    try {
+      const res = await fetch(`http://localhost:8081/book/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookData),
+      });
+  
+      if (!res.ok) {
+        throw new Error("Sửa sách thất bại");
+      }
+  
+      const data = await res.json();
+      console.log("Sách đã sửa:", data);
+      setLoading(false);
+      toast.success("Sửa sách thành công");
+      handleGoBack();
+    } catch (error) {
+      console.error("Lỗi:", error.message);
+    }
   };
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms)); // test
   return (
     <div className="flex flex-row w-full h-full min-h-screen bg-[#EFF3FB] pb-15">
       <Sidebar />
