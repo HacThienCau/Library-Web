@@ -94,7 +94,7 @@ function page() {
       rs.ChiTietPhieuMuon = chiTietSach; // Cập nhật lại danh sách chi tiết phiếu mượn
       return rs;
     }
-    if (NoiDung === "Làm mất sách" || NoiDung === "Làm hư hỏng sách") {
+    if (NoiDung === "Làm mất/hư hỏng sách") {
       //id sẽ là mã sách
       const rs = await getSach(id);
       return { ...rs, SoLuong: 1 };
@@ -238,8 +238,7 @@ function page() {
                     </div>
                   </div>
                 )}
-                {(fine?.NoiDung === "Làm mất sách" ||
-                  fine?.NoiDung === "Làm hư hỏng sách") && (
+                {fine?.NoiDung === "Làm mất/hư hỏng sách" && (
                   <div className="w-full h-70 overflow-y-scroll">
                     <BookCard book={borrowDetail} />
                   </div>
