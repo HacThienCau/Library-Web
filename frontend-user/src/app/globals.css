@@ -121,6 +121,9 @@
     font-size: 16px;
     font-family: 'Montserrat';
   }
+  h1 {
+    font-family: 'Moul', sans-serif; /* Đặt Moul làm font cho h1 */
+  }
   body {
     font-family: 'Montserrat';
     background-color: #EFF3FB; /* Đặt màu nền cho body */

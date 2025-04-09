@@ -25,20 +25,21 @@ const Header = () => {
 
   return (
     <header className="bg-blue-900 text-white shadow-lg fixed top-0 left-0 w-full z-50">
-      <Disclosure as="nav" className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <Disclosure as="nav" className="mx-auto">
         {({ open }) => (
           <>
-            <div className="flex justify-between items-center h-16">
+            <div className="flex justify-between items-center h-14 px-2 md:px-5">
               {/* Logo */}
               <div className="flex items-center">
                 <Link href="/">
-                  <Image
+                  {/* <Image
                     alt="Logo"
                     src="/images/logo.jpg"
                     width={40}
                     height={40}
                     className="h-10 w-auto rounded-full"
-                  />
+                  /> */}
+                  <h1 className="text-2xl font-bold text-white">OurLogo</h1>
                 </Link>
               </div>
               
