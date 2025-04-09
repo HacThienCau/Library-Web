@@ -28,11 +28,11 @@ const LeftSideBar = () => {
 
   return (
     <aside
-      className={`fixed top-16 left-0 h-full w-64 p-4 transform transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 ${
+      className={`fixed bg-white top-16 left-0 h-full mt-2 w-64 p-4 transform transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 rounded-r-xl rounded-br-xl ${
         isSidebarOpen
           ? "translate-x-0 bg-white shadow-lg "
           : " -translate-x-full"
-      } ${isSidebarOpen ? "md:hidden" : ""} md:bg-transparent md:shadow-none`}
+      } ${isSidebarOpen ? "md:hidden" : ""} md:shadow-none`}
     >
       <div className="flex flex-col h-full overflow-y-auto">
         {/* navigation menu yaha pr */}
@@ -50,9 +50,6 @@ const LeftSideBar = () => {
           </Button>
           <Button variant="ghost" className="full justify-start" onClick={() => handleNavigation("/change-password")}>
             <LockKeyhole className="mr-4" /> Đổi mật khẩu
-          </Button>
-          <Button variant="ghost" className="full justify-start" onClick={() => handleNavigation("/notification")}>
-            <Bell className="mr-4" /> Thông báo
           </Button>
         </nav>
 

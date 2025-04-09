@@ -33,7 +33,7 @@ const Header = () => {
         {({ open }) => (
           <>
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-0">
-              <div className="relative flex h-16 items-center justify-between">
+              <div className="relative flex h-14 items-center  px-5 justify-between">
                 <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                   {/* Mobile menu button */}
                   <DisclosureButton className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white hover:text-[#062D76] ">
@@ -97,7 +97,7 @@ const Header = () => {
                         />
                       </MenuButton>
                     </div>
-                    <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 focus:outline-none">
+                    <MenuItems className="absolute right-0 z-10 mt-3 w-[12rem] rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 focus:outline-none">
                       <MenuItem>
                         {({ active }) => (
                           <Link
