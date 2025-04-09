@@ -1,4 +1,4 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document';
+import Document, { Html, Head, Main, NextScript } from "next/document";
 
 class MyDocument extends Document {
   render() {
@@ -7,8 +7,13 @@ class MyDocument extends Document {
         <Head>
           {/* Thêm font Montserrat */}
           <link
-           href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" 
-           rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
+            rel="stylesheet"
+          />
+          {/* Thêm font Moul */}
+          <link
+            href="https://fonts.googleapis.com/css2?family=Moul&display=swap"
+            rel="stylesheet"
           />
         </Head>
         <body>

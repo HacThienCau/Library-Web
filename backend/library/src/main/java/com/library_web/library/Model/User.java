@@ -1,0 +1,35 @@
+package com.library_web.library.Model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class User {
+
+    private Long maND;
+    private String tenND;
+    private String email;
+    private String matKhau;
+    private LocalDate ngaySinh;
+    private GioiTinh gioiTinh;
+    private LocalDateTime ngayTao;
+
+    public enum GioiTinh {
+        Nam,
+        Nu,
+        Khac
+    }
+
+    public void khoiTaoNgayTao() {
+        this.ngayTao = LocalDateTime.now();
+    }
+}
