@@ -8,9 +8,9 @@ function BookReview() {
   return (
     <div className="border rounded-md p-4 space-y-4 bg-white shadow-sm">
       <Tabs defaultValue="review">
-        <TabsList className="flex space-x-4 border-b pb-2">
-          <TabsTrigger value="review">Đánh giá</TabsTrigger>
-          <TabsTrigger value="question">Câu hỏi & Trả lời</TabsTrigger>
+        <TabsList className="flex space-x-2 border-b ">
+          <TabsTrigger value="review" className="cursor-pointer">Đánh giá</TabsTrigger>
+          <TabsTrigger value="question" className="cursor-pointer">Câu hỏi & Trả lời</TabsTrigger>
         </TabsList>
 
         {/* Tab Đánh Giá */}
