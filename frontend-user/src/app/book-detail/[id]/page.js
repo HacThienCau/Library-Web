@@ -45,81 +45,80 @@ function page() {
       <main className="pt-16 flex">
         <LeftSideBar />
         <section className="self-stretch pr-[1.25rem] md:pl-64 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2">
-            <div className="flex flex-col p-6 bg-white rounded-xl shadow-md  md:flex-row gap-6">
-              <img
-                src={book.cover_image}
-                alt={book.title}
-                className="w-40 md:w-52 rounded-lg shadow-lg"
-              />
+          <div className="flex flex-col p-6 bg-white rounded-xl shadow-md  md:flex-row gap-6">
+            <img
+              src={book.cover_image}
+              alt={book.title}
+              className="w-40 md:w-52 rounded-lg shadow-lg"
+            />
 
-              <div className="flex-1">
-                <h1 className="text-2xl font-semibold text-blue-900">
-                  {book.title}
-                </h1>
-                <p className="text-gray-700 font-semibold">
-                  Tác giả: {book.author}
-                </p>
-                <p>
-                  <span className="font-semibold">Thể loại:</span> {book.category}
-                </p>
-                <p>
-                  <span className="font-semibold">NXB:</span> {book.publisher}
-                </p>
-                <p className="flex items-center gap-2 font-semibold">
-                  <CheckCircle className="text-green-500" /> Trạng thái:{" "}
-                  {book.status}
-                </p>
-                <p>
-                  <span className="font-semibold">Lượt mượn:</span>{" "}
-                  {book.borrow_count} lượt
-                </p>
+            <div className="flex-1">
+              <h1 className="text-2xl font-semibold text-blue-900">
+                {book.title}
+              </h1>
+              <p className="text-gray-700 font-semibold">
+                Tác giả: {book.author}
+              </p>
+              <p>
+                <span className="font-semibold">Thể loại:</span> {book.category}
+              </p>
+              <p>
+                <span className="font-semibold">NXB:</span> {book.publisher}
+              </p>
+              <p className="flex items-center gap-2 font-semibold">
+                <CheckCircle className="text-green-500" /> Trạng thái:{" "}
+                {book.status}
+              </p>
+              <p>
+                <span className="font-semibold">Lượt mượn:</span>{" "}
+                {book.borrow_count} lượt
+              </p>
 
-                <Button className="mt-4 bg-[#062D76] hover:bg-[#E6EAF1] hover:text-[#062D76] text-white font-semibold py-2 px-4 rounded-lg cursor-pointer">
-                  Mượn sách
-                </Button>
-              </div>
+              <Button className="mt-4 bg-[#062D76] hover:bg-[#E6EAF1] hover:text-[#062D76] text-white font-semibold py-2 px-4 rounded-lg cursor-pointer">
+                Mượn sách
+              </Button>
             </div>
+          </div>
 
-            <div className="mt-2 p-6 bg-white rounded-xl shadow-md ">
-              <h2 className="text-lg font-medium bg-[#E6EAF1] text-[#062D76] p-2 rounded-lg w-fit">
-                Thông tin chi tiết
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                <p>
-                  <span className="font-semibold">Mã sách:</span>{" "}
-                  {book.book_code}
-                </p>
-                <p>
-                  <span className="font-semibold">Kích thước:</span> {book.size}
-                </p>
-                <p>
-                  <span className="font-semibold">Số trang:</span> {book.pages}
-                </p>
-                <p>
-                  <span className="font-semibold">ISBN:</span> {book.isbn}
-                </p>
-                <p>
-                  <span className="font-semibold">Năm xuất bản:</span>{" "}
-                  {book.publish_year}
-                </p>
-                <p>
-                  <span className="font-semibold">Ngôn ngữ:</span>{" "}
-                  {book.language}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-2 p-6 bg-white rounded-xl shadow-md mb-2">
-              <h2 className="text-lg font-medium bg-[#E6EAF1] text-[#062D76] p-2 rounded-lg w-fit">
-                Giới thiệu
-              </h2>
-              <p className="mt-2 text-gray-800 leading-relaxed">
-                {book.description}
+          <div className="mt-2 p-6 bg-white rounded-xl shadow-md ">
+            <h2 className="text-lg font-medium bg-[#E6EAF1] text-[#062D76] p-2 rounded-lg w-fit">
+              Thông tin chi tiết
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+              <p>
+                <span className="font-semibold">Mã sách:</span> {book.book_code}
+              </p>
+              <p>
+                <span className="font-semibold">Kích thước:</span> {book.size}
+              </p>
+              <p>
+                <span className="font-semibold">Số trang:</span> {book.pages}
+              </p>
+              <p>
+                <span className="font-semibold">ISBN:</span> {book.isbn}
+              </p>
+              <p>
+                <span className="font-semibold">Năm xuất bản:</span>{" "}
+                {book.publish_year}
+              </p>
+              <p>
+                <span className="font-semibold">Ngôn ngữ:</span> {book.language}
               </p>
             </div>
+          </div>
 
-            <BookReview />
+          <div className="mt-2 p-6 bg-white rounded-xl shadow-md mb-2">
+            <h2 className="text-lg font-medium bg-[#E6EAF1] text-[#062D76] p-2 rounded-lg w-fit">
+              Giới thiệu
+            </h2>
+            <p className="mt-2 text-gray-800 leading-relaxed">
+              {book.description}
+            </p>
+          </div>
+
+          <BookReview />
         </section>
+        <ChatBotButton />
       </main>
     </div>
   );
