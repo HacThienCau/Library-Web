@@ -10,14 +10,16 @@ import {
   LockKeyhole,
   LogOut,
   User,
+  ClipboardList,
+  CircleDollarSign
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import React, { useEffect } from "react";
 
 const LeftSideBar = () => {
   const { isSidebarOpen, toggleSidebar } = useSidebarStore();
   const router = useRouter();
-
+  const pathname = usePathname();
   const [activeButton, setActiveButton] = React.useState("");
   useEffect(() => {
     const storedActiveButton = localStorage.getItem("activeButton");
@@ -25,6 +27,13 @@ const LeftSideBar = () => {
       setActiveButton(storedActiveButton); 
     }
   }, []);
+
+  const getButtonClass = (path) => {
+    return pathname.includes(path)
+      ? "bg-[#062D76] text-white hover:bg-[#062D76] hover:text-white" 
+      : "active:bg-[#062D76] active:text-white"; // 
+  };
+
 
   const handleNavigation = (path) => {
     setActiveButton(path); 
@@ -45,26 +54,10 @@ const LeftSideBar = () => {
     >
       <div className="flex flex-col h-full overflow-y-auto">
         {/* Navigation menu */}
-        <nav className="space-y-4 flex-grow">
+        <nav className="space-y-2 flex-grow">
           <Button
             variant="ghost"
-            className={`flex justify-start cursor-pointer w-full ${
-              activeButton === "/user-profile"
-                ? "bg-[#062D76] text-white"
-                : "focus:bg-[#062D76] focus:text-white"
-            }`}
-            onClick={() => handleNavigation("/user-profile")}
-          >
-            <User className="mr-4" /> Hồ sơ cá nhân
-          </Button>
-
-          <Button
-            variant="ghost"
-            className={`flex justify-start cursor-pointer w-full ${
-              activeButton === "/borrowed-books"
-                ? "bg-[#062D76] text-white"
-                : " focus:bg-[#062D76] focus:text-white"
-            }`}
+            className={`flex justify-start cursor-pointer w-full ${getButtonClass("/borrowed-books")}`}
             onClick={() => handleNavigation("/borrowed-books")}
           >
             <BookText className="mr-4" /> Sách đang mượn
@@ -72,11 +65,7 @@ const LeftSideBar = () => {
 
           <Button
             variant="ghost"
-            className={`flex justify-start cursor-pointer w-full ${
-              activeButton === "/overdue-books"
-                ? "bg-[#062D76] text-white"
-                : " focus:bg-[#062D76] focus:text-white"
-            }`}
+            className={`flex justify-start cursor-pointer w-full ${getButtonClass("/overdue-books")}`}
             onClick={() => handleNavigation("/overdue-books")}
           >
             <CircleAlert className="mr-4" /> Sách quá hạn
@@ -84,11 +73,23 @@ const LeftSideBar = () => {
 
           <Button
             variant="ghost"
-            className={`flex justify-start cursor-pointer w-full ${
-              activeButton === "/change-password"
-                ? "bg-[#062D76] text-white"
-                : " focus:bg-[#062D76] focus:text-white"
-            }`}
+            className={`flex justify-start cursor-pointer w-full ${getButtonClass("/call-card")}`}
+            onClick={() => handleNavigation("/call-card")}
+          >
+            <ClipboardList className="mr-4" /> Phiếu mượn
+          </Button>
+
+          <Button
+            variant="ghost"
+            className={`flex justify-start cursor-pointer w-full ${getButtonClass("/fine")}`}
+            onClick={() => handleNavigation("/fine")}
+          >
+            <CircleDollarSign className="mr-4" /> Phiếu phạt
+          </Button>
+
+          <Button
+            variant="ghost"
+            className={`flex justify-start cursor-pointer w-full ${getButtonClass("/change-password")}`}
             onClick={() => handleNavigation("/change-password")}
           >
             <LockKeyhole className="mr-4" /> Đổi mật khẩu
