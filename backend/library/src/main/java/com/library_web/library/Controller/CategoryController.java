@@ -46,11 +46,11 @@ public class CategoryController {
     return CategoryRepo.findAll();
   }
 
-  // // Lấy sách theo ID
-  // @GetMapping("/book/{id}")
-  // public Book layBookTheoId(@PathVariable String id) {
-  // return BookRepo.findById(id).orElse(null);
-  // }
+  // Lấy thể loại theo ID
+  @GetMapping("/category/{id}")
+  public Category layBookTheoId(@PathVariable String id) {
+  return CategoryRepo.findById(id).orElse(null);
+  }
 
   // // Cập nhật sách
   // @PutMapping("/book/{id}")
