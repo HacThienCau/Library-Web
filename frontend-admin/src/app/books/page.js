@@ -105,7 +105,6 @@ const page = () => {
       <div className="flex bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 gap-[20px] md:gap-[50px] items-center">
         <img src={`${book.hinhAnh[0]}`} className="w-[145px] h-[205px]" />
         <div className="flex flex-col gap-[10px] relative w-full">
-          <p className="">ID:&nbsp;{book.id}</p>
           <p className="font-bold">{book.tenSach}</p>
           <p className="italic">{book.tenTacGia}</p>
           <p className="">Tổng số lượng:&nbsp;{book.tongSoLuong}</p>
