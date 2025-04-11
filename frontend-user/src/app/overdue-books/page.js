@@ -4,6 +4,7 @@ import ChatBotButton from "../components/ChatBotButton";
 import BookCard from "../components/BookCard";
 const books = [
   {
+    id: "DRPN001",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/TEMP/9b777cb3ef9abb920d086e97e27ac4f6f3559695",
     available: true,
@@ -13,6 +14,7 @@ const books = [
     borrowCount: 120,
   },
   {
+    id: "DRPN002",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/TEMP/fc01b7cf44e0ca2f23258dcc0ad69329b2612af0?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
     available: false,
@@ -22,6 +24,7 @@ const books = [
     borrowCount: 120,
   },
   {
+    id: "DRPN003",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/TEMP/5e8a0f3fd4681a9512313c2c1c6dae1285bcf0a6?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
     available: true,
@@ -31,6 +34,7 @@ const books = [
     borrowCount: 120,
   },
   {
+    id: "DRPN004",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/TEMP/d854294877ea4263cf3494a98eecfd64cd148327?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
     available: false,
@@ -40,6 +44,7 @@ const books = [
     borrowCount: 120,
   },
   {
+    id: "DRPN005",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/TEMP/acf848c9260bfc86d1f9094e17e14ec25f3ec193?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
     available: true,
@@ -49,6 +54,7 @@ const books = [
     borrowCount: 120,
   },
   {
+    id: "DRPN006",
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/TEMP/d854294877ea4263cf3494a98eecfd64cd148327?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
     available: false,
