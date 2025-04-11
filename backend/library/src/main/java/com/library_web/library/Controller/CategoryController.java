@@ -48,6 +48,13 @@ public class CategoryController {
     return CategoryRepo.findAll();
   }
 
+
+  // Lấy thể loại theo ID
+  @GetMapping("/category/{id}")
+  public Category layBookTheoId(@PathVariable String id) {
+  return CategoryRepo.findById(id).orElse(null);
+  }
+
   @PutMapping("/books/categories/updateCategory/{id}")
   public ResponseEntity<?> capNhatCategory(@PathVariable String id, @RequestBody Category category) {
     try {
@@ -101,6 +108,7 @@ public class CategoryController {
           .body("⚠️ Lỗi khi lấy thể loại con: " + e.getMessage());
     }
   }
+
 
 
 
