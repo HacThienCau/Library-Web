@@ -129,8 +129,9 @@ function page() {
       tenTacGia: author,
       nam: year,      
       nxb: publisher,      
-      soLuongTon: quantity,
-      soLuongMuon: 0,      
+      tongSoLuong: quantity,
+      soLuongMuon: 0,
+      soLuongXoa : 0,      
     };
     try {
       const res = await fetch("http://localhost:8081/addBook", {

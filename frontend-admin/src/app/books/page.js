@@ -18,7 +18,7 @@ const page = () => {
   const handleSearch = () => {
     if (searchQuery) {
       const filterBook = bookList.filter((book) =>
-        book.maSach.toString() === searchQuery || //tìm theo id
+        book.id.toString() === searchQuery || //tìm theo id
         book?.tenSach.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên sách
         book?.tenTacGia.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên tg
         book?.theLoai?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo nội dung bài viết
@@ -35,8 +35,8 @@ const page = () => {
   const handleAddBook = () => {
     route.push(`/books/addBook`);
   };
-  const handleEdit = (MaSach) => {
-    route.push(`/books/${MaSach}`);
+  const handleEdit = (id) => {
+    route.push(`/books/${id}`);
   };
 
   const fetchBook = async () => {
@@ -67,7 +67,7 @@ const page = () => {
   const handleDelete = async(book) =>{
     setLoading(true)
     try {
-      const res = await fetch(`http://localhost:8081/book/${book.maSach}`, {
+      const res = await fetch(`http://localhost:8081/book/${book.id}`, {
         method: "DELETE",
       });
   
@@ -94,17 +94,18 @@ const page = () => {
       <div className="flex bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 gap-[20px] md:gap-[50px] items-center">
         <img src={`${book.hinhAnh[0]}`} className="w-[145px] h-[205px]" />
         <div className="flex flex-col gap-[10px] relative w-full">
-          <p className="">ID:&nbsp;{book.maSach}</p>
+          <p className="">ID:&nbsp;{book.id}</p>
           <p className="font-bold">{book.tenSach}</p>
           <p className="italic">{book.tenTacGia}</p>
           <p className="italic">{book.theLoai}</p>
-          <p className="">Số lượng tồn:&nbsp;{book.soLuongTon}</p>
+          <p className="">Tổng số lượng:&nbsp;{book.tongSoLuong}</p>
           <p className="">Số lượng mượn:&nbsp;{book.soLuongMuon}</p>
+          <p className="">Số lượng xóa:&nbsp;{book.soLuongXoa}</p>
           <div className="w-full flex justify-end gap-5 md:gap-10">
             <Button
               className="w-10 md:w-40 h-10 bg-[#062D76] hover:bg-gray-700 cursor-pointer"
               onClick={() => {
-                handleEdit(book.maSach);
+                handleEdit(book.id);
               }}
             >
               <Pencil className="w-5 h-5" color="white" />
@@ -172,10 +173,10 @@ const page = () => {
         {bookList &&
           (filterBooks.length > 0 //nếu đang search thì hiện danh sách lọc
             ? filterBooks.map((book) => {
-                return <BookCard key={book?.maSach} book={book} />;
+                return <BookCard key={book?.id} book={book} />;
               })
             : bookList.map((book) => {
-                return <BookCard key={book?.maSach} book={book} />;
+                return <BookCard key={book?.id} book={book} />;
               }))}
       </div>)}
       {popUpOpen && (
@@ -190,7 +191,7 @@ const page = () => {
                 className="w-[145px] h-[205px]"
               />
               <div className="flex flex-col gap-[10px] relative w-full">
-                <p className="">ID:&nbsp;{deleteOne.maSach}</p>
+                <p className="">ID:&nbsp;{deleteOne.id}</p>
                 <p className="font-bold">{deleteOne.tenSach}</p>
                 <p className="italic">{deleteOne.tenTacGia}</p>
                 <p className="italic">{deleteOne.theLoai}</p>
