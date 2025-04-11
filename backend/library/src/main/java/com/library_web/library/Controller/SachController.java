@@ -16,13 +16,6 @@ public class SachController {
 
     @PostMapping("/addBook")
     public Sach themSach(@RequestBody Sach sach) {
-        // Lấy sách có mã cao nhất
-        Optional<Sach> maxSach = sachRepo.findTopByOrderByMaSachDesc();
-
-        // Tăng mã lên 1, nếu không có sách nào thì gán là 1
-        int newMaSach = maxSach.map(s -> s.getMaSach() + 1).orElse(1);
-        sach.setMaSach(newMaSach);
-
         return sachRepo.save(sach);
     }
 
@@ -34,13 +27,13 @@ public class SachController {
 
     // Lấy sách theo ID
     @GetMapping("/book/{id}")
-    public Sach laySachTheoId(@PathVariable Integer id) {
+    public Sach laySachTheoId(@PathVariable String id) {
         return sachRepo.findById(id).orElse(null);
     }
 
     // Cập nhật sách
     @PutMapping("/book/{id}")
-    public Sach capNhatSach(@PathVariable Integer id, @RequestBody Sach sachMoi) {
+    public Sach capNhatSach(@PathVariable String id, @RequestBody Sach sachMoi) {
         Optional<Sach> optionalSach = sachRepo.findById(id);
         if (optionalSach.isPresent()) {
             Sach sachCu = optionalSach.get();
@@ -51,7 +44,7 @@ public class SachController {
             if (sachMoi.getHinhAnh() != null) sachCu.setHinhAnh(sachMoi.getHinhAnh());
             if (sachMoi.getTheLoai() != null) sachCu.setTheLoai(sachMoi.getTheLoai());
             if (sachMoi.getTenTacGia() != null) sachCu.setTenTacGia(sachMoi.getTenTacGia());
-            if (sachMoi.getSoLuongTon() != null) sachCu.setSoLuongTon(sachMoi.getSoLuongTon());
+            if (sachMoi.getTongSoLuong() != null) sachCu.setTongSoLuong(sachMoi.getTongSoLuong());
             if (sachMoi.getSoLuongMuon() != null) sachCu.setSoLuongMuon(sachMoi.getSoLuongMuon());
 
             return sachRepo.save(sachCu);
@@ -63,7 +56,7 @@ public class SachController {
 
     // Xóa sách
     @DeleteMapping("/book/{id}")
-    public void xoaSach(@PathVariable Integer id) {
+    public void xoaSach(@PathVariable String id) {
         sachRepo.deleteById(id);
     }
 }

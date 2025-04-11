@@ -4,11 +4,7 @@ import com.library_web.library.Model.Sach;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface SachRepo extends MongoRepository<Sach, Integer> {
+public interface SachRepo extends MongoRepository<Sach, String> {
 
-    // Lấy sách có maSach lớn nhất
-    Optional<Sach> findTopByOrderByMaSachDesc();
 }

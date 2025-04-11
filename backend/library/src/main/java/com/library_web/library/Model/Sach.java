@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 public class Sach {
     @Id
-    private Integer maSach;
+    private String id;  // buộc phải có để truy xuất vì Java ko tự truy xuất _id được
     private String tenSach;
     private String moTa;
     private List<String> hinhAnh;
@@ -23,6 +23,7 @@ public class Sach {
     private String tenTacGia;
     private Integer nam;
     private String nxb;
-    private Integer soLuongTon;
+    private Integer tongSoLuong;
     private Integer soLuongMuon;
+    private Integer soLuongXoa;
 }
