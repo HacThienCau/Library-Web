@@ -112,7 +112,7 @@ const page = () => {
 
   const route = useRouter();
   const handleDetails = (id) => {
-    route.push(`/call-card/${id}`);
+    route.push(`/borrowed-card/${id}`);
   };
 
   return (

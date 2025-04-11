@@ -61,7 +61,7 @@ const BookItem = ({
 }) => {
   return (
     <article
-      className={`flex overflow-hidden flex-wrap gap-5 justify-between p-8 w-full text-xl font-bold text-black ${
+      className={`flex overflow-hidden flex-wrap gap-5 justify-between p-8 w-full text-[1.125rem] font-medium text-black ${
         hasBorder ? "border-b border-stone-300" : ""
       } max-md:px-5 max-md:max-w-full`}
     >
@@ -73,17 +73,10 @@ const BookItem = ({
         />
         <div className="flex flex-col items-start">
           <h3>{title}</h3>
-          <p className="mt-3.5 text-lg">{author}</p>
-          <p className="mt-3.5 text-lg">
+          <p className="mt-3.5 text-[#1.125rem]">{author}</p>
+          <p className="mt-3.5 text-[#1.125rem]">
             ID Sách: <span className="font-normal">{bookId}</span>
           </p>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3.5">
-        <label className="text-lg">Số Lượng:</label>
-        <div className="flex items-center justify-center w-[50px] h-[50px] text-lg bg-white border border-black rounded-xl">
-          {quantity}
         </div>
       </div>
     </article>
@@ -95,14 +88,14 @@ const BorrowingInfo = ({ info }) => {
     <section className="overflow-hidden py-8 pr-20 pl-8 bg-white rounded-xl shadow-[0px_4px_4px_rgba(0,0,0,0.25)] max-md:px-5 max-md:max-w-full">
       <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
         {/* Cột 1 */}
-        <div className="flex flex-col items-start text-xl font-bold text-black">
+        <div className="flex flex-col items-start text-[1.125rem] font-medium text-black">
           <h2>ID Phiếu: {info.ticketId}</h2>
           <p className="mt-5">Ngày mượn: {info.borrowDate}</p>
           <p className="mt-5">Ngày trả dự kiến: {info.expectedReturnDate}</p>
         </div>
 
         {/* Cột 2 */}
-        <div className="flex flex-col items-start text-xl font-bold text-black">
+        <div className="flex flex-col items-start text-[1.125rem] font-medium text-black">
           <h2>ID Người Dùng: {info.userId}</h2>
           <p className="mt-5">Tên Người Dùng: {info.userName}</p>
           <p className="mt-5">Số lượng mượn: {info.borrowQuantity}</p>
@@ -149,12 +142,12 @@ const ChiTietPhieuMuon = () => {
           <div className="fixed inset-0 items-center justify-center z-100 flex">
             <div className="w-full h-full bg-black opacity-[80%] absolute top-0 left-0"></div>
             <div className="bg-white p-6 rounded-lg shadow-lg w-120 fixed">
-              <h2 className="text-lg font-bold mb-4">Xác nhận xóa</h2>
+              <h2 className="text-[#1.125rem] font-medium mb-4">Xác nhận xóa</h2>
               <p>Bạn có chắc chắn muốn xóa phiếu này không?</p>
               <div className="flex bg-white w-full rounded-lg mt-2 relative p-5 gap-[20px] md:gap-[50px] items-center">
                 <div className="flex flex-col gap-[10px] relative w-full">
                   <p className="">ID:&nbsp;{deleteOne.ticketId}</p>
-                  <p className="font-bold">Ngày mượn: {deleteOne.borrowDate}</p>
+                  <p className="font-medium">Ngày mượn: {deleteOne.borrowDate}</p>
                   <p className="italic">
                     Người mượn:&nbsp;{deleteOne.userName}
                   </p>
