@@ -72,6 +72,10 @@ const page = () => {
   }, []);
   
   const handleDelete = async(book) =>{
+    if(book.soLuongMuon > 0){
+      toast.error("Sách vẫn còn đang được mượn!")
+      return;
+    }
     setLoading(true)
     try {
       const res = await fetch(`http://localhost:8081/book/${book.id}`, {
@@ -104,7 +108,6 @@ const page = () => {
           <p className="">ID:&nbsp;{book.id}</p>
           <p className="font-bold">{book.tenSach}</p>
           <p className="italic">{book.tenTacGia}</p>
-          <p className="italic">{book.theLoai}</p>
           <p className="">Tổng số lượng:&nbsp;{book.tongSoLuong}</p>
           <p className="">Số lượng mượn:&nbsp;{book.soLuongMuon}</p>
           <p className="">Số lượng xóa:&nbsp;{book.soLuongXoa}</p>
@@ -222,8 +225,7 @@ const page = () => {
                 <p className="">ID:&nbsp;{deleteOne.id}</p>
                 <p className="font-bold">{deleteOne.tenSach}</p>
                 <p className="italic">{deleteOne.tenTacGia}</p>
-                <p className="italic">{deleteOne.theLoai}</p>
-                <p className="italic">Số lượng tồn:&nbsp;{deleteOne.soLuongTon}</p>
+                <p className="italic">Tổng số lượng:&nbsp;{deleteOne.tongSoLuong}</p>
                 <p className="italic">Số lượng mượn:&nbsp;{deleteOne.soLuongMuon}</p>
               </div>
             </div>

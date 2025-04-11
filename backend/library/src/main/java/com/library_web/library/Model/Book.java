@@ -26,4 +26,18 @@ public class Book {
     private Integer tongSoLuong;
     private Integer soLuongMuon;
     private Integer soLuongXoa;
+    private TrangThai trangThai;
+    public enum TrangThai {
+        CON_SAN("Còn sẵn"),
+        DA_XOA("Đã xóa");
+        private final String moTa;
+
+        TrangThai(String moTa) {
+            this.moTa = moTa;
+        }
+
+        public String getMoTa() {
+            return moTa;
+        }
+    }
 }

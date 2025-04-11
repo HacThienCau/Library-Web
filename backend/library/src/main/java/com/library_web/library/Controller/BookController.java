@@ -1,10 +1,14 @@
 package com.library_web.library.Controller;
 
 import com.library_web.library.Model.Book;
+import com.library_web.library.Model.ChildBook;
 import com.library_web.library.Respository.BookRepo;
+import com.library_web.library.Respository.ChildBookRepo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,16 +17,30 @@ public class BookController {
 
     @Autowired
     BookRepo BookRepo;
+    @Autowired
+    ChildBookRepo ChildBookRepo;
 
     @PostMapping("/addBook")
-    public Book themBook(@RequestBody Book Book) {
-        return BookRepo.save(Book);
+    public Book themBook(@RequestBody Book book) {
+        Book savedBook = BookRepo.save(book);
+        savedBook.setTrangThai(Book.TrangThai.CON_SAN);
+    // Tạo danh sách ChildBook tương ứng với tongSoLuong
+    List<ChildBook> childBooks = new ArrayList<>();
+    for (int i = 0; i < book.getTongSoLuong(); i++) {
+        ChildBook child = new ChildBook();
+        child.setIdParent(savedBook.getId()); 
+        child.setTrangThai(ChildBook.TrangThai.CON_SAN);
+        childBooks.add(child);
+    }
+    ChildBookRepo.saveAll(childBooks);
+
+    return savedBook;
     }
 
-    // Lấy tất cả sách
+    // Lấy tất cả sách còn sẵn
     @GetMapping("/books")
     public List<Book> layTatCaBook() {
-        return BookRepo.findAll();
+        return BookRepo.findByTrangThai(Book.TrangThai.CON_SAN);
     }
 
     // Lấy sách theo ID
@@ -37,17 +55,31 @@ public class BookController {
         Optional<Book> optionalBook = BookRepo.findById(id);
         if (optionalBook.isPresent()) {
             Book BookCu = optionalBook.get();
+            int oldSoLuong = BookCu.getTongSoLuong();
+            int newSoLuong = BookMoi.getTongSoLuong();
+            // Cập nhật các thông tin khác
+            BookCu.setTenSach(BookMoi.getTenSach());
+            BookCu.setMoTa(BookMoi.getMoTa());
+            BookCu.setHinhAnh(BookMoi.getHinhAnh());
+            BookCu.setTheLoai(BookMoi.getTheLoai());
+            BookCu.setTenTacGia(BookMoi.getTenTacGia());
+            BookCu.setNam(BookMoi.getNam());
+            BookCu.setNxb(BookMoi.getNxb());
+            BookCu.setTongSoLuong(newSoLuong);
 
-            // Chỉ cập nhật nếu giá trị mới khác null
-            if (BookMoi.getTenSach() != null) BookCu.setTenSach(BookMoi.getTenSach());
-            if (BookMoi.getMoTa() != null) BookCu.setMoTa(BookMoi.getMoTa());
-            if (BookMoi.getHinhAnh() != null) BookCu.setHinhAnh(BookMoi.getHinhAnh());
-            if (BookMoi.getTheLoai() != null) BookCu.setTheLoai(BookMoi.getTheLoai());
-            if (BookMoi.getTenTacGia() != null) BookCu.setTenTacGia(BookMoi.getTenTacGia());
-            if (BookMoi.getTongSoLuong() != null) BookCu.setTongSoLuong(BookMoi.getTongSoLuong());
-            if (BookMoi.getSoLuongMuon() != null) BookCu.setSoLuongMuon(BookMoi.getSoLuongMuon());
-
-            return BookRepo.save(BookCu);
+            Book savedBook = BookRepo.save(BookCu);
+            if (newSoLuong > oldSoLuong) {
+                int soLuongThem = newSoLuong - oldSoLuong;
+                List<ChildBook> childBooks = new ArrayList<>();
+                for (int i = 0; i < soLuongThem; i++) {
+                    ChildBook child = new ChildBook();
+                    child.setIdParent(savedBook.getId());
+                    child.setTrangThai(ChildBook.TrangThai.CON_SAN);
+                    childBooks.add(child);
+                }
+                ChildBookRepo.saveAll(childBooks);
+            }
+            return savedBook;
         } else {
             return null;
         }
@@ -57,6 +89,13 @@ public class BookController {
     // Xóa sách
     @DeleteMapping("/book/{id}")
     public void xoaBook(@PathVariable String id) {
-        BookRepo.deleteById(id);
+        Optional<Book> optionalBook = BookRepo.findById(id);
+        if (optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+            book.setTrangThai(Book.TrangThai.DA_XOA);
+            BookRepo.save(book);
+        } else {
+           System.out.println("Không tìm thấy sách");
+        }
     }
 }
