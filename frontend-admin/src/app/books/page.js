@@ -35,6 +35,11 @@ const page = () => {
   const handleAddBook = () => {
     route.push(`/books/addBook`);
   };
+
+  const handleCategory = () => {
+    route.push(`/books/categories`);
+  };
+
   const handleEdit = (id) => {
     route.push(`/books/${id}`);
   };
@@ -174,6 +179,15 @@ const page = () => {
               <Search className="w-10 h-10" color="white" />
             </Button>
           </div>
+          {/* Quản lý thể loại */}
+          <Button
+            className="w-40 h-10 cursor-pointer bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
+            onClick={() => {
+              handleCategory();
+            }}
+          >
+            Quản lý thể loại
+          </Button>
           <Button
             className="w-40 h-10 cursor-pointer bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
             onClick={() => {
