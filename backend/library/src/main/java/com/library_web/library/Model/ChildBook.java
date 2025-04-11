@@ -26,6 +26,7 @@ public class ChildBook {
             this.moTa = moTa;
         }
 
+        @com.fasterxml.jackson.annotation.JsonValue
         public String getMoTa() {
             return moTa;
         }
