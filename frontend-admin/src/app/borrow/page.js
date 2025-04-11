@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Sidebar from "../components/sidebar/Sidebar";
 import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
 
 const page = () => {
   const initData = {
@@ -248,15 +249,10 @@ const page = () => {
 
           {/* Floating Action Button */}
           <button
-            className="flex fixed justify-center items-center bg-red-400 rounded-full cursor-pointer bottom-[30px] h-[100px] right-[30px] w-[100px]"
+            className="flex fixed bottom-10 right-10 justify-center items-center bg-[#062D76] rounded-3xl w-12 h-12 cursor-pointer"
             aria-label="Add new borrowing"
           >
-            <div
-              dangerouslySetInnerHTML={{
-                __html:
-                  '<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M27.5 32.5H15C14.2917 32.5 13.6983 32.26 13.22 31.78C12.7417 31.3 12.5017 30.7067 12.5 30C12.4983 29.2933 12.7383 28.7 13.22 28.22C13.7017 27.74 14.295 27.5 15 27.5H27.5V15C27.5 14.2917 27.74 13.6983 28.22 13.22C28.7 12.7417 29.2933 12.5017 30 12.5C30.7067 12.4983 31.3008 12.7383 31.7825 13.22C32.2642 13.7017 32.5033 14.295 32.5 15V27.5H45C45.7083 27.5 46.3025 27.74 46.7825 28.22C47.2625 28.7 47.5017 29.2933 47.5 30C47.4983 30.7067 47.2583 31.3008 46.78 31.7825C46.3017 32.2642 45.7083 32.5033 45 32.5H32.5V45C32.5 45.7083 32.26 46.3025 31.78 46.7825C31.3 47.2625 30.7067 47.5017 30 47.5C29.2933 47.4983 28.7 47.2583 28.22 46.78C27.74 46.3017 27.5 45.7083 27.5 45V32.5Z" fill="white"/></svg>',
-              }}
-            />
+            <Plus className="w-6 h-6" color="white" />
           </button>
         </div>
       </main>

@@ -219,7 +219,7 @@ const page = () => {
           })
         )}
         {/*Nút Thêm - Floating Button*/}
-        <div className="absolute bottom-10 right-10 fixed">
+        <div className="fixed bottom-10 right-10">
           <Button
             title={"Thêm Phiếu Phạt"}
             className="bg-[#062D76] rounded-3xl w-12 h-12"
