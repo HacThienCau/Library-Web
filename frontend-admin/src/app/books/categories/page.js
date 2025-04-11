@@ -66,7 +66,15 @@ export default function CategoryPage() {
               </div>
               <ul className="ml-6 mt-2 list-disc">
                 {danhMucCon.map((item, idx) => (
-                  <li key={idx} className="text-gray-700">
+                  <li
+                    key={idx}
+                    className="text-gray-700 cursor-pointer hover:underline"
+                    onClick={() =>
+                      router.push(
+                        `/books/categories/${encodeURIComponent(item.tenTheLoaiCon)}`
+                      )
+                    }
+                  >
                     {item.tenTheLoaiCon} – {item.viTri}
                   </li>
                 ))}
