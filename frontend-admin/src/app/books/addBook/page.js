@@ -52,9 +52,6 @@ function page() {
   const openCategoryList = () => {
     setIsCateListOpen(!isCateListOpen);
   };
-  useEffect(()=>{
-    console.log(description)
-  },[description])
   const handleFileChange = (number, event) => {
     const file = event.target.files[0];
     setImage((prev) => {
