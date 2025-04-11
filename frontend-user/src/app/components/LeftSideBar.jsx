@@ -46,7 +46,7 @@ const LeftSideBar = () => {
 
   return (
     <aside
-      className={`fixed bg-white top-16 left-0 h-full mt-2 w-64 p-4 transform transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 rounded-r-xl rounded-br-xl ${
+      className={`fixed bg-white top-16 left-0 h-full mt-2 w-64 py-4 px-2 transform transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 rounded-r-xl rounded-br-xl ${
         isSidebarOpen
           ? "translate-x-0 bg-white shadow-lg "
           : " -translate-x-full"
@@ -57,53 +57,55 @@ const LeftSideBar = () => {
         <nav className="space-y-2 flex-grow">
           <Button
             variant="ghost"
-            className={`flex justify-start cursor-pointer w-full ${getButtonClass("/borrowed-books")}`}
+            className={`flex justify-start items-center cursor-pointer w-full  text-[1.125rem] font-normal ${getButtonClass("/borrowed-books")}`}
             onClick={() => handleNavigation("/borrowed-books")}
           >
-            <BookText className="mr-4" /> Sách đang mượn
+            <BookText style={{ width: "1.5rem", height: "1.5rem", strokeWidth: "1.5px" }} className="mr-2 text-2xl" /> Sách đang mượn
           </Button>
 
           <Button
             variant="ghost"
-            className={`flex justify-start cursor-pointer w-full ${getButtonClass("/overdue-books")}`}
+            className={`flex justify-start items-center cursor-pointer w-full text-[1.125rem] font-normal ${getButtonClass("/overdue-books")}`}
             onClick={() => handleNavigation("/overdue-books")}
           >
-            <CircleAlert className="mr-4" /> Sách quá hạn
+            <CircleAlert style={{ width: "1.5rem", height: "1.5rem", strokeWidth: "1.5px" }} className="mr-2" /> Sách quá hạn
           </Button>
 
           <Button
             variant="ghost"
-            className={`flex justify-start cursor-pointer w-full ${getButtonClass("/borrowed-card")}`}
+            className={`flex justify-start items-center cursor-pointer w-full text-[1.125rem] font-normal ${getButtonClass("/borrowed-card")}`}
             onClick={() => handleNavigation("/borrowed-card")}
           >
-            <ClipboardList className="mr-4" /> Phiếu mượn
+            <ClipboardList style={{ width: "1.5rem", height: "1.5rem", strokeWidth: "1.5px" }} className="mr-2" /> Phiếu mượn
           </Button>
 
           <Button
             variant="ghost"
-            className={`flex justify-start cursor-pointer w-full ${getButtonClass("/fine")}`}
+            className={`flex justify-start items-center cursor-pointer w-full text-[1.125rem] font-normal ${getButtonClass("/fine")}`}
             onClick={() => handleNavigation("/fine")}
           >
-            <CircleDollarSign className="mr-4" /> Phiếu phạt
+            <CircleDollarSign style={{ width: "1.5rem", height: "1.5rem", strokeWidth: "1.5px" }} className="mr-2" /> Phiếu phạt
           </Button>
 
           <Button
             variant="ghost"
-            className={`flex justify-start cursor-pointer w-full ${getButtonClass("/change-password")}`}
+            className={`flex justify-start items-center cursor-pointer w-full text-[1.125rem] font-normal ${getButtonClass("/change-password")}`}
             onClick={() => handleNavigation("/change-password")}
           >
-            <LockKeyhole className="mr-4" /> Đổi mật khẩu
+            <LockKeyhole style={{ width: "1.5rem", height: "1.5rem", strokeWidth: "1.5px" }} className="mr-2" /> Đổi mật khẩu
           </Button>
         </nav>
 
         {/* Footer section */}
         <div className="mb-16">
           <Separator className="my-4" />
-          <div className="text-xs text-muted-foreground space-y-1">
-            <Button variant="ghost" className="cursor-pointer -ml-4 w-full ">
-              <LogOut />{" "}
-              <span className="ml-2 font-bold text-md">Đăng xuất</span>
+          <div className="flex items-center justify-center">
+          <div className="space-y-1 w-fit">
+            <Button variant="ghost" className="cursor-pointer bg-[#E6EAF1] rounded-lg w-fit self-center">
+              <LogOut style={{ width: "1.5rem", height: "1.5rem", strokeWidth: "1.5px" }}/>{" "}
+              <span className="ml-2 text-[1.125rem] font-normal">Đăng xuất</span>
             </Button>
+          </div>
           </div>
         </div>
       </div>
