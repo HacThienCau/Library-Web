@@ -52,6 +52,9 @@ function page() {
   const openCategoryList = () => {
     setIsCateListOpen(!isCateListOpen);
   };
+  useEffect(()=>{
+    console.log(description)
+  },[description])
   const handleFileChange = (number, event) => {
     const file = event.target.files[0];
     setImage((prev) => {
@@ -123,7 +126,7 @@ function page() {
       .map((img) => img.filePreview);
     const bookData = {
       tenSach: bookname,
-      mota: description,
+      moTa: description,
       hinhAnh: finalImageURLs,
       theLoai: category,
       tenTacGia: author,
@@ -134,6 +137,7 @@ function page() {
       soLuongXoa : 0,      
     };
     try {
+      console.log(bookData)
       const res = await fetch("http://localhost:8081/addBook", {
         method: "POST",
         headers: {
