@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 public class Book {
     @Id
+    private String id;  // buộc phải có để truy xuất vì Java ko tự truy xuất _id được
     private String tenSach;
     private String moTa;
     private List<String> hinhAnh;
@@ -25,4 +26,18 @@ public class Book {
     private Integer tongSoLuong;
     private Integer soLuongMuon;
     private Integer soLuongXoa;
+    private TrangThai trangThai;
+    public enum TrangThai {
+        CON_SAN("Còn sẵn"),
+        DA_XOA("Đã xóa");
+        private final String moTa;
+
+        TrangThai(String moTa) {
+            this.moTa = moTa;
+        }
+
+        public String getMoTa() {
+            return moTa;
+        }
+    }
 }
