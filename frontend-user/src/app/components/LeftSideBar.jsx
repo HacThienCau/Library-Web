@@ -73,8 +73,8 @@ const LeftSideBar = () => {
 
           <Button
             variant="ghost"
-            className={`flex justify-start cursor-pointer w-full ${getButtonClass("/call-card")}`}
-            onClick={() => handleNavigation("/call-card")}
+            className={`flex justify-start cursor-pointer w-full ${getButtonClass("/borrowed-card")}`}
+            onClick={() => handleNavigation("/borrowed-card")}
           >
             <ClipboardList className="mr-4" /> Phiếu mượn
           </Button>
