@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Sach {
+public class Book {
     @Id
     private String id;  // buộc phải có để truy xuất vì Java ko tự truy xuất _id được
     private String tenSach;

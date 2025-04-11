@@ -4,7 +4,7 @@ import Sidebar from "../components/sidebar/Sidebar";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { useRouter } from "next/navigation";
-import { Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { List, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { ThreeDot } from "react-loading-indicators";
 
@@ -38,7 +38,9 @@ const page = () => {
   const handleEdit = (id) => {
     route.push(`/books/${id}`);
   };
-
+  const handleShowDetail = (id) =>{
+    route.push(`/books/details/${id}`);
+  }
   const fetchBook = async () => {
     setLoading(true)
     try {
@@ -103,6 +105,17 @@ const page = () => {
           <p className="">Số lượng xóa:&nbsp;{book.soLuongXoa}</p>
           <div className="w-full flex justify-end gap-5 md:gap-10">
             <Button
+              title={"Xem chi tiết sách"}
+              className="w-10 md:w-40 h-10 bg-[#062D76] hover:bg-gray-700 cursor-pointer"
+              onClick={() => {
+                handleShowDetail(book.id);
+              }}
+            >
+              <List className="w-5 h-5" color="white" />
+              <p className="hidden md:block">Xem chi tiết</p>
+            </Button>
+            <Button
+              title={"Sửa sách"}
               className="w-10 md:w-40 h-10 bg-[#062D76] hover:bg-gray-700 cursor-pointer"
               onClick={() => {
                 handleEdit(book.id);
@@ -112,6 +125,7 @@ const page = () => {
               <p className="hidden md:block">Sửa sách</p>
             </Button>
             <Button
+              title={"Xóa sách"}
               className="w-10 md:w-40 h-10 bg-[#D66766] hover:bg-gray-700 cursor-pointer"
               onClick={() => {
                 setDeleteOne(book);

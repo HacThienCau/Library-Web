@@ -19,14 +19,14 @@ function page() {
   const [author, setAuthor] = useState(""); //Tên tác giả
   const [publisher, setPublisher] = useState(""); //NXB
   const [year, setYear] = useState(""); //Năm XB
-  const [quantity, setQuantity] = useState(""); //SLTon
-  const [br, setBr] = useState(""); //SLMuon
+  const [quantity, setQuantity] = useState(""); //tongSL
   const [description, setDescription] = useState(""); // Mô tả
   const [category, setCategory] = useState("");
   const fileInputRef = useRef(null);
   const fileInputRef1 = useRef(null);
   const fileInputRef2 = useRef(null);
   const fileInputRef3 = useRef(null);
+  const [originQuantity, setOrigin] = useState("");
   const [image, setImage] = useState([
     {
       filePreview: null,
@@ -69,8 +69,8 @@ function page() {
         setDescription(data.moTa);
         setPublisher(data.nxb);
         setYear(data.nam);
-        setQuantity(data.soLuongTon + data.soLuongMuon);
-        setBr(data.soLuongMuon)
+        setQuantity(data.tongSoLuong);
+        setOrigin(data.tongSoLuong);
         setImage((prev) =>
         prev.map((item, index) => ({
         ...item,
@@ -148,8 +148,8 @@ function page() {
       toast.error("Số lượng sách phải lớn hơn 0");
       return;
     }
-    if (quantity < br) {
-      toast.error("Số lượng sách phải lớn hơn số lượng sách đang được mượn");
+    if (quantity < originQuantity) {
+      toast.error("Số mới phải lớn hơn số cũ. Số lượng cũ: ",originQuantity);
       return;
     }
     if (!image[0].filePreview) {
@@ -180,7 +180,7 @@ function page() {
       tenTacGia: author,
       nam: year,      
       nxb: publisher,      
-      soLuongTon: quantity-br,     
+      tongSoLuong : quantity, 
     };
     try {
       const res = await fetch(`http://localhost:8081/book/${id}`, {
