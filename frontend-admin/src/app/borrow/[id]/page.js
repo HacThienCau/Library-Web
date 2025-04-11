@@ -237,7 +237,7 @@ const ChiTietPhieuMuonDangMuon = () => {
       <div>
         {popUpOpen && (
           <div className="fixed inset-0 items-center justify-center z-100 flex">
-            <div className="w-full h-full bg-black opacity-[80%] absolute top-0 left-0"></div>
+            <div className="w-full h-full bg-black opacity-[80%] absolute top-0 left-0"></div> 
             <div className="bg-white p-6 rounded-lg shadow-lg w-120 fixed">
               <h2 className="text-lg font-bold mb-4">Xác nhận xóa</h2>
               <p>Bạn có chắc chắn muốn xóa phiếu này không?</p>
