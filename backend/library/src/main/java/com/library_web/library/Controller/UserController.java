@@ -30,13 +30,13 @@ public class UserController {
 
     // Lấy người dùng theo ID
     @GetMapping("/user/{id}")
-    public User layUserTheoId(@PathVariable Long id) {
+    public User layUserTheoId(@PathVariable String id) {
         return userRepo.findById(id).orElse(null);
     }
 
     // Cập nhật thông tin người dùng
     @PutMapping("/user/{id}")
-    public User capNhatUser(@PathVariable Long id, @RequestBody User userMoi) {
+    public User capNhatUser(@PathVariable String id, @RequestBody User userMoi) {
         Optional<User> optionalUser = userRepo.findById(id);
         if (optionalUser.isPresent()) {
             User userCu = optionalUser.get();
@@ -56,7 +56,7 @@ public class UserController {
 
     // Xóa người dùng
     @DeleteMapping("/user/{id}")
-    public void xoaUser(@PathVariable Long id) {
+    public void xoaUser(@PathVariable String id) {
         userRepo.deleteById(id);
     }
 }
