@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Button } from "../components/ui/button";
 import { ThreeDot } from "react-loading-indicators";
+import toast from "react-hot-toast";
 
 const UploadImage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -21,7 +22,7 @@ const UploadImage = () => {
     setLoading(true);
     const formData = new FormData();
     formData.append("file", selectedFile); // Đảm bảo rằng 'file' là tên trường mà backend mong đợi
-    formData.append("type", "book");
+    formData.append("type", "user");
     try {
       const response = await fetch(
         "http://localhost:8081/upload/barcodeImage",
@@ -32,7 +33,10 @@ const UploadImage = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Đã có lỗi xảy ra khi tải ảnh lên.");
+        const error = await response.json();
+        toast.error(error.error) 
+        setLoading(false);       
+        return;
       }
 
       const result = await response.json();
@@ -44,7 +48,7 @@ const UploadImage = () => {
   };
 
   return (
-    <div className="flex w-full flex-col py-6 mt-5 gap-2 items-center px-10">
+    <div className="flex w-full flex-col gap-2 items-center">
       {loading ? (
         <div className="flex md:ml-52 w-full h-screen justify-center items-center">
           <ThreeDot
@@ -56,47 +60,26 @@ const UploadImage = () => {
           />
         </div>
       ) : !result ? (
-        <div className="flex flex-col w-full items-center h-[10px] mb-10 gap-5">
-          <h1>Tải hình ảnh barcode</h1>
+        <div className="flex flex-col w-full items-center h-[10px] mb-10 gap-5 px-10 py-6 ">
+          <h1>Tải barcode người dùng</h1>
           <div className="flex gap-5">
             <input type="file" onChange={onFileChange} />
             <Button onClick={handleUpload}>Tải ảnh lên</Button>
           </div>
         </div>
       ) : (
-        <div className="flex flex-col w-full items-center h-[10px] mb-10 gap-5">
-          <h1>ID Sách:&nbsp;{result?.childBook?.id}</h1>
+        <div className="flex flex-col w-full h-full min-h-screen items-center h-[10px] py-6 gap-5 bg-[#EFF3FB]">
           <div className="flex flex-col bg-white w-1/2 rounded-lg mt-2 drop-shadow-lg p-5 gap-10 items-center">
-            <div className="flex space-x-20 items-center">
-              <img
-                src={`${result?.parentBook?.hinhAnh[0]}`}
-                className="w-[145px] h-[205px] rounded"
-              />
-              <div className="flex flex-col gap-[10px] w-full">
-                <p className="font-bold">
-                  Tên sách:&nbsp;{result?.parentBook?.tenSach}
+          <h1>ID Người dùng:&nbsp;{result?.user?.id}</h1>
+          <div className="flex flex-col gap-[10px] w-full">
+            <p className="font-bold">
+                  Tên người dùng:&nbsp;{result?.user?.tenND}
                 </p>
                 <p className="">
-                  Tên tác giả:&nbsp;{result?.parentBook?.tenTacGia}
+                  Email:&nbsp;{result?.user?.email}
                 </p>
-                <p className="">Nhà xuất bản:&nbsp;{result?.parentBook?.nxb}</p>
-                <p className="">Năm xuất bản:&nbsp;{result?.parentBook?.nam}</p>
-                <p className="">
-                  Còn sẵn:&nbsp;
-                  {result?.parentBook?.tongSoLuong -
-                    result?.parentBook?.soLuongMuon -
-                    result?.parentBook?.soLuongXoa}
-                </p>
-              </div>
-            </div>
-            <div className="flex space-x-10 items-center w-2/3 items-center justify-center">
-                <div className="flex flex-col gap-[10px] w-full">
-                <p className="">Thể loại chính:&nbsp;{result?.parentBook?.tenTheLoaiCha}</p>
-                <p className="">Thể loại phụ:&nbsp;{result?.parentBook?.tenTheLoaiCon}</p>
-                </div>
-                <div className="flex flex-col gap-[10px] w-full">
-                <p className="">Vị trí:&nbsp;{result?.parentBook?.viTri}</p>
-                </div>
+                <p className="">Ngày sinh:&nbsp;{result?.user?.ngaySinh}</p>
+                <p className="">Giới tính:&nbsp;{result?.user?.gioiTinh}</p>
             </div>
           </div>
         </div>

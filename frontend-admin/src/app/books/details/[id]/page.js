@@ -55,10 +55,7 @@ const page = () => {
   const handleSearch = () => {
     if (searchQuery) {
       const filterBook = childBookList?.filter((book) =>
-        book.id.toString() === searchQuery || //tìm theo id
-        book?.tenSach.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên sách
-        book?.tenTacGia.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên tg
-        book?.theLoai?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo nội dung bài viết
+        book.id === searchQuery.trim() //tìm theo id
           ? book
           : null
       );
