@@ -69,33 +69,33 @@ const UploadImage = () => {
           <div className="flex flex-col bg-white w-1/2 rounded-lg mt-2 drop-shadow-lg p-5 gap-10 items-center">
             <div className="flex space-x-20 items-center">
               <img
-                src={`${result?.parentBook?.book?.hinhAnh[0]}`}
+                src={`${result?.parentBook?.hinhAnh[0]}`}
                 className="w-[145px] h-[205px] rounded"
               />
               <div className="flex flex-col gap-[10px] w-full">
                 <p className="font-bold">
-                  Tên sách:&nbsp;{result?.parentBook?.book?.tenSach}
+                  Tên sách:&nbsp;{result?.parentBook?.tenSach}
                 </p>
                 <p className="">
-                  Tên tác giả:&nbsp;{result?.parentBook?.book?.tenTacGia}
+                  Tên tác giả:&nbsp;{result?.parentBook?.tenTacGia}
                 </p>
-                <p className="">Nhà xuất bản:&nbsp;{result?.parentBook?.book?.nxb}</p>
-                <p className="">Năm xuất bản:&nbsp;{result?.parentBook?.book?.nam}</p>
+                <p className="">Nhà xuất bản:&nbsp;{result?.parentBook?.nxb}</p>
+                <p className="">Năm xuất bản:&nbsp;{result?.parentBook?.nam}</p>
                 <p className="">
                   Còn sẵn:&nbsp;
-                  {result?.parentBook?.book?.tongSoLuong -
-                    result?.parentBook?.book?.soLuongMuon -
-                    result?.parentBook?.book?.soLuongXoa}
+                  {result?.parentBook?.tongSoLuong -
+                    result?.parentBook?.soLuongMuon -
+                    result?.parentBook?.soLuongXoa}
                 </p>
               </div>
             </div>
             <div className="flex space-x-10 items-center w-2/3 items-center justify-center">
                 <div className="flex flex-col gap-[10px] w-full">
-                <p className="">Thể loại chính:&nbsp;{result?.parentBook?.theLoai?.tenTheLoaiCha}</p>
-                <p className="">Thể loại phụ:&nbsp;{result?.parentBook?.theLoai?.tenTheLoaiCon}</p>
+                <p className="">Thể loại chính:&nbsp;{result?.parentBook?.tenTheLoaiCha}</p>
+                <p className="">Thể loại phụ:&nbsp;{result?.parentBook?.tenTheLoaiCon}</p>
                 </div>
                 <div className="flex flex-col gap-[10px] w-full">
-                <p className="">Vị trí:&nbsp;{result?.parentBook?.theLoai?.viTri}</p>
+                <p className="">Vị trí:&nbsp;{result?.parentBook?.viTri}</p>
                 </div>
             </div>
           </div>

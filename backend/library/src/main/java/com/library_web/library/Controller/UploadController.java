@@ -4,6 +4,8 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -15,8 +17,6 @@ import java.util.*;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
-import com.library_web.library.Model.Book;
-import com.library_web.library.Model.Category;
 import com.library_web.library.Model.ChildBook;
 
 import javax.imageio.ImageIO;
@@ -80,37 +80,19 @@ public ResponseEntity<?> uploadBarcode(@RequestParam("file") MultipartFile file,
                     return ResponseEntity.status(404).body(Map.of("error", "Không tìm thấy sách con"));
                 }
                 ChildBook child = response.getBody();
-                Book parentBook = null;
-                Category theLoaiInfo = null;
+                Map<String, Object> parentBook = null;
                 if (child!=null && child.getIdParent() != null) {
                     String parentUrl = "http://localhost:8081/book/" + child.getIdParent();
-                    ResponseEntity<Book> parentResponse = restTemplate.getForEntity(parentUrl, Book.class);
-    
+                    ResponseEntity<Map<String, Object>> parentResponse = restTemplate.exchange(parentUrl,HttpMethod.GET,null,new ParameterizedTypeReference<Map<String, Object>>() {});
                     if (parentResponse.getStatusCode().is2xxSuccessful()) {
                         parentBook = parentResponse.getBody();
-                    }
-                    
-                    if (parentBook != null && parentBook.getTheLoai() != null) {
-                        String theLoaiUrl = "http://localhost:8081/category/" + parentBook.getTheLoai();
-                        ResponseEntity<Category> theLoaiResponse = restTemplate.getForEntity(theLoaiUrl, Category.class);
-            
-                        if (theLoaiResponse.getStatusCode().is2xxSuccessful()) {
-                            theLoaiInfo = theLoaiResponse.getBody(); // Chứa tenDanhMucCha, tenDanhMucCon, ...
-                        }
                     }
                 }
     
                 // 3. Trả về cả sách con và sách cha (nếu có)
                 Map<String, Object> resultMap = new HashMap<>();
                 resultMap.put("childBook", child);
-                if (parentBook != null) {
-                    Map<String, Object> parentWithTheLoai = new HashMap<>();
-                    parentWithTheLoai.put("book", parentBook);
-                    parentWithTheLoai.put("theLoai", theLoaiInfo); // thêm thông tin thể loại
-                
-                    resultMap.put("parentBook", parentWithTheLoai);
-                }
-    
+                resultMap.put("parentBook", parentBook);
                 return ResponseEntity.ok(resultMap);
 
             }
