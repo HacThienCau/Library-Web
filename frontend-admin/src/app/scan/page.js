@@ -71,6 +71,16 @@ const UploadImage = () => {
         <div className="flex flex-col w-full h-full min-h-screen items-center h-[10px] py-6 gap-5 bg-[#EFF3FB]">
           <div className="flex flex-col bg-white w-1/2 rounded-lg mt-2 drop-shadow-lg p-5 gap-10 items-center">
           <h1>ID Người dùng:&nbsp;{result?.user?.id}</h1>
+          <div className="flex flex-col gap-[10px] w-full">
+            <p className="font-bold">
+                  Tên người dùng:&nbsp;{result?.user?.tenND}
+                </p>
+                <p className="">
+                  Email:&nbsp;{result?.user?.email}
+                </p>
+                <p className="">Ngày sinh:&nbsp;{result?.user?.ngaySinh}</p>
+                <p className="">Giới tính:&nbsp;{result?.user?.gioiTinh}</p>
+            </div>
           </div>
         </div>
       )}
