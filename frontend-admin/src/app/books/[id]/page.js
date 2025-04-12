@@ -49,10 +49,14 @@ function page() {
   const [totalCate, setTotalCate] = useState([]);
   const [cateList, setCateList] = useState([]);
   const [cate2List, setCate2List] = useState([]);
-  useEffect(() => {
-    setLoading(true);
+  useEffect(() => {    
     const getBook = async() =>{
+      setLoading(true);
       try {
+        const res = await fetch("http://localhost:8081/books/categories");
+        const cates = await res.json();
+        setTotalCate(cates)
+        setCateList([...new Set(cates.map(item => item.tenTheLoaiCha))])  
         const response = await fetch(`http://localhost:8081/book/${id}`, {
           method: 'GET',
           headers: {
@@ -79,21 +83,15 @@ function page() {
         filePreview: data.hinhAnh[index] || null, // Nếu thiếu ảnh thì gán null
       }))
       );
-        const res = await fetch("http://localhost:8081/books/categories");
-        const cates = await res.json();
-        setTotalCate(cates)
-        setCateList([...new Set(cates.map(item => item.tenTheLoaiCha))])   
-        const cate = cates.find((cate)=>cate.id===data?.theLoai)
-        setCategory(cate?.tenTheLoaiCha);
-        setCategory2(cate?.tenTheLoaiCon);  
+        setCategory(data.tenTheLoaiCha);
+        setCategory2(data.tenTheLoaiCon);  
+        setLoading(false);
       } catch (error) {
         console.error('Lỗi fetch:', error);
         return null;
       }
     }
-    getBook();
- 
-    setLoading(false);
+    getBook();    
   }, []);
   const isFirstRender = useRef(true);
   useEffect(()=>{

@@ -1,16 +1,16 @@
 package com.library_web.library.Controller;
 
 import com.library_web.library.Model.Book;
+import com.library_web.library.Model.Category;
 import com.library_web.library.Model.ChildBook;
 import com.library_web.library.Respository.BookRepo;
+import com.library_web.library.Respository.CategoryRepo;
 import com.library_web.library.Respository.ChildBookRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class BookController {
@@ -19,6 +19,8 @@ public class BookController {
     BookRepo BookRepo;
     @Autowired
     ChildBookRepo ChildBookRepo;
+    @Autowired
+    CategoryRepo CateRepo;
 
     @PostMapping("/addBook")
     public Book themBook(@RequestBody Book book) {
@@ -45,8 +47,26 @@ public class BookController {
 
     // Lấy sách theo ID
     @GetMapping("/book/{id}")
-    public Book layBookTheoId(@PathVariable String id) {
-        return BookRepo.findById(id).orElse(null);
+    public Map<String, Object> layBookTheoId(@PathVariable String id) {
+        Book book = BookRepo.findById(id).orElse(null);        
+        Category cate = CateRepo.findById(book.getTheLoai()).orElse(null);
+        Map<String, Object> resultMap = new HashMap<>();
+                resultMap.put("id", book.getId());
+                resultMap.put("tenSach", book.getTenSach());
+                resultMap.put("moTa", book.getMoTa());
+                resultMap.put("hinhAnh", book.getHinhAnh());
+                resultMap.put("theLoai", book.getTheLoai());
+                resultMap.put("tenTacGia", book.getTenTacGia());
+                resultMap.put("nxb", book.getNxb());
+                resultMap.put("nam", book.getNam());
+                resultMap.put("tongSoLuong", book.getTongSoLuong());
+                resultMap.put("soLuongMuon", book.getSoLuongMuon());
+                resultMap.put("soLuongXoa", book.getSoLuongXoa());
+                resultMap.put("trangThai", book.getMoTa());
+                resultMap.put("tenTheLoaiCha", cate.getTenTheLoaiCha());
+                resultMap.put("tenTheLoaiCon", cate.getTenTheLoaiCon());
+                resultMap.put("viTri", cate.getViTri());
+        return resultMap;
     }
 
     // Cập nhật sách

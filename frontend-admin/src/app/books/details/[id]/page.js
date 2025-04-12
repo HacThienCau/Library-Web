@@ -29,8 +29,6 @@ const page = () => {
         const data = await response.json();
         if (!data) return;
         setBook(data);
-        // lấy tên thể loại theo data.theLoai => add vào trong book
-
         // lấy ds sách con từ id cha
         const res = await fetch(`http://localhost:8081/childrenOf/${data.id}`, {
           method: "GET",
@@ -86,8 +84,8 @@ const page = () => {
         </div>
         <div className="flex flex-col gap-[10px] relative w-full">
           <p className="">ID thể loại:&nbsp;{book.theLoai}</p>
-          <p className="">Thể loại chính:&nbsp;{book.tenSach}</p>
-          <p className="">Thể loại phụ&nbsp;{book.tenTacGia}</p>
+          <p className="">Thể loại chính:&nbsp;{book.tenTheLoaiCha}</p>
+          <p className="">Thể loại phụ&nbsp;{book.tenTheLoaiCon}</p>
           <p className="">Số lượng mượn:&nbsp;{book.soLuongMuon}</p>
           <p className="">Số lượng xóa:&nbsp;{book.soLuongXoa}</p>
         </div>
