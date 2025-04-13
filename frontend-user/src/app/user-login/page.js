@@ -25,19 +25,19 @@ const Page = () => {
 
   // Schema kiểm tra đầu vào
   const registerSchema = yup.object().shape({
-    username: yup.string().required("Tên không được để trống"),
+    tenND: yup.string().required("Tên không được để trống"),
     email: yup
       .string()
       .email("Email không hợp lệ")
       .required("Email không được để trống"),
-    password: yup
+      matKhau: yup
       .string()
       .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
       .required("Mật khẩu không được để trống"),
-    dateOfBirth: yup.date().required("Ngày sinh không được để trống"),
-    gender: yup
+    ngaySinh: yup.date().required("Ngày sinh không được để trống"),
+    gioiTinh: yup
       .string()
-      .oneOf(["male", "female", "other"], "Vui lòng chọn giới tính")
+      .oneOf(["Nam", "Nu", "Khac"], "Vui lòng chọn giới tính")
       .required("Giới tính không được để trống"),
   });
 
@@ -46,7 +46,7 @@ const Page = () => {
       .string()
       .email("Email không hợp lệ")
       .required("Email không được để trống"),
-    password: yup
+      matKhau: yup
       .string()
       .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
       .required("Mật khẩu không được để trống"),
@@ -71,33 +71,63 @@ const Page = () => {
     formState: { errors: errorsSignUp },
   } = useForm({
     resolver: yupResolver(registerSchema),
-    defaultValues: { gender: "male" },
+    defaultValues: { gioiTinh: "Nam" },
   });
 
   // Xử lý đăng ký
-  const onSubmitRegister = async (data) => {
-    try {
-      router.push("/");
-      toast.success("Đăng ký tài khoản thành công");
-    } catch (error) {
-      console.error(error);
-      toast.error("Có lỗi xảy ra");
-    } finally {
-      setIsLoading(false);
+const onSubmitRegister = async (data) => {
+  try {
+    // Gửi yêu cầu POST đến backend để đăng ký
+    const response = await fetch('http://localhost:8081/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error('Đăng ký thất bại');
     }
-  };
-  
-  const onSubmitLogin = async (data) => {
-    try {
-      router.push("/");
-      toast.success("Đăng nhập tài khoản thành công");
-    } catch (error) {
-      console.error(error);
-      toast.error("Có lỗi xảy ra");
-    } finally {
-      setIsLoading(false);
+
+    const result = await response.json();
+    router.push('/');
+    toast.success('Đăng ký tài khoản thành công');
+  } catch (error) {
+    console.error(error);
+    toast.error('Có lỗi xảy ra');
+  }
+};
+
+// Xử lý đăng nhập
+const onSubmitLogin = async (data) => {
+  try {
+    // Gửi yêu cầu POST đến backend để đăng nhập
+    const response = await fetch('http://localhost:8081/signin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error('Đăng nhập thất bại');
     }
-  };
+
+    const result = await response.json();
+
+    //  backend trả về JWT token
+    localStorage.setItem('jwt', result.jwt); // Lưu token vào localStorage hoặc sessionStorage
+
+    // Chuyển hướng người dùng sau khi đăng nhập thành công
+    router.push('/');
+    toast.success('Đăng nhập tài khoản thành công');
+  } catch (error) {
+    console.error(error);
+    toast.error('Có lỗi xảy ra');
+  }
+};
   
 
   // Reset form khi chuyển tab
@@ -149,7 +179,7 @@ const Page = () => {
                       <Label>Mật khẩu</Label>
                       <Input
                         type="password"
-                        {...registerLogin("password")}
+                        {...registerLogin("matKhau")}
                         placeholder="Nhập mật khẩu của bạn"
                       />
                       {errorsLogin.password && (
@@ -171,7 +201,7 @@ const Page = () => {
                       <Label>Tên người dùng</Label>
                       <Input
                         type="text"
-                        {...registerSignUp("username")}
+                        {...registerSignUp("tenND")}
                         placeholder="Nhập tên người dùng"
                       />
                     </div>
@@ -187,24 +217,24 @@ const Page = () => {
                       <Label>Mật khẩu</Label>
                       <Input
                         type="password"
-                        {...registerSignUp("password")}
+                        {...registerSignUp("matKhau")}
                         placeholder="Nhập mật khẩu"
                       />
                     </div>
                     <div>
                       <Label>Ngày sinh</Label>
-                      <Input type="date" {...registerSignUp("dateOfBirth")} />
+                      <Input type="date" {...registerSignUp("ngaySinh")} />
                     </div>
                     <div>
                       <Label>Giới tính</Label>
                       <Controller
-                        name="gender"
+                        name="gioiTinh"
                         control={control}
                         render={({ field }) => (
                           <RadioGroup value={field.value} onValueChange={field.onChange}>
-                            <RadioGroupItem value="male" id="male" /> Nam
-                            <RadioGroupItem value="female" id="female" /> Nữ
-                            <RadioGroupItem value="other" id="other" /> Khác
+                            <RadioGroupItem value="Nam" id="male" /> Nam
+                            <RadioGroupItem value="Nu" id="female" /> Nữ
+                            <RadioGroupItem value="Khac" id="other" /> Khác
                           </RadioGroup>
                         )}
                       />
