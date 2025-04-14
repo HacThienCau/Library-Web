@@ -21,7 +21,8 @@ const page = () => {
         book.id.toString() === searchQuery || //tìm theo id
         book?.tenSach.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên sách
         book?.tenTacGia.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên tg
-        book?.theLoai?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo nội dung bài viết
+        book?.tenTheLoaiCha?.toLowerCase().includes(searchQuery.toLowerCase()) ||//tìm theo thể loại cha bài viết
+        book?.tenTheLoaiCon?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo nội dung bài viết
           ? book
           : null
       );
