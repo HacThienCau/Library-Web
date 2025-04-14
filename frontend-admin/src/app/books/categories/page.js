@@ -2,7 +2,7 @@
 
 import Sidebar from "@/app/components/sidebar/Sidebar";
 import { Button } from "@/app/components/ui/button";
-import { ChevronDown, PlusCircle } from "lucide-react";
+import { ChevronDown, PlusCircle, Undo2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -10,7 +10,9 @@ export default function CategoryPage() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+  const handleGoBack = () => {
+    router.back();
+  };
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true);
@@ -40,6 +42,18 @@ export default function CategoryPage() {
   return (
     <div className="flex flex-row w-full min-h-screen bg-[#EFF3FB]">
       <Sidebar />
+      {/*Nút Back*/}
+      <div className="absolute top-5 left-5 md:left-57 fixed">
+          <Button
+            title={"Quay Lại"}
+            className="bg-[#062D76] rounded-3xl w-10 h-10"
+            onClick={() => {
+              handleGoBack();
+            }}
+          >
+            <Undo2 className="w-12 h-12" color="white" />
+          </Button>
+        </div>
       <div className="flex flex-col py-6 w-full md:ml-52 px-10">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">📚 Danh mục sách</h1>
