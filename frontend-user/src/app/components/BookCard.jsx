@@ -38,9 +38,8 @@ const BookCard = ({
       .replace(/-+$/, '');       // Loại bỏ dấu gạch nối ở cuối
   };
 
-  const handleCardClick = () => {
-    const bookSlug = slugifyTitle(title); 
-    router.push(`/book-detail/${bookSlug}?id=${id}`);  
+  const handleCardClick = () => { 
+    router.push(`/book-detail/${id}`);  
   };
 
   return (
