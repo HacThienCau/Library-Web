@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UserController {
 
-    // @Autowired
-    // private UserRepo userRepo;
+     @Autowired
+     private UserRepo userRepo;
     @Autowired
     private  UserService userService;
 
@@ -60,11 +60,11 @@ public ResponseEntity<?> signIn(@RequestBody SignInRequest loginRequest) {
     //     return userRepo.findAll();
     // }
 
-    // // Lấy người dùng theo ID
-    // @GetMapping("/user/{id}")
-    // public User layUserTheoId(@PathVariable String id) {
-    //     return userRepo.findById(id).orElse(null);
-    // }
+    // Lấy người dùng theo ID
+     @GetMapping("/user/{id}")
+     public User layUserTheoId(@PathVariable String id) {
+         return userRepo.findById(id).orElse(null);
+     }
 
     // // Cập nhật thông tin người dùng
     // @PutMapping("/user/{id}")

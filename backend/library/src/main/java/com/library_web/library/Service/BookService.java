@@ -23,8 +23,8 @@ public class BookService {
     private CategoryRepo categoryRepo;
 
     public Book themBook(Book book) {
+        book.setTrangThai(Book.TrangThai.CON_SAN);
         Book savedBook = bookRepo.save(book);
-        savedBook.setTrangThai(Book.TrangThai.CON_SAN);
 
         List<ChildBook> childBooks = new ArrayList<>();
         for (int i = 0; i < book.getTongSoLuong(); i++) {
