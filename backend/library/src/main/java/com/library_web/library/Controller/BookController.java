@@ -18,7 +18,7 @@ public class BookController {
     }
 
     @GetMapping("/books")
-    public List<Book> layTatCaBook() {
+    public List<Map<String, Object>> layTatCaBook() {
         return bookService.layTatCaBook();
     }
 

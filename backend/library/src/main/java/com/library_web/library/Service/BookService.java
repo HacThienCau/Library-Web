@@ -38,8 +38,40 @@ public class BookService {
         return savedBook;
     }
 
-    public List<Book> layTatCaBook() {
-        return bookRepo.findByTrangThai(Book.TrangThai.CON_SAN);
+    public List<Map<String, Object>> layTatCaBook() {
+        List<Book> books = bookRepo.findByTrangThai(Book.TrangThai.CON_SAN);
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        for (Book book : books) {
+            Category cate = categoryRepo.findById(book.getTheLoai()).orElse(null);
+    
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("id", book.getId());
+            resultMap.put("tenSach", book.getTenSach());
+            resultMap.put("moTa", book.getMoTa());
+            resultMap.put("hinhAnh", book.getHinhAnh());
+            resultMap.put("theLoai", book.getTheLoai());
+            resultMap.put("tenTacGia", book.getTenTacGia());
+            resultMap.put("nxb", book.getNxb());
+            resultMap.put("nam", book.getNam());
+            resultMap.put("tongSoLuong", book.getTongSoLuong());
+            resultMap.put("soLuongMuon", book.getSoLuongMuon());
+            resultMap.put("soLuongXoa", book.getSoLuongXoa());
+            resultMap.put("trangThai", book.getTrangThai());
+    
+            if (cate != null) {
+                resultMap.put("tenTheLoaiCha", cate.getTenTheLoaiCha());
+                resultMap.put("tenTheLoaiCon", cate.getTenTheLoaiCon());
+                resultMap.put("viTri", cate.getViTri());
+            } else {
+                resultMap.put("tenTheLoaiCha", null);
+                resultMap.put("tenTheLoaiCon", null);
+                resultMap.put("viTri", null);
+            }
+    
+            resultList.add(resultMap);
+        }
+    
+        return resultList;
     }
 
     public Map<String, Object> layBookTheoId(String id) {
