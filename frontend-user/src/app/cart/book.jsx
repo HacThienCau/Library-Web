@@ -39,8 +39,7 @@ const BookCard = ({
 
   /** Khi click vào card (trừ checkbox) */
   const handleCardClick = () => {
-    const bookSlug = slugifyTitle(title);
-    router.push(`/book-detail/${bookSlug}?id=${id}`);
+    router.push(`/book-detail/${id}`);
   };
 
   /** Ngăn click checkbox lan ra thẻ <article> */

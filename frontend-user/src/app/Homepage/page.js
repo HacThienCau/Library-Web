@@ -1,74 +1,103 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import LeftSideBar from "../components/LeftSideBar";
 import BookCard from "../components/BookCard";
 import CollectionCard from "./CollectionCard";
 import ServiceHoursCard from "./ServiceHoursCard";
 import ChatBotButton from "../components/ChatBotButton";
+import axios from "axios";
 
-const books = [
-  {
-    id: "DRPN001",
-    imageSrc:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/9b777cb3ef9abb920d086e97e27ac4f6f3559695",
-    available: true,
-    title: "Nam cao",
-    author: "Văn học",
-    publisher: "Văn học Việt Nam (2019)",
-    borrowCount: 120,
-  },
-  {
-    id: "DRPN002",
-    imageSrc:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/fc01b7cf44e0ca2f23258dcc0ad69329b2612af0?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
-    available: false,
-    title: "Nam cao",
-    author: "Văn học",
-    publisher: "Văn học Việt Nam (2019)",
-    borrowCount: 120,
-  },
-  {
-    id: "DRPN003",
-    imageSrc:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/5e8a0f3fd4681a9512313c2c1c6dae1285bcf0a6?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
-    available: true,
-    title: "Nam cao",
-    author: "Văn học",
-    publisher: "Văn học Việt Nam (2019)",
-    borrowCount: 120,
-  },
-  {
-    id: "DRPN004",
-    imageSrc:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/d854294877ea4263cf3494a98eecfd64cd148327?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
-    available: false,
-    title: "Nam cao",
-    author: "Văn học",
-    publisher: "Văn học Việt Nam (2019)",
-    borrowCount: 120,
-  },
-  {
-    id: "DRPN005",
-    imageSrc:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/acf848c9260bfc86d1f9094e17e14ec25f3ec193?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
-    available: true,
-    title: "Nam cao",
-    author: "Văn học",
-    publisher: "Văn học Việt Nam (2019)",
-    borrowCount: 120,
-  },
-  {
-    id: "DRPN006",
-    imageSrc:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/d854294877ea4263cf3494a98eecfd64cd148327?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
-    available: false,
-    title: "Nam cao",
-    author: "Văn học",
-    publisher: "Văn học Việt Nam (2019)",
-    borrowCount: 120,
-  },
-];
+// const books = [
+//   {
+//     id: "DRPN001",
+//     imageSrc:
+//       "https://cdn.builder.io/api/v1/image/assets/TEMP/9b777cb3ef9abb920d086e97e27ac4f6f3559695",
+//     available: true,
+//     title: "Nam cao",
+//     author: "Văn học",
+//     publisher: "Văn học Việt Nam (2019)",
+//     borrowCount: 120,
+//   },
+//   {
+//     id: "DRPN002",
+//     imageSrc:
+//       "https://cdn.builder.io/api/v1/image/assets/TEMP/fc01b7cf44e0ca2f23258dcc0ad69329b2612af0?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
+//     available: false,
+//     title: "Nam cao",
+//     author: "Văn học",
+//     publisher: "Văn học Việt Nam (2019)",
+//     borrowCount: 120,
+//   },
+//   {
+//     id: "DRPN003",
+//     imageSrc:
+//       "https://cdn.builder.io/api/v1/image/assets/TEMP/5e8a0f3fd4681a9512313c2c1c6dae1285bcf0a6?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
+//     available: true,
+//     title: "Nam cao",
+//     author: "Văn học",
+//     publisher: "Văn học Việt Nam (2019)",
+//     borrowCount: 120,
+//   },
+//   {
+//     id: "DRPN004",
+//     imageSrc:
+//       "https://cdn.builder.io/api/v1/image/assets/TEMP/d854294877ea4263cf3494a98eecfd64cd148327?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
+//     available: false,
+//     title: "Nam cao",
+//     author: "Văn học",
+//     publisher: "Văn học Việt Nam (2019)",
+//     borrowCount: 120,
+//   },
+//   {
+//     id: "DRPN005",
+//     imageSrc:
+//       "https://cdn.builder.io/api/v1/image/assets/TEMP/acf848c9260bfc86d1f9094e17e14ec25f3ec193?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
+//     available: true,
+//     title: "Nam cao",
+//     author: "Văn học",
+//     publisher: "Văn học Việt Nam (2019)",
+//     borrowCount: 120,
+//   },
+//   {
+//     id: "DRPN006",
+//     imageSrc:
+//       "https://cdn.builder.io/api/v1/image/assets/TEMP/d854294877ea4263cf3494a98eecfd64cd148327?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816",
+//     available: false,
+//     title: "Nam cao",
+//     author: "Văn học",
+//     publisher: "Văn học Việt Nam (2019)",
+//     borrowCount: 120,
+//   },
+// ];
 
 const HomePage = () => {
+  const [books, setBooks] = useState([]);
+
+  useEffect(() => {
+    // gọi API lấy toàn bộ sách
+    const fetchBooks = async () => {
+      try {
+        const response = await axios.get("http://localhost:8081/books"); // đổi thành URL thật
+        // console.log("Dữ liệu sách:", response.data);
+        const convertedBooks = response.data.map((book) => ({
+          id: book.id,
+          imageSrc:book.hinhAnh[0],
+          available: (book.tongSoLuong - book.soLuongMuon - book.soLuongXoa) > 0,
+          title: book.tenSach,
+          author: book.tenTacGia,
+          publisher: book.nxb,
+          borrowCount: book.soLuongMuon,
+        }));
+        setBooks(convertedBooks);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách:", error);
+      }
+    };
+
+    fetchBooks();
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="pt-16 flex">

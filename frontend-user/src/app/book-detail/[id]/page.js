@@ -7,8 +7,10 @@ import ChatBotButton from "@/app/components/ChatBotButton";
 import { CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BookReview from "@/components/ui/bookreview";
+import { useParams } from "next/navigation";
+import axios from "axios";
 
-const book = {
+const detail = {
   id: "DRPN001",
   title: "Đất rừng phương Nam",
   author: "Đoàn Giỏi",
@@ -40,6 +42,41 @@ Bởi tô màu là một hình thức chữa lành đơn giản mà hiệu quả
 };
 
 function page() {
+  const { id } = useParams();
+  const [details, setDetails] = useState(detail);
+
+  useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8081/book/${id}`);
+        const book = response.data;
+        const convertedBook = {
+          id: book.book_id,
+          title: book.tenSach,
+          author: book.tenTacGia,
+          category: book.tenTheLoaiCon,
+          publisher: book.nxb,
+          status: (book.tongSoLuong - book.soLuongMuon - book.soLuongXoa) > 0 ? "Còn sẵn" : "Hết sách",
+          borrow_count: book.soLuongMuon,
+          book_code: book.id,
+          size: "14.5 x 20.5 cm",
+          pages: 256,
+          isbn: "978-604-2-18920-5",
+          language: "Tiếng Việt",
+          publish_year: book.nam,
+          cover_image: book.hinhAnh[0],
+          description: book.moTa,
+        };
+
+        setDetails(convertedBook);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách:", error);
+      }
+    };
+
+    fetchBook();
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="pt-16 flex">
@@ -47,31 +84,31 @@ function page() {
         <section className="self-stretch pr-[1.25rem] md:pl-64 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2">
           <div className="flex flex-col p-6 bg-white rounded-xl shadow-md  md:flex-row gap-6">
             <img
-              src={book.cover_image}
-              alt={book.title}
+              src={details.cover_image}
+              alt={details.title}
               className="w-40 md:w-52 rounded-lg shadow-lg"
             />
 
             <div className="flex-1">
               <h1 className="text-2xl font-semibold text-blue-900">
-                {book.title}
+                {details.title}
               </h1>
               <p className="text-gray-700 font-semibold">
-                Tác giả: {book.author}
+                Tác giả: {details.author}
               </p>
               <p>
-                <span className="font-semibold">Thể loại:</span> {book.category}
+                <span className="font-semibold">Thể loại:</span> {details.category}
               </p>
               <p>
-                <span className="font-semibold">NXB:</span> {book.publisher}
+                <span className="font-semibold">NXB:</span> {details.publisher}
               </p>
               <p className="flex items-center gap-2 font-semibold">
                 <CheckCircle className="text-green-500" /> Trạng thái:{" "}
-                {book.status}
+                {details.status}
               </p>
               <p>
                 <span className="font-semibold">Lượt mượn:</span>{" "}
-                {book.borrow_count} lượt
+                {details.borrow_count} lượt
               </p>
 
               <Button className="mt-4 bg-[#062D76] hover:bg-[#E6EAF1] hover:text-[#062D76] text-white font-semibold py-2 px-4 rounded-lg cursor-pointer">
@@ -86,23 +123,23 @@ function page() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
               <p>
-                <span className="font-semibold">Mã sách:</span> {book.book_code}
+                <span className="font-semibold">Mã sách:</span> {details.book_code}
               </p>
               <p>
-                <span className="font-semibold">Kích thước:</span> {book.size}
+                <span className="font-semibold">Kích thước:</span> {details.size}
               </p>
               <p>
-                <span className="font-semibold">Số trang:</span> {book.pages}
+                <span className="font-semibold">Số trang:</span> {details.pages}
               </p>
               <p>
-                <span className="font-semibold">ISBN:</span> {book.isbn}
+                <span className="font-semibold">ISBN:</span> {details.isbn}
               </p>
               <p>
                 <span className="font-semibold">Năm xuất bản:</span>{" "}
-                {book.publish_year}
+                {details.publish_year}
               </p>
               <p>
-                <span className="font-semibold">Ngôn ngữ:</span> {book.language}
+                <span className="font-semibold">Ngôn ngữ:</span> {details.language}
               </p>
             </div>
           </div>
@@ -112,7 +149,7 @@ function page() {
               Giới thiệu
             </h2>
             <p className="mt-2 text-gray-800 leading-relaxed">
-              {book.description}
+              {details.description}
             </p>
           </div>
 
