@@ -139,7 +139,7 @@ function page() {
     <main className="flex flex-col min-h-screen text-foreground">
       <div className="pt-16 flex">
         <LeftSideBar />
-        <section className="self-stretch pr-[1.25rem] md:pl-64 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2">
+        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2">
         {/*Main*/}
         {/*Nút Back - Floating Button*/}
         {/* <div className="top-5 left-5 md:left-57 fixed">
@@ -219,7 +219,7 @@ function page() {
             )}
           </div>
         )}
-        <div className="w-full bottom-0 px-10 pr-[1.25rem] md:pl-64 ml-[1.25rem] md:left-52 md:w-[calc(100%-208px)] fixed border-2 h-20 bg-white flex items-center justify-between">
+        <div className="w-full bottom-0 px-10 pr-[1.25rem] md:pl-60 ml-[1.25rem] md:left-52 md:w-[calc(100%-208px)] fixed border-2 h-20 bg-white flex items-center justify-between">
           {/*Control Bar*/}
           <div></div>
           <Button

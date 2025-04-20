@@ -21,11 +21,10 @@ const SidebarItem = ({ path, icon, label }) => {
     }
   };
 
-
     return (
         <Button
             variant="ghost"
-            className={`w-full justify-start mb-3 cursor-pointer flex items-center text-[15px] ${isActive ? "text-white bg-[#062D76] " : "text-black bg-transparent"
+            className={`w-full justify-start mb-3 cursor-pointer flex items-center text-[15px] ${isActive ? "bg-[#062D76] text-white hover:bg-[#062D76] hover:text-white " : "text-black bg-transparent active:bg-[#062D76] active:text-white"
                 }`}
             onClick={handleClick}
         >
@@ -54,7 +53,7 @@ const Sidebar = () => {
 
     return (
         <aside
-            className={`fixed left-0 h-full w-52 p-4 transform bg-white transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 shadow-lg ${isSidebarOpen ? "translate-x-0  " : "-translate-x-full"
+            className={`fixed left-0 h-full w-52 py-4 px-2 transform bg-white transition-transform duration-200 ease-in-out md:translate-x-0 flex flex-col z-50 md:z-0 shadow-lg ${isSidebarOpen ? "translate-x-0  " : "-translate-x-full"
                 } ${isSidebarOpen ? "md:hidden" : ""} md:shadow-none`}
         >
             <div className="flex flex-col h-full overflow-y-auto">
