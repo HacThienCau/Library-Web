@@ -89,7 +89,7 @@ const page = () => {
     <div className="flex flex-col min-h-screen text-foreground">
         <main className="pt-16 flex">
         <LeftSideBar />
-        <section className="self-stretch pr-[1.25rem] md:pl-64 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2">
+        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2">
           <CategoryFilters />
           <div className="flex flex-col p-5 mt-3 w-full bg-white rounded-xl max-md:max-w-full">
             <h2 className="gap-2.5 self-start px-[1.25rem] py-[0.625rem] text-[1.25rem] text-white bg-[#062D76] rounded-lg">
