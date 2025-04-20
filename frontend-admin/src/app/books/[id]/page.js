@@ -21,7 +21,8 @@ function page() {
   const [year, setYear] = useState(""); //Năm XB
   const [quantity, setQuantity] = useState(""); //tongSL
   const [description, setDescription] = useState(""); // Mô tả
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(null);
+  const [category2, setCategory2] = useState(null);
   const fileInputRef = useRef(null);
   const fileInputRef1 = useRef(null);
   const fileInputRef2 = useRef(null);
@@ -45,11 +46,17 @@ function page() {
       selectedFile: null,
     },
   ]);
+  const [totalCate, setTotalCate] = useState([]);
   const [cateList, setCateList] = useState([]);
-  useEffect(() => {
-    setLoading(true);
+  const [cate2List, setCate2List] = useState([]);
+  useEffect(() => {    
     const getBook = async() =>{
+      setLoading(true);
       try {
+        const res = await fetch("http://localhost:8081/books/categories");
+        const cates = await res.json();
+        setTotalCate(cates)
+        setCateList([...new Set(cates.map(item => item.tenTheLoaiCha))])  
         const response = await fetch(`http://localhost:8081/book/${id}`, {
           method: 'GET',
           headers: {
@@ -65,7 +72,6 @@ function page() {
         if(!data) return;
         setBookname(data.tenSach);
         setAuthor(data.tenTacGia);
-        setCategory(data.theLoai);
         setDescription(data.moTa);
         setPublisher(data.nxb);
         setYear(data.nam);
@@ -77,24 +83,35 @@ function page() {
         filePreview: data.hinhAnh[index] || null, // Nếu thiếu ảnh thì gán null
       }))
       );
+        setCategory(data.tenTheLoaiCha);
+        setCategory2(data.tenTheLoaiCon);  
+        setLoading(false);
       } catch (error) {
         console.error('Lỗi fetch:', error);
         return null;
       }
     }
-    getBook();
-    const fetchCategory = [
-      "Sách Giáo Khoa",
-      "Tiểu Thuyết",
-      "Sách Tham Khảo",
-      "Truyện Ngắn",
-    ];
-    setCateList(fetchCategory);
-    setLoading(false);
+    getBook();    
   }, []);
+  const isFirstRender = useRef(true);
+  useEffect(()=>{
+    if(category !== ""){
+      const tmp = totalCate.filter(cate => cate.tenTheLoaiCha === category).map(cate => cate.tenTheLoaiCon);
+      setCate2List(tmp)      
+    }   
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return; // Bỏ qua lần render đầu tiên
+    } 
+    setCategory2("")
+  },[category])
   const [isCateListOpen, setIsCateListOpen] = useState(false);
+  const [isCateList2Open, setIsCateList2Open] = useState(false);
   const openCategoryList = () => {
     setIsCateListOpen(!isCateListOpen);
+  };
+  const openCategory2List = () => {
+    setIsCateList2Open(!isCateList2Open);
   };
   const handleFileChange = (number, event) => {
     const file = event.target.files[0];
@@ -139,6 +156,7 @@ function page() {
       publisher === "" ||
       description === "" ||
       category === "" ||
+      category2 === "" ||
       quantity === ""
     ) {
       toast.error("Vui lòng điền đầy đủ thông tin");
@@ -169,6 +187,11 @@ function page() {
       }
       return img;
     });
+    const finalCategory = totalCate.find(
+      cate =>
+        cate.tenTheLoaiCha === category &&
+        cate.tenTheLoaiCon === category2
+    );
     const finalImageURLs = updatedImages
       .filter((img) => img.filePreview)
       .map((img) => img.filePreview);
@@ -176,7 +199,7 @@ function page() {
       tenSach: bookname,
       moTa: description,
       hinhAnh: finalImageURLs,
-      theLoai: category,
+      theLoai: finalCategory.id,
       tenTacGia: author,
       nam: year,      
       nxb: publisher,      
@@ -289,15 +312,15 @@ function page() {
               />
             </div>
             <div className="flex flex-col w-full gap-[5px] md:gap-[10px] space-y-2 relative inline-block text-left">
-              <p className="font-semibold text-lg mt-3">Thể Loại</p>
+              <p className="font-semibold text-lg mt-3">Thể Loại Chính</p>
               <Button
-                title={"Thể Loại"}
+                title={"Thể Loại Chính"}
                 className="bg-white text-black rounded-lg w-full h-10 hover:bg-gray-300 flex justify-between"
                 onClick={() => {
                   openCategoryList();
                 }}
               >
-                {category !== "" ? category : "Chọn Thể Loại"}
+                {category !== "" ? category : "Chọn Thể Loại Chính"}
                 <ChevronDown className="w-12 h-12" color="#062D76" />
               </Button>
               {isCateListOpen && (
@@ -310,6 +333,38 @@ function page() {
                         onClick={() => {
                           setCategory(cate);
                           setIsCateListOpen(false);
+                        }}
+                      >
+                        {cate}
+                      </Button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          {/*Thể loại 2*/}
+          <div className="flex flex-col w-full gap-[5px] md:gap-[10px] space-y-2 relative inline-block text-left">
+              <p className="font-semibold text-lg mt-3">Thể Loại Phụ</p>
+              <Button
+                title={"Thể Loại Phụ"}
+                className="bg-white text-black rounded-lg w-full h-10 hover:bg-gray-300 flex justify-between"
+                onClick={() => {
+                  openCategory2List();
+                }}
+              >
+                {category2 !== "" ? category2 : "Chọn Thể Loại Phụ"}
+                <ChevronDown className="w-12 h-12" color="#062D76" />
+              </Button>
+              {isCateList2Open && (
+                <div className="absolute bg-white rounded-lg w-full z-50 shadow-lg">
+                  {cate2List?.map((cate, index) => {
+                    return (
+                      <Button
+                        key={index}
+                        className="flex justify-start block w-full px-4 py-2 text-left bg-white text-black hover:bg-gray-300 items-center gap-2"
+                        onClick={() => {
+                          setCategory2(cate);
+                          setIsCateList2Open(false);
                         }}
                       >
                         {cate}

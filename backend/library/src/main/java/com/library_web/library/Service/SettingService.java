@@ -1,0 +1,34 @@
+package com.library_web.library.Service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.library_web.library.Model.Setting;
+import com.library_web.library.Respository.SettingRepo;
+import java.util.List;
+
+@Service
+public class SettingService {
+
+    @Autowired
+    private SettingRepo SettingRepo;
+
+    public Setting getSetting() {
+        List<Setting> all = SettingRepo.findAll();
+        if (all.isEmpty()) {
+            Setting defaultSetting = new Setting(5000); // default nếu chưa có
+            return SettingRepo.save(defaultSetting);
+        }
+        return all.get(0);
+    }
+
+    public Setting updateSetting(Setting newSetting) {
+        List<Setting> all = SettingRepo.findAll();
+        if (all.isEmpty()) {
+            return SettingRepo.save(newSetting);
+        }
+        Setting existing = all.get(0);
+        existing.setFinePerDay(newSetting.getFinePerDay());
+        return SettingRepo.save(existing);
+    }
+}

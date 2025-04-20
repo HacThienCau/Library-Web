@@ -21,7 +21,8 @@ const page = () => {
         book.id.toString() === searchQuery || //tìm theo id
         book?.tenSach.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên sách
         book?.tenTacGia.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên tg
-        book?.theLoai?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo nội dung bài viết
+        book?.tenTheLoaiCha?.toLowerCase().includes(searchQuery.toLowerCase()) ||//tìm theo thể loại cha bài viết
+        book?.tenTheLoaiCon?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo nội dung bài viết
           ? book
           : null
       );
@@ -35,6 +36,11 @@ const page = () => {
   const handleAddBook = () => {
     route.push(`/books/addBook`);
   };
+
+  const handleCategory = () => {
+    route.push(`/books/categories`);
+  };
+
   const handleEdit = (id) => {
     route.push(`/books/${id}`);
   };
@@ -67,6 +73,10 @@ const page = () => {
   }, []);
   
   const handleDelete = async(book) =>{
+    if(book.soLuongMuon > 0){
+      toast.error("Sách vẫn còn đang được mượn!")
+      return;
+    }
     setLoading(true)
     try {
       const res = await fetch(`http://localhost:8081/book/${book.id}`, {
@@ -96,10 +106,8 @@ const page = () => {
       <div className="flex bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 gap-[20px] md:gap-[50px] items-center">
         <img src={`${book.hinhAnh[0]}`} className="w-[145px] h-[205px]" />
         <div className="flex flex-col gap-[10px] relative w-full">
-          <p className="">ID:&nbsp;{book.id}</p>
           <p className="font-bold">{book.tenSach}</p>
           <p className="italic">{book.tenTacGia}</p>
-          <p className="italic">{book.theLoai}</p>
           <p className="">Tổng số lượng:&nbsp;{book.tongSoLuong}</p>
           <p className="">Số lượng mượn:&nbsp;{book.soLuongMuon}</p>
           <p className="">Số lượng xóa:&nbsp;{book.soLuongXoa}</p>
@@ -174,6 +182,15 @@ const page = () => {
               <Search className="w-10 h-10" color="white" />
             </Button>
           </div>
+          {/* Quản lý thể loại */}
+          <Button
+            className="w-40 h-10 cursor-pointer bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
+            onClick={() => {
+              handleCategory();
+            }}
+          >
+            Quản lý thể loại
+          </Button>
           <Button
             className="w-40 h-10 cursor-pointer bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
             onClick={() => {
@@ -208,8 +225,7 @@ const page = () => {
                 <p className="">ID:&nbsp;{deleteOne.id}</p>
                 <p className="font-bold">{deleteOne.tenSach}</p>
                 <p className="italic">{deleteOne.tenTacGia}</p>
-                <p className="italic">{deleteOne.theLoai}</p>
-                <p className="italic">Số lượng tồn:&nbsp;{deleteOne.soLuongTon}</p>
+                <p className="italic">Tổng số lượng:&nbsp;{deleteOne.tongSoLuong}</p>
                 <p className="italic">Số lượng mượn:&nbsp;{deleteOne.soLuongMuon}</p>
               </div>
             </div>
