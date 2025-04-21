@@ -1,6 +1,8 @@
 import { Montserrat } from "next/font/google"; // Sử dụng Montserrat font
 import "./globals.css";
-import Header from "./components/Header";
+
+import RequireAuth from "@/components/RequireAuth";
+
 
 // Thêm Montserrat font
 const montserrat = Montserrat({
@@ -17,9 +19,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${montserrat.variable} antialiased`}>
-        <Header />
-        {children}
+      <RequireAuth>
+          {children}
+        </RequireAuth>
       </body>
     </html>
   );
 }
+
+
