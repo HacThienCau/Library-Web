@@ -137,16 +137,16 @@ const onSubmitLogin = async (data) => {
   }, [resetLoginForm, resetSignUpForm]);
 
   return (
-    <div className="min-h-screen bg-[#F9FDFF] flex items-center justify-center p-4 pt-20">
+    <div className="min-h-screen bg-[#F9FDFF] flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <Card className="w-full max-w-md border-[#062D76]">
+        <Card className="w-[25vw] border-[#062D76]">
           <CardHeader>
             <CardTitle className="flex justify-center">
-              <img src="/images/logo.jpg" alt="logo" className="w-20" />
+              <img src="/images/logo.jpg" alt="logo" className="w-30" />
             </CardTitle>
             <CardDescription className="text-center text-[#062D76]">
             Mỗi cuốn sách là một cánh cửa mở ra thế giới tri thức
@@ -164,28 +164,33 @@ const onSubmitLogin = async (data) => {
               <TabsContent value="login">
                 <form onSubmit={handleSubmitLogin(onSubmitLogin)}>
                   <div className="space-y-4">
-                    <div>
-                      <Label>Email</Label>
+                    <div className="space-y-2">
+                    <Label htmlFor="loginEmail" className="text-[#086280]">Email</Label>
                       <Input
                         type="email"
                         {...registerLogin("email")}
                         placeholder="Nhập email của bạn"
+                        className="col-span-3 dark:border-gray-400 border-[#0E42D2] placeholder:text-gray-400"
                       />
                       {errorsLogin.email && (
                         <p className="text-red-500">{errorsLogin.email.message}</p>
                       )}
                     </div>
-                    <div>
-                      <Label>Mật khẩu</Label>
+                    <div className="space-y-2">
+                    <Label htmlFor="loginPassword" className="text-[#086280]">Mật khẩu</Label>
                       <Input
                         type="password"
                         {...registerLogin("matKhau")}
                         placeholder="Nhập mật khẩu của bạn"
+                        className="col-span-3 dark:border-gray-400 border-[#0E42D2] placeholder:text-gray-400"
                       />
                       {errorsLogin.password && (
                         <p className="text-red-500">{errorsLogin.password.message}</p>
                       )}
                     </div>
+
+                   
+
                     <Button type="submit" className="w-full bg-[#062D76] text-white">
                       <LogIn className="mr-2 w-4 h-4" /> Đăng nhập
                     </Button>
@@ -197,44 +202,54 @@ const onSubmitLogin = async (data) => {
               <TabsContent value="signup">
                 <form onSubmit={handleSubmitSignUp(onSubmitRegister)}>
                   <div className="space-y-4">
-                    <div>
-                      <Label>Tên người dùng</Label>
+                    <div className="space-y-2">
+                    <Label htmlFor="signupName" className="text-[#086280]">Tên người dùng</Label>
                       <Input
                         type="text"
                         {...registerSignUp("tenND")}
                         placeholder="Nhập tên người dùng"
+                        className="col-span-3 dark:border-gray-400 border-[#0E42D2] placeholder:text-gray-400"
                       />
                     </div>
-                    <div>
-                      <Label>Email</Label>
+                    <div className="space-y-2">
+                    <Label htmlFor="loginEmail" className="text-[#086280]">Email</Label>
                       <Input
                         type="email"
                         {...registerSignUp("email")}
                         placeholder="Nhập email của bạn"
+                        className="col-span-3 dark:border-gray-400 border-[#0E42D2] placeholder:text-gray-400"
                       />
                     </div>
-                    <div>
-                      <Label>Mật khẩu</Label>
+                    <div className="space-y-2">
+                    <Label htmlFor="loginPassword" className="text-[#086280]">Mật khẩu</Label>
                       <Input
                         type="password"
                         {...registerSignUp("matKhau")}
                         placeholder="Nhập mật khẩu"
+                        className="col-span-3 dark:border-gray-400 border-[#0E42D2] placeholder:text-gray-400"
                       />
                     </div>
-                    <div>
+                    <div className="space-y-2">
                       <Label>Ngày sinh</Label>
-                      <Input type="date" {...registerSignUp("ngaySinh")} />
+                      <Input type="date" {...registerSignUp("ngaySinh")}
+                      className="col-span-3 dark:border-gray-400 border-[#0E42D2]" />
                     </div>
-                    <div>
-                      <Label>Giới tính</Label>
+                    <div className="space-y-2">
+                    <Label className="text-[#086280]">Giới tính</Label>
                       <Controller
                         name="gioiTinh"
                         control={control}
                         render={({ field }) => (
-                          <RadioGroup value={field.value} onValueChange={field.onChange}>
+                          <RadioGroup value={field.value} onValueChange={field.onChange} className="flex justify-between">
+                            <div className="flex items-center space-x-2">
                             <RadioGroupItem value="Nam" id="male" /> Nam
+                            </div>
+                            <div className="flex items-center space-x-2">
                             <RadioGroupItem value="Nu" id="female" /> Nữ
+                            </div>
+                            <div className="flex items-center space-x-2">
                             <RadioGroupItem value="Khac" id="other" /> Khác
+                            </div>
                           </RadioGroup>
                         )}
                       />

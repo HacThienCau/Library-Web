@@ -1,5 +1,5 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Disclosure,
   DisclosureButton,
@@ -12,6 +12,9 @@ import {
 import { Menu as MenuIcon, X, Bell, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
+
+
 
 const navigation = [
   { name: "Trang chủ", href: "/" },
@@ -34,7 +37,12 @@ const CartBadge = ({ count }) => {
 
 const Header = () => {
   const pathname = usePathname();
+const router = useRouter();
 
+const handleLogout = () => {
+  localStorage.removeItem("jwt");
+  router.push("/user-login");
+};
   return (
     <header className="bg-[#062D76] text-white shadow-lg fixed top-0 left-0 w-full z-50">
       <Disclosure as="nav" className="mx-auto">
@@ -153,14 +161,14 @@ const Header = () => {
                     </MenuItem>
                     <MenuItem>
                       {({ active }) => (
-                        <Link
-                          href="/logout"
-                          className={`block px-4 py-2 text-gray-700 ${
-                            active && "bg-gray-100"
-                          }`}
-                        >
-                          Đăng xuất
-                        </Link>
+                        <button
+                        onClick={handleLogout}
+                        className={`w-full text-left px-4 py-2 text-gray-700 ${
+                          active && "bg-gray-100"
+                        }`}
+                      >
+                        Đăng xuất
+                      </button>
                       )}
                     </MenuItem>
                   </MenuItems>
