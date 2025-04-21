@@ -139,7 +139,7 @@ const page = () => {
             </div>
           </div>
           {selected.length > 0 && (
-            <footer className="fixed bottom-0 self-stretch mr-[1.25rem] md:left-64 ml-[1.25rem] right-0 bg-[#E6EAF1] shadow-lg p-4 flex justify-between">
+            <footer className="fixed bottom-0 self-stretch mr-[1.25rem] md:left-60 ml-[1.25rem] right-0 bg-[#E6EAF1] shadow-lg p-4 flex justify-between">
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -151,7 +151,7 @@ const page = () => {
                   Chọn tất cả ({books.length})
                 </span>
               </div>
-              <button className="px-4 py-2 bg-[#062D76] text-white rounded">
+              <button className="px-4 py-2 bg-[#062D76] text-white rounded cursor-pointer hover:bg-[#F7302E] transition duration-200 ease-in-out">
                 Đăng ký mượn ({selected.length})
               </button>
             </footer>
