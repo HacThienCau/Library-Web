@@ -1,5 +1,6 @@
 package com.library_web.library.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class UserService {
         // Tạo giỏ hàng mới cho người dùng
         Cart cart = new Cart();
         cart.setUser(savedUser);
+        cart.setBooks(new ArrayList<>());
         cartRepository.save(cart);
 
         // Gửi thông báo chào mừng đến người dùng

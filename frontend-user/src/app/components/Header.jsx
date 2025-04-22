@@ -39,14 +39,14 @@ const Header = () => {
 
   const [cartCount, setCartCount] = useState(); 
 
-  const userId = "67fbfc0b6a8328377edee149"; 
+  const userId = localStorage.getItem('id');
 
   const fetchCart = async () => {
     try {
       const response = await fetch(`http://localhost:8081/carts/user/${userId}`);
       if (response.ok) {
         const data = await response.json();
-        const booksInCart = data.books;
+        const booksInCart = data.books || [];
         setCartCount(booksInCart.length); 
       } else {
         console.error("Lỗi khi lấy giỏ hàng");

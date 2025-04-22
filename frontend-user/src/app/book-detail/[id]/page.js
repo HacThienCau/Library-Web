@@ -89,6 +89,9 @@ function page() {
   
       alert("Đã thêm sách vào giỏ!");
       console.log(res.data);
+      
+      // Reload lại trang để làm mới giỏ hàng
+      window.location.reload();
     } catch (error) {
       console.error("Lỗi khi thêm sách vào giỏ:", error);
       alert("Có lỗi xảy ra khi thêm sách vào giỏ.");
