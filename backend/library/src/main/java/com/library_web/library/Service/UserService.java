@@ -7,7 +7,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.library_web.library.Model.Cart;
 import com.library_web.library.Model.User;
+import com.library_web.library.Repository.CartRepo;
 import com.library_web.library.Repository.UserRepo;
 
 @Service
@@ -15,16 +17,25 @@ public class UserService {
     @Autowired
     private UserRepo userRepo;
     @Autowired
+    private CartRepo cartRepository;
+    @Autowired
     private NotificationService notificationService;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public User signUp(User user) {
         user.setMatKhau(passwordEncoder.encode(user.getMatKhau())); // Mã hóa mật khẩu
-        User savedUser = userRepo.save(user);
 
+        User savedUser = userRepo.save(user);
+        // Tạo giỏ hàng mới cho người dùng
+        Cart cart = new Cart();
+        cart.setUser(savedUser);
+        cartRepository.save(cart);
+
+        // Gửi thông báo chào mừng đến người dùng
         String message = "Chào mừng " + user.getTenND() + " đã đăng ký tài khoản thành công!";
         notificationService.sendNotification(user.getId(), message); // Gửi thông báo
+
         return savedUser;
     }
 

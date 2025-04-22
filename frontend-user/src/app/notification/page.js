@@ -8,10 +8,8 @@ const page = () => {
   const [selected, setSelected] = useState([]);
   const [noti, setNoti] = useState("");
   const [loading, setLoading] = useState(true); // Trạng thái loading
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("id");
   console.log(userId);
-  let cartId = "";
-
   // Lấy giỏ hàng từ API theo userId
   const fetchCart = async () => {
     try {

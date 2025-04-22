@@ -36,10 +36,10 @@ public class CartController {
         }
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Cart> updateCart(@PathVariable String id, @RequestBody Cart cart) {
+    @PatchMapping("/user/{userId}")
+    public ResponseEntity<Cart> updateCartByUserId(@PathVariable String userId, @RequestBody Cart cart) {
         try {
-            return ResponseEntity.ok(cartService.updateCart(id, cart));
+            return ResponseEntity.ok(cartService.updateCartByUserId(userId, cart));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
@@ -49,5 +49,18 @@ public class CartController {
     public ResponseEntity<Void> deleteCart(@PathVariable String id) {
         cartService.deleteCart(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // API xóa một số sách khỏi giỏ hàng
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<Cart> deleteBooksFromCart(@PathVariable String userId, @RequestBody List<String> bookIds) {
+        try {
+            // Xóa các sách có ID trong danh sách khỏi giỏ hàng và trả về giỏ hàng đã cập
+            // nhật
+            Cart updatedCart = cartService.deleteBooksFromCart(userId, bookIds);
+            return ResponseEntity.ok(updatedCart);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

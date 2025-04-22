@@ -3,6 +3,7 @@ package com.library_web.library.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import com.library_web.library.Model.Book;
 import com.library_web.library.Model.Cart;
 import com.library_web.library.Repository.CartRepo;
 
@@ -31,19 +32,39 @@ public class CartService {
     return cartRepository.save(cart);
   }
 
-  public Cart updateCart(String id, Cart cart) {
-    return cartRepository.findById(id)
-        .map(existingCart -> {
-          // Cập nhật các thuộc tính cụ thể nếu có trong Cart, ví dụ như chỉ cập nhật danh sách sách:
-          if (cart.getBooks() != null) {
-            existingCart.setBooks(cart.getBooks());
-          }
-          return cartRepository.save(existingCart);
-        })
-        .orElseThrow(() -> new RuntimeException("Cart not found"));
+  public Cart updateCartByUserId(String userId, Cart updatedCart) {
+    // Tìm giỏ hàng hiện tại của người dùng
+    Cart existingCart = cartRepository.findByUser_Id(userId)
+        .orElseThrow(() -> new RuntimeException("Không tìm thấy giỏ hàng cho userId: " + userId));
+
+    // Lấy danh sách sách hiện tại trong giỏ hàng
+    List<Book> currentBooks = existingCart.getBooks();
+
+    // Thêm sách mới vào đầu danh sách nếu có
+    if (updatedCart.getBooks() != null && !updatedCart.getBooks().isEmpty()) {
+      currentBooks.add(0, updatedCart.getBooks().get(0)); // Thêm sách mới vào đầu danh sách
+    }
+
+    // Cập nhật lại giỏ hàng với sách đã được thêm
+    existingCart.setBooks(currentBooks);
+
+    // Lưu giỏ hàng đã cập nhật vào cơ sở dữ liệu
+    return cartRepository.save(existingCart);
   }
 
   public void deleteCart(String cartId) {
     cartRepository.deleteById(cartId);
+  }
+
+  // Xóa sách khỏi giỏ hàng dựa trên danh sách ID sách
+  public Cart deleteBooksFromCart(String userId, List<String> bookIds) {
+    Cart cart = cartRepository.findByUser_Id(userId)
+        .orElseThrow(() -> new RuntimeException("Không tìm thấy giỏ hàng cho userId: " + userId));
+
+    // Lọc và xóa các sách có trong danh sách bookIds
+    cart.getBooks().removeIf(book -> bookIds.contains(book.getId()));
+
+    // Cập nhật giỏ hàng sau khi xóa các sách
+    return cartRepository.save(cart);
   }
 }

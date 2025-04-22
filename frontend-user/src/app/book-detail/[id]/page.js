@@ -44,6 +44,7 @@ Bởi tô màu là một hình thức chữa lành đơn giản mà hiệu quả
 function page() {
   const { id } = useParams();
   const [details, setDetails] = useState(detail);
+  const userId = localStorage.getItem("id"); // Lấy userId từ localStorage
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -56,7 +57,10 @@ function page() {
           author: book.tenTacGia,
           category: book.tenTheLoaiCon,
           publisher: book.nxb,
-          status: (book.tongSoLuong - book.soLuongMuon - book.soLuongXoa) > 0 ? "Còn sẵn" : "Hết sách",
+          status:
+            book.tongSoLuong - book.soLuongMuon - book.soLuongXoa > 0
+              ? "Còn sẵn"
+              : "Hết sách",
           borrow_count: book.soLuongMuon,
           book_code: book.id,
           size: "14.5 x 20.5 cm",
@@ -76,6 +80,20 @@ function page() {
 
     fetchBook();
   }, []);
+
+  const handleAddToCart = async () => {
+    try {
+      const res = await axios.patch(`http://localhost:8081/carts/user/${userId}`, {
+        books: [{ id: id }], // đưa vào mảng 1 phần tử
+      });
+  
+      alert("Đã thêm sách vào giỏ!");
+      console.log(res.data);
+    } catch (error) {
+      console.error("Lỗi khi thêm sách vào giỏ:", error);
+      alert("Có lỗi xảy ra khi thêm sách vào giỏ.");
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen text-foreground">
@@ -97,7 +115,8 @@ function page() {
                 Tác giả: {details.author}
               </p>
               <p>
-                <span className="font-semibold">Thể loại:</span> {details.category}
+                <span className="font-semibold">Thể loại:</span>{" "}
+                {details.category}
               </p>
               <p>
                 <span className="font-semibold">NXB:</span> {details.publisher}
@@ -111,7 +130,10 @@ function page() {
                 {details.borrow_count} lượt
               </p>
 
-              <Button className="mt-4 bg-[#062D76] hover:bg-[#E6EAF1] hover:text-[#062D76] text-white font-semibold py-2 px-4 rounded-lg cursor-pointer">
+              <Button
+                onClick={handleAddToCart}
+                className="mt-4 bg-[#062D76] hover:bg-[#E6EAF1] hover:text-[#062D76] text-white font-semibold py-2 px-4 rounded-lg cursor-pointer"
+              >
                 Mượn sách
               </Button>
             </div>
@@ -123,10 +145,12 @@ function page() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
               <p>
-                <span className="font-semibold">Mã sách:</span> {details.book_code}
+                <span className="font-semibold">Mã sách:</span>{" "}
+                {details.book_code}
               </p>
               <p>
-                <span className="font-semibold">Kích thước:</span> {details.size}
+                <span className="font-semibold">Kích thước:</span>{" "}
+                {details.size}
               </p>
               <p>
                 <span className="font-semibold">Số trang:</span> {details.pages}
@@ -139,7 +163,8 @@ function page() {
                 {details.publish_year}
               </p>
               <p>
-                <span className="font-semibold">Ngôn ngữ:</span> {details.language}
+                <span className="font-semibold">Ngôn ngữ:</span>{" "}
+                {details.language}
               </p>
             </div>
           </div>
