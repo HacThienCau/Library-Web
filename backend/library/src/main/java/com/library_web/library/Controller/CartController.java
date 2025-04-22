@@ -36,10 +36,10 @@ public class CartController {
         }
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Cart> updateCart(@PathVariable String id, @RequestBody Cart cart) {
+    @PatchMapping("/user/{userId}")
+    public ResponseEntity<Cart> updateCartByUserId(@PathVariable String userId, @RequestBody Cart cart) {
         try {
-            return ResponseEntity.ok(cartService.updateCart(id, cart));
+            return ResponseEntity.ok(cartService.updateCartByUserId(userId, cart));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
