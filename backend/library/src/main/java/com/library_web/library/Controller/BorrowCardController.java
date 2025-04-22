@@ -40,11 +40,11 @@ public class BorrowCardController {
     }
 
     // Lấy tất cả phiếu mượn theo người dùng
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<BorrowCard>> getBorrowCardsByUserId(@PathVariable String userId) {
         List<BorrowCard> borrowCards = borrowCardService.getBorrowCardsByUserId(userId);
         if (borrowCards.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Trả về trạng thái 204 nếu không có dữ liệu
+            return ResponseEntity.status(204).build(); // Trả về trạng thái 204 nếu không có dữ liệu
         }
         return ResponseEntity.ok(borrowCards); // Trả về danh sách phiếu mượn của người dùng
     }
@@ -54,7 +54,7 @@ public class BorrowCardController {
     public ResponseEntity<BorrowCard> getBorrowCardDetails(@PathVariable String id) {
         BorrowCard borrowCard = borrowCardService.getBorrowCardDetails(id);
         if (borrowCard == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body(null);
         }
         return ResponseEntity.ok(borrowCard);
     }

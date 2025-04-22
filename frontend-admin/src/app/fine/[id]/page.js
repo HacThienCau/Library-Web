@@ -204,7 +204,7 @@ function page() {
               </div>
             </div>
             {borrowDetail && (
-              <div className="flex flex-col gap-[10px] relative bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 items-center">
+              <div className="flex flex-col gap-[10px] bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 items-center">
                 {fine.NoiDung === "Trả sách trễ hạn" && (
                   <div className="flex flex-col w-full">
                     <div className="flex w-full gap-[20px] md:gap-[50px]">
