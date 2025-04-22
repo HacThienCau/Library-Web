@@ -121,6 +121,8 @@ const onSubmitLogin = async (data) => {
     localStorage.setItem('jwt', result.jwt); // Lưu token vào localStorage hoặc sessionStorage
     localStorage.setItem('id', (result.id)); // Lưu thông tin người dùng vào localStorage hoặc sessionStorage
 
+    // localStorage.setItem('userId', result.userId);
+    
     // Chuyển hướng người dùng sau khi đăng nhập thành công
     router.push('/');
     toast.success('Đăng nhập tài khoản thành công');
@@ -157,8 +159,8 @@ const onSubmitLogin = async (data) => {
           <CardContent>
             <Tabs defaultValue="login" className="w-full">
               <TabsList className="grid w-full grid-cols-2 bg-slate-200">
-                <TabsTrigger value="login">Đăng nhập</TabsTrigger>
-                <TabsTrigger value="signup">Đăng ký</TabsTrigger>
+                <TabsTrigger value="login" className="cursor-pointer">Đăng nhập</TabsTrigger>
+                <TabsTrigger value="signup" className="cursor-pointer">Đăng ký</TabsTrigger>
               </TabsList>
 
               {/* Đăng nhập */}

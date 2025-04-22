@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.library_web.library.Model.Cart;
 import com.library_web.library.Model.User;
-import com.library_web.library.Respository.CartRepo;
-import com.library_web.library.Respository.UserRepo;
+import com.library_web.library.Repository.CartRepo;
+import com.library_web.library.Repository.UserRepo;
 
 @Service
 public class UserService {
@@ -18,6 +18,8 @@ public class UserService {
     private UserRepo userRepo;
     @Autowired
     private CartRepo cartRepository;
+    @Autowired
+    private NotificationService notificationService;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -29,6 +31,11 @@ public class UserService {
         Cart cart = new Cart();
         cart.setUser(savedUser);
         cartRepository.save(cart);
+
+        // Gửi thông báo chào mừng đến người dùng
+        String message = "Chào mừng " + user.getTenND() + " đã đăng ký tài khoản thành công!";
+        notificationService.sendNotification(user.getId(), message); // Gửi thông báo
+
         return savedUser;
     }
 

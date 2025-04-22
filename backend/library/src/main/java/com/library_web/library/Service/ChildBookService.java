@@ -1,7 +1,8 @@
 package com.library_web.library.Service;
 
 import com.library_web.library.Model.ChildBook;
-import com.library_web.library.Respository.ChildBookRepo;
+import com.library_web.library.Repository.ChildBookRepo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

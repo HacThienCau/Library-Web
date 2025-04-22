@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.library_web.library.Model.Setting;
-import com.library_web.library.Respository.SettingRepo;
+import com.library_web.library.Repository.SettingRepo;
+
 import java.util.List;
 
 @Service
