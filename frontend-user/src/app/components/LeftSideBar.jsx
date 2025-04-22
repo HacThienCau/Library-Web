@@ -57,7 +57,7 @@ const LeftSideBar = () => {
         <nav className="space-y-2 flex-grow">
           <Button
             variant="ghost"
-            className={`flex justify-start items-center cursor-pointer w-full  text-[1.125rem] font-normal ${getButtonClass("/borrowed-books")}`}
+            className={`flex justify-start py-5 items-center cursor-pointer w-full  text-[1.125rem] font-normal ${getButtonClass("/borrowed-books")}`}
             onClick={() => handleNavigation("/borrowed-books")}
           >
             <BookText style={{ width: "1.5rem", height: "1.5rem", strokeWidth: "1.5px" }} className="mr-2 text-2xl" /> Sách đang mượn
@@ -65,7 +65,7 @@ const LeftSideBar = () => {
 
           <Button
             variant="ghost"
-            className={`flex justify-start items-center cursor-pointer w-full text-[1.125rem] font-normal ${getButtonClass("/overdue-books")}`}
+            className={`flex justify-start py-5 items-center cursor-pointer w-full text-[1.125rem] font-normal ${getButtonClass("/overdue-books")}`}
             onClick={() => handleNavigation("/overdue-books")}
           >
             <CircleAlert style={{ width: "1.5rem", height: "1.5rem", strokeWidth: "1.5px" }} className="mr-2" /> Sách quá hạn
@@ -73,7 +73,7 @@ const LeftSideBar = () => {
 
           <Button
             variant="ghost"
-            className={`flex justify-start items-center cursor-pointer w-full text-[1.125rem] font-normal ${getButtonClass("/borrowed-card")}`}
+            className={`flex justify-start py-5 items-center cursor-pointer w-full text-[1.125rem] font-normal ${getButtonClass("/borrowed-card")}`}
             onClick={() => handleNavigation("/borrowed-card")}
           >
             <ClipboardList style={{ width: "1.5rem", height: "1.5rem", strokeWidth: "1.5px" }} className="mr-2" /> Phiếu mượn
@@ -81,7 +81,7 @@ const LeftSideBar = () => {
 
           <Button
             variant="ghost"
-            className={`flex justify-start items-center cursor-pointer w-full text-[1.125rem] font-normal ${getButtonClass("/fine")}`}
+            className={`flex justify-start py-5 items-center cursor-pointer w-full text-[1.125rem] font-normal ${getButtonClass("/fine")}`}
             onClick={() => handleNavigation("/fine")}
           >
             <CircleDollarSign style={{ width: "1.5rem", height: "1.5rem", strokeWidth: "1.5px" }} className="mr-2" /> Phiếu phạt
@@ -89,7 +89,7 @@ const LeftSideBar = () => {
 
           <Button
             variant="ghost"
-            className={`flex justify-start items-center cursor-pointer w-full text-[1.125rem] font-normal ${getButtonClass("/change-password")}`}
+            className={`flex justify-start py-5 items-center cursor-pointer w-full text-[1.125rem] font-normal ${getButtonClass("/change-password")}`}
             onClick={() => handleNavigation("/change-password")}
           >
             <LockKeyhole style={{ width: "1.5rem", height: "1.5rem", strokeWidth: "1.5px" }} className="mr-2" /> Đổi mật khẩu
