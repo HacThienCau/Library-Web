@@ -142,4 +142,23 @@ public class BookService {
             bookRepo.save(book);
         }
     }
+
+     // Tìm kiếm sách theo tên sách, tác giả hoặc thể loại
+     public List<Book> searchBooks(String query) {
+        // Kiểm tra nếu query không phải là null hoặc rỗng
+        if (query == null || query.trim().isEmpty()) {
+            return List.of();  // Trả về danh sách rỗng nếu không có input
+        }
+
+        // Tìm kiếm theo tên sách, tên tác giả hoặc thể loại (kiểm tra đầy đủ các trường hợp)
+        List<Book> books = bookRepo.findByTenSachContainingIgnoreCase(query);
+        if (books.isEmpty()) {
+            books = bookRepo.findByTenTacGiaContainingIgnoreCase(query);
+        }
+        if (books.isEmpty()) {
+            books = bookRepo.findByTheLoaiContainingIgnoreCase(query);
+        }
+
+        return books;
+    }
 }
