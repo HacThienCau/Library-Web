@@ -43,7 +43,6 @@ public ResponseEntity<?> signIn(@RequestBody SignInRequest loginRequest) {
         String token = JWTUtils.generateToken(user.getId());
         return ResponseEntity.ok(new Object() {
             public final String jwt = token;
-            public final String userId = user.getId();
             public final String email = user.getEmail();
             public final String tenND = user.getTenND();
             public final String id = user.getId();

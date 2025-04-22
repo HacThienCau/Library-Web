@@ -119,7 +119,7 @@ const onSubmitLogin = async (data) => {
     // console.log(result); // Kiểm tra kết quả trả về từ backend
     //  backend trả về JWT token
     localStorage.setItem('jwt', result.jwt); // Lưu token vào localStorage hoặc sessionStorage
-    localStorage.setItem('id', (result.id)); // Lưu thông tin người dùng vào localStorage hoặc sessionStorage
+    localStorage.setItem('id', result.id); // Lưu thông tin người dùng vào localStorage hoặc sessionStorage
 
     // localStorage.setItem('userId', result.userId);
     

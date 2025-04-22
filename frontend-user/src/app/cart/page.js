@@ -71,7 +71,7 @@ const page = () => {
   const [selected, setSelected] = useState([]);
   const [books, setBooks] = useState(""); // Giỏ hàng
   const [loading, setLoading] = useState(true); // Trạng thái loading
-  const userId = localStorage.id; // Thay bằng userId thực tế của bạn
+  const userId = localStorage.id;
   let cartId = "";
 
   // Lấy giỏ hàng từ API theo userId
@@ -170,7 +170,7 @@ const page = () => {
               </h2>
             </div>
             <div className="grid grid-cols-1 max-sm:grid-cols-1 gap-5 items-start mt-5 w-full max-md:max-w-full">
-              {Array.isArray(books) &&
+              {Array.isArray(books) && books.length > 0 ? (
                 books.map((book, index) => (
                   <BookCard
                     key={book.id}
@@ -188,7 +188,10 @@ const page = () => {
                     checked={selected.includes(book.id)} // Kiểm tra nếu ID sách đã được chọn
                     onCheck={(checked) => toggleBook(book.id, checked)} // Truyền ID sách thay vì chỉ số
                   />
-                ))}
+                ))
+               ) : (
+                  <div className="text-center col-span-full text-lg text-gray-500">Giỏ sách trống.</div>
+                )}
             </div>
           </div>
           {selected.length > 0 && (
