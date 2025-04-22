@@ -50,4 +50,17 @@ public class CartController {
         cartService.deleteCart(id);
         return ResponseEntity.noContent().build();
     }
+
+    // API xóa một số sách khỏi giỏ hàng
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<Cart> deleteBooksFromCart(@PathVariable String userId, @RequestBody List<String> bookIds) {
+        try {
+            // Xóa các sách có ID trong danh sách khỏi giỏ hàng và trả về giỏ hàng đã cập
+            // nhật
+            Cart updatedCart = cartService.deleteBooksFromCart(userId, bookIds);
+            return ResponseEntity.ok(updatedCart);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

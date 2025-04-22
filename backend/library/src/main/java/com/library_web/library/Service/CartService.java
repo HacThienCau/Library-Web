@@ -42,7 +42,7 @@ public class CartService {
 
     // Thêm sách mới vào đầu danh sách nếu có
     if (updatedCart.getBooks() != null && !updatedCart.getBooks().isEmpty()) {
-        currentBooks.add(0, updatedCart.getBooks().get(0)); // Thêm sách mới vào đầu danh sách
+      currentBooks.add(0, updatedCart.getBooks().get(0)); // Thêm sách mới vào đầu danh sách
     }
 
     // Cập nhật lại giỏ hàng với sách đã được thêm
@@ -50,9 +50,21 @@ public class CartService {
 
     // Lưu giỏ hàng đã cập nhật vào cơ sở dữ liệu
     return cartRepository.save(existingCart);
-}
+  }
 
   public void deleteCart(String cartId) {
     cartRepository.deleteById(cartId);
+  }
+
+  // Xóa sách khỏi giỏ hàng dựa trên danh sách ID sách
+  public Cart deleteBooksFromCart(String userId, List<String> bookIds) {
+    Cart cart = cartRepository.findByUser_Id(userId)
+        .orElseThrow(() -> new RuntimeException("Không tìm thấy giỏ hàng cho userId: " + userId));
+
+    // Lọc và xóa các sách có trong danh sách bookIds
+    cart.getBooks().removeIf(book -> bookIds.contains(book.getId()));
+
+    // Cập nhật giỏ hàng sau khi xóa các sách
+    return cartRepository.save(cart);
   }
 }
