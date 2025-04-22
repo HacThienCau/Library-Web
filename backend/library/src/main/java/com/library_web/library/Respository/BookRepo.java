@@ -10,4 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookRepo extends MongoRepository<Book, String> {
     List<Book> findByTrangThai(Book.TrangThai status);
+    List<Book> findByTenSachContainingIgnoreCase(String tenSach);
+    List<Book> findByTenTacGiaContainingIgnoreCase(String tenTacGia);
+    List<Book> findByTheLoaiContainingIgnoreCase(String theLoai);
 }

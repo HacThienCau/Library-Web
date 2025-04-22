@@ -73,6 +73,7 @@ import axios from "axios";
 
 const HomePage = () => {
   const [books, setBooks] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     // gọi API lấy toàn bộ sách
@@ -82,8 +83,8 @@ const HomePage = () => {
         // console.log("Dữ liệu sách:", response.data);
         const convertedBooks = response.data.map((book) => ({
           id: book.id,
-          imageSrc:book.hinhAnh[0],
-          available: (book.tongSoLuong - book.soLuongMuon - book.soLuongXoa) > 0,
+          imageSrc: book.hinhAnh[0],
+          available: book.tongSoLuong - book.soLuongMuon - book.soLuongXoa > 0,
           title: book.tenSach,
           author: book.tenTacGia,
           publisher: book.nxb,
@@ -97,6 +98,40 @@ const HomePage = () => {
 
     fetchBooks();
   }, []);
+
+  const handleSearch = async () => {
+    try {
+      let res;
+
+      if (!searchTerm.trim()) {
+        res = await axios.get("http://localhost:8081/books");
+      } else {
+        res = await axios.get("http://localhost:8081/search", {
+          params: { query: searchTerm },
+        });
+      }
+
+      const data = res?.data || [];
+
+      const convertedBooks = Array.isArray(data)
+        ? data.map((book) => ({
+            id: book.id,
+            imageSrc: book.hinhAnh[0],
+            available:
+              book.tongSoLuong - book.soLuongMuon - book.soLuongXoa > 0,
+            title: book.tenSach,
+            author: book.tenTacGia,
+            publisher: book.nxb,
+            borrowCount: book.soLuongMuon,
+          }))
+        : [];
+
+      setBooks(convertedBooks);
+    } catch (error) {
+      console.error("Lỗi khi tìm kiếm sách:", error);
+      setBooks([]); // Nếu có lỗi cũng để trống
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen text-foreground">
@@ -114,6 +149,13 @@ const HomePage = () => {
               id="search-input"
               placeholder="Tìm kiếm"
               className="flex-1 md:text-[1.25rem] bg-transparent border-none outline-none placeholder-[#062D76] text-[#062D76] focus:ring-2 focus:ring-red-dark focus:ring-opacity-50"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch();
+                }
+              }}
             />
           </div>
           <div className="flex lg:flex-row justify-between flex-col gap-3.5 mt-5 w-full max-md:max-w-full">

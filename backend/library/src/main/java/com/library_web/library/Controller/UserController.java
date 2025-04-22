@@ -40,11 +40,12 @@ public class UserController {
 public ResponseEntity<?> signIn(@RequestBody SignInRequest loginRequest) {
     try {
         User user = userService.signIn(loginRequest.getEmail(), loginRequest.getMatKhau());
-        String token = JWTUtils.generateToken(user.getEmail());
+        String token = JWTUtils.generateToken(user.getId());
         return ResponseEntity.ok(new Object() {
             public final String jwt = token;
             public final String email = user.getEmail();
             public final String tenND = user.getTenND();
+            public final String id = user.getId();
             public final String gioiTinh = user.getGioiTinh().toString();
             public final String ngaySinh = user.getNgaySinh().toString();
         });

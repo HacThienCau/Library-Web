@@ -13,9 +13,9 @@ public class JWTUtils {
     private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     // Tạo JWT token
-    public static String generateToken(String username) {
+    public static String generateToken(String id) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(id)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Hết hạn trong 1 giờ
                 .signWith(SECRET_KEY)
