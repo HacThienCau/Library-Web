@@ -157,6 +157,7 @@ const page = () => {
             </footer>
           )}
         </section>
+        <ChatBotButton />
       </main>
     </div>
   );

@@ -8,34 +8,39 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.library_web.library.Model.User;
-import com.library_web.library.Respository.UserRepo;
+import com.library_web.library.Repository.UserRepo;
 
 @Service
 public class UserService {
-    @Autowired   
-private UserRepo userRepo;
+    @Autowired
+    private UserRepo userRepo;
+    @Autowired
+    private NotificationService notificationService;
 
- private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
- public User signUp(User user) {
-    user.setMatKhau(passwordEncoder.encode(user.getMatKhau()));  // Mã hóa mật khẩu
-    return userRepo.save(user);
-}
+    public User signUp(User user) {
+        user.setMatKhau(passwordEncoder.encode(user.getMatKhau())); // Mã hóa mật khẩu
+        User savedUser = userRepo.save(user);
 
-// Đăng nhập người dùng và kiểm tra mật khẩu
-public User signIn(String email, String rawPassword) throws AuthenticationException {
-    Optional<User> optionalUser = userRepo.findByEmail(email);
-    if (optionalUser.isPresent()) {
-        User user = optionalUser.get();
-        if (passwordEncoder.matches(rawPassword, user.getMatKhau())) {
-            return user;
-        } else {
-            throw new org.springframework.security.authentication.BadCredentialsException("Invalid password");
-        }
-    } else {
-        throw new org.springframework.security.authentication.BadCredentialsException("User not found");
+        String message = "Chào mừng " + user.getTenND() + " đã đăng ký tài khoản thành công!";
+        notificationService.sendNotification(user.getId(), message); // Gửi thông báo
+        return savedUser;
     }
+
+    // Đăng nhập người dùng và kiểm tra mật khẩu
+    public User signIn(String email, String rawPassword) throws AuthenticationException {
+        Optional<User> optionalUser = userRepo.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if (passwordEncoder.matches(rawPassword, user.getMatKhau())) {
+                return user;
+            } else {
+                throw new org.springframework.security.authentication.BadCredentialsException("Invalid password");
+            }
+        } else {
+            throw new org.springframework.security.authentication.BadCredentialsException("User not found");
+        }
+    }
+
 }
-
-
-} 

@@ -3,7 +3,7 @@ package com.library_web.library.Controller;
 
 import com.library_web.library.DTO.SignInRequest;
 import com.library_web.library.Model.User;
-import com.library_web.library.Respository.UserRepo;
+import com.library_web.library.Repository.UserRepo;
 import com.library_web.library.Service.UserService;
 import com.library_web.library.Utils.JWTUtils;
 
@@ -43,6 +43,7 @@ public ResponseEntity<?> signIn(@RequestBody SignInRequest loginRequest) {
         String token = JWTUtils.generateToken(user.getEmail());
         return ResponseEntity.ok(new Object() {
             public final String jwt = token;
+            public final String userId = user.getId();
             public final String email = user.getEmail();
             public final String tenND = user.getTenND();
             public final String gioiTinh = user.getGioiTinh().toString();
