@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import LeftSideBar from "../components/LeftSideBar";
 import ChatBotButton from "../components/ChatBotButton";
 import BookCard from "./book";
+import axios from "axios";
 // const books = [
 //   {
 //     id: "DRPN001",
@@ -82,7 +83,7 @@ const page = () => {
       ); // Endpoint API lấy giỏ hàng theo userId
       if (response.ok) {
         const data = await response.json();
-        cartId=data.id; 
+        cartId = data.id;
         setBooks(data.books); // Giả sử API trả về đối tượng có key 'books'
       } else {
         console.error("Lỗi khi lấy giỏ hàng");
@@ -99,16 +100,64 @@ const page = () => {
   }, [userId]);
 
   // tick / bỏ tick 1 cuốn
-  const toggleBook = (idx, checked) => {
+  const toggleBook = (bookId, checked) => {
     setSelected((prev) =>
-      checked ? [...prev, idx] : prev.filter((i) => i !== idx)
+      checked ? [...prev, bookId] : prev.filter((id) => id !== bookId)
     );
   };
 
   // tick / bỏ tick tất cả
-  const allChecked = Array.isArray(books) && books.length > 0 && selected.length === books.length;
+  const allChecked =
+    Array.isArray(books) &&
+    books.length > 0 &&
+    selected.length === books.length;
   const toggleAll = (checked) =>
-    setSelected(checked ? books.map((_, i) => i) : []);
+    setSelected(checked ? books.map((book) => book.id) : []);
+
+  const handleDeleteBooks = async () => {
+    try {
+      // Gửi request xóa các sách đã chọn, dùng `selected` để lấy các book ID
+      const response = await axios.delete(
+        `http://localhost:8081/carts/user/${userId}`,
+        {
+          data: selected, // Truyền danh sách các ID sách cần xóa
+        }
+      );
+
+      // Cập nhật lại giỏ hàng sau khi xóa
+      setBooks(response.data.books);
+      console.log("Giỏ hàng sau khi xóa:", response);
+      // Thông báo thành công
+      alert("Đã xóa sách thành công!");
+      setSelected([]); // Reset danh sách đã chọn
+    } catch (error) {
+      console.error("Lỗi khi xóa sách:", error);
+      alert("Đã có lỗi khi xóa sách!");
+    }
+  };
+
+  const handleBorrowBooks = async () => {
+    try {
+      // Gửi request xóa các sách đã chọn, dùng `selected` để lấy các book ID
+      // const response = await axios.delete(
+      //   `http://localhost:8081/carts/user/${userId}`,
+      //   {
+      //     data: selected, // Truyền danh sách các ID sách cần xóa
+      //   }
+      // );
+
+      // Cập nhật lại giỏ hàng sau khi xóa
+      // setBooks(response.data.books);
+      console.log("Danh sách id sách muốn mượn:", selected);
+      // Thông báo thành công
+      alert("Đã xóa sách thành công!");
+      setSelected([]); // Reset danh sách đã chọn
+    } catch (error) {
+      console.error("Lỗi khi xóa sách:", error);
+      alert("Đã có lỗi khi xóa sách!");
+    }
+  }; 
+
   return (
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="pt-16 flex">
@@ -127,13 +176,17 @@ const page = () => {
                     key={book.id}
                     id={book.id}
                     imageSrc={book.hinhAnh[0]}
-                    available={(book.tongSoLuong - book.soLuongMuon - book.soLuongXoa) > 0 ? "Còn sẵn" : "Hết sách"}
+                    available={
+                      book.tongSoLuong - book.soLuongMuon - book.soLuongXoa > 0
+                        ? "Còn sẵn"
+                        : "Hết sách"
+                    }
                     title={book.tenSach}
                     author={book.tenTacGia}
                     publisher={book.nxb}
                     borrowCount={book.soLuongMuon}
-                    checked={selected.includes(index)}
-                    onCheck={(c) => toggleBook(index, c)}
+                    checked={selected.includes(book.id)} // Kiểm tra nếu ID sách đã được chọn
+                    onCheck={(checked) => toggleBook(book.id, checked)} // Truyền ID sách thay vì chỉ số
                   />
                 ))}
             </div>
@@ -151,7 +204,17 @@ const page = () => {
                   Chọn tất cả ({books.length})
                 </span>
               </div>
-              <button className="px-4 py-2 bg-[#062D76] text-white rounded">
+
+              <button
+                onClick={handleDeleteBooks}
+                className="px-4 py-2 bg-[#F44336] text-white rounded"
+              >
+                Xóa sách ({selected.length})
+              </button>
+
+              <button 
+              onClick={handleBorrowBooks}
+              className="px-4 py-2 bg-[#062D76] text-white rounded">
                 Đăng ký mượn ({selected.length})
               </button>
             </footer>
