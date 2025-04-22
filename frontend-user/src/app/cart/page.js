@@ -70,7 +70,7 @@ const page = () => {
   const [selected, setSelected] = useState([]);
   const [books, setBooks] = useState(""); // Giỏ hàng
   const [loading, setLoading] = useState(true); // Trạng thái loading
-  const userId = "67fbfc0b6a8328377edee149"; // Thay bằng userId thực tế của bạn
+  const userId = localStorage.id; // Thay bằng userId thực tế của bạn
   let cartId = "";
 
   // Lấy giỏ hàng từ API theo userId
@@ -106,7 +106,7 @@ const page = () => {
   };
 
   // tick / bỏ tick tất cả
-  const allChecked = selected.length === books.length;
+  const allChecked = Array.isArray(books) && books.length > 0 && selected.length === books.length;
   const toggleAll = (checked) =>
     setSelected(checked ? books.map((_, i) => i) : []);
   return (
