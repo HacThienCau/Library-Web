@@ -156,7 +156,7 @@ const page = () => {
       console.error("Lỗi khi xóa sách:", error);
       alert("Đã có lỗi khi xóa sách!");
     }
-  };
+  }; 
 
   return (
     <div className="flex flex-col min-h-screen text-foreground">
