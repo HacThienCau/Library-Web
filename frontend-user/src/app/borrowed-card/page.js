@@ -56,7 +56,7 @@ const page = () => {
     <main className="flex flex-col min-h-screen text-foreground w-full">
       <div className="pt-16 flex">
         <LeftSideBar />
-        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2">
+        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
           <div className="mx-auto">
             <header className="flex justify-between gap-8 max-lg:gap-3 max-sm:flex-col bg-white p-3 rounded-xl">
               {/* Current Borrowings Status */}
@@ -188,7 +188,7 @@ const page = () => {
                       </p>
                     </div>
                     <Button
-                      className="flex gap-2 justify-center items-center px-3 py-1 text-[1rem] self-center bg-[#062D76] text-white hover:bg-[#E6EAF1] hover:text-[#062D76] rounded-3xl cursor-pointer"
+                      className="flex gap-2 justify-center items-center px-3 py-1 text-[1rem] font-normal self-center bg-[#062D76] text-white hover:bg-[#E6EAF1] hover:text-[#062D76] rounded-3xl cursor-pointer"
                       aria-label={`View details for borrowing ${borrowing.id}`}
                       onClick={() => {
                         handleDetails(borrowing.id);
@@ -198,6 +198,7 @@ const page = () => {
                         style={{
                           width: "1.5rem",
                           height: "1.5rem",
+                          strokeWidth: "1px",
                         }}
                         className="size-6"
                       />
