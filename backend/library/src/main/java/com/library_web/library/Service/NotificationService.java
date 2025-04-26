@@ -25,7 +25,7 @@ public class NotificationService {
     }
 
     public List<Notification> getAllNotifications() {
-        return notificationRepository.findAll();  // Trả về tất cả thông báo trong database
+        return notificationRepository.findAll(); // Trả về tất cả thông báo trong database
     }
 
     // Lấy tất cả thông báo của người dùng theo userId
@@ -40,8 +40,12 @@ public class NotificationService {
 
     // Đánh dấu thông báo là đã đọc
     public Notification markAsRead(String id) {
-        Notification notification = notificationRepository.findById(id).orElseThrow(() -> new RuntimeException("Notification not found"));
-        notification.setRead(true);
-        return notificationRepository.save(notification);
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ko tìm thấy thông báo"));
+        if (!notification.isRead()) {
+            notification.setRead(true);
+            return notificationRepository.save(notification);
+        }
+        return notification;
     }
 }

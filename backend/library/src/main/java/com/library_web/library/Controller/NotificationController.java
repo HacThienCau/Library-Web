@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/notification")
@@ -31,7 +32,7 @@ public class NotificationController {
         List<Notification> notifications = notificationService.getAllNotifications();
         return ResponseEntity.ok(notifications);
     }
-    
+
     // Lấy tất cả thông báo của người dùng
     @GetMapping("/{userId}")
     public ResponseEntity<List<Notification>> getAllNotifications(@PathVariable String userId) {
@@ -48,11 +49,12 @@ public class NotificationController {
 
     // Đánh dấu thông báo đã đọc
     @PutMapping("/mark-as-read/{id}")
-    public ResponseEntity<Notification> markAsRead(@PathVariable String id) {
-        Notification notification = notificationService.markAsRead(id);
-        if (notification == null) {
-            return ResponseEntity.status(404).body(null); // Nếu không tìm thấy thông báo
+    public ResponseEntity<?> markAsRead(@PathVariable String id) {
+        try {
+            Notification notification = notificationService.markAsRead(id);
+            return ResponseEntity.ok(notification);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(404).body("Không tìm thấy thông báo");
         }
-        return ResponseEntity.ok(notification);
     }
 }
