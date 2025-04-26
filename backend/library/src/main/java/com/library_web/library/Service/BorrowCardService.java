@@ -42,7 +42,7 @@ public class BorrowCardService {
 
         // Nếu phiếu mượn vẫn còn đang mượn thì cập nhật trạng thái
         if (borrowCard.getStatus().equals("Đang mượn")) {
-            borrowCard.setStatus("Đã trả");
+            borrowCard.setStatus("Hết hạn");
         }
 
         borrowCard.updateStatus();

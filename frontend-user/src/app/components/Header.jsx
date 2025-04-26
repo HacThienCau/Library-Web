@@ -69,7 +69,19 @@ const Header = () => {
       <Disclosure as="nav" className="mx-auto">
         {({ open }) => (
           <>
+          
             <div className="flex justify-between items-center h-14 px-2 md:px-5">
+            <div className="flex justify-center gap-2">
+              {/* Mobile Menu Button */}
+              <div className="sm:hidden ">
+                <DisclosureButton className="p-2 rounded-md hover:bg-blue-700">
+                  {open ? (
+                    <X className="size-6" />
+                  ) : (
+                    <MenuIcon className="size-6" />
+                  )}
+                </DisclosureButton>
+              </div>
               {/* Logo */}
               <div className="flex items-center">
                 <Link href="/">
@@ -85,14 +97,15 @@ const Header = () => {
                   </h1>
                 </Link>
               </div>
+              </div>
 
               {/* Navigation Links */}
-              <div className="hidden sm:flex space-x-6">
+              <div className="hidden sm:flex space-x-5 max-md:space-x-2">
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`px-3 py-2 rounded-md text-lg font-medium transition duration-200 ${
+                    className={`px-3 py-2  rounded-md text-[1.125rem] font-medium transition duration-200 ${
                       pathname === item.href
                         ? "bg-white text-[#052259]"
                         : "hover:bg-white hover:text-[#052259]"
@@ -104,7 +117,7 @@ const Header = () => {
               </div>
 
               {/* Right Icons */}
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center justify-end space-x-4">
                 <button
                   className={`relative pr-2 pl-1.5 py-2 rounded-full cursor-pointer hover:bg-white hover:text-[#052259] ${
                     pathname === "/cart"
@@ -196,16 +209,6 @@ const Header = () => {
                 </Menu>
               </div>
 
-              {/* Mobile Menu Button */}
-              <div className="sm:hidden">
-                <DisclosureButton className="p-2 rounded-md hover:bg-blue-700">
-                  {open ? (
-                    <X className="size-6" />
-                  ) : (
-                    <MenuIcon className="size-6" />
-                  )}
-                </DisclosureButton>
-              </div>
             </div>
 
             {/* Mobile Menu Panel */}
