@@ -181,7 +181,7 @@ const HomePage = () => {
             <h2 className="gap-2.5 self-start px-5 py-2.5 text-[1.25rem] text-white bg-[#062D76] rounded-lg">
               Sách mới về
             </h2>
-            <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-6 items-start mt-5 w-full max-md:max-w-full">
+            <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-10 items-start mt-5 w-full max-md:max-w-full">
               {books.map((book, index) => (
                 <BookCard
                   key={book.id}
