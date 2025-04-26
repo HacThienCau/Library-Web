@@ -58,49 +58,44 @@ const BorrowingInfo = ({ info }) => {
             </span>
           </p>
           <p className="text-[1rem] font-semibold text-[#131313]/50">
-          Ngày mượn:{" "}
+            Ngày mượn:{" "}
             <span className="text-[#131313] font-medium ">
-            {new Date(info.borrowDate).toLocaleDateString("vi-VN")}
+              {new Date(info.borrowDate).toLocaleDateString("vi-VN")}
             </span>
           </p>
           {info.dueDate ? (
-          <p className="text-[1rem] font-semibold text-[#131313]/50">
-          Ngày trả sách:{" "}
-            <span className="text-[#131313] font-medium ">
-            {new Date(info.dueDate).toLocaleDateString("vi-VN")}
-            </span>
-          </p>
+            <p className="text-[1rem] font-semibold text-[#131313]/50">
+              Ngày trả sách:{" "}
+              <span className="text-[#131313] font-medium ">
+                {new Date(info.dueDate).toLocaleDateString("vi-VN")}
+              </span>
+            </p>
           ) : (
             <p className="text-[1rem] font-semibold text-[#131313]/50">
-          Hạn lấy sách:{" "}
-            <span className="text-[#131313] font-medium ">
-            {new Date(info.getBookDate).toLocaleDateString("vi-VN")}
-            </span>
-          </p>
+              Hạn lấy sách:{" "}
+              <span className="text-[#131313] font-medium ">
+                {new Date(info.getBookDate).toLocaleDateString("vi-VN")}
+              </span>
+            </p>
           )}
         </div>
 
         {/* Cột 2 */}
         <div className="flex flex-col gap-5 items-start text-[1.125rem] font-medium text-black">
-        <p className="text-[1rem] font-semibold text-[#131313]/50">
-        ID Người Dùng:{" "}
-            <span className="text-[#131313] font-medium ">
-            {info.userId}
-            </span>
+          <p className="text-[1rem] font-semibold text-[#131313]/50">
+            ID Người Dùng:{" "}
+            <span className="text-[#131313] font-medium ">{info.userId}</span>
           </p>
           <p className="text-[1rem] font-semibold text-[#131313]/50">
-          Tên Người Dùng:{" "}
-            <span className="text-[#131313] font-medium ">
-            {info.userName}
-            </span>
+            Tên Người Dùng:{" "}
+            <span className="text-[#131313] font-medium ">{info.userName}</span>
           </p>
           <p className="text-[1rem] font-semibold text-[#131313]/50">
-          Số lượng mượn:{" "}
+            Số lượng mượn:{" "}
             <span className="text-[#131313] font-medium ">
-            {info.totalBooks}
+              {info.totalBooks}
             </span>
           </p>
-         
         </div>
       </div>
     </section>
@@ -133,7 +128,7 @@ const ChiTietPhieuMuon = () => {
 
   const handleDelete = async (info) => {
     try {
-      await axios.delete(`http://localhost:8081/borrow-card/${info.id}`);
+      await axios.delete(`http://localhost:8081/borrow-card/${info.borrowCardId}`);
       toast.success("Xóa phiếu thành công");
       setPopUpOpen(false);
 
@@ -145,15 +140,21 @@ const ChiTietPhieuMuon = () => {
 
   if (loading) {
     return (
-      <div className="flex md:ml-60 top-16 w-full h-screen justify-center items-center">
-        <ThreeDot
-          color="#062D76"
-          size="large"
-          text="Vui lòng chờ"
-          variant="bounce"
-          textColor="#062D76"
-        />
-      </div>
+      <main className="flex flex-col min-h-screen text-foreground">
+        <div className="pt-16 flex">
+          <LeftSideBar />
+          <section className="flex justify-center items-center self-center pr-[1.25rem] md:pl-60 ml-[1.25rem] w-full h-screen">
+            <ThreeDot
+              color="#062D76"
+              size="large"
+              text="Vui lòng chờ"
+              variant="bounce"
+              textColor="#062D76"
+              className="self-center flex justify-center items-center"
+            />
+          </section>
+        </div>
+      </main>
     );
   }
 
