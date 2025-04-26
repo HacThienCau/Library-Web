@@ -1,6 +1,7 @@
 package com.library_web.library.Controller;
 
 import com.library_web.library.Service.BorrowCardService;
+import com.library_web.library.DTO.BorrowCardDetail;
 import com.library_web.library.Model.BorrowCard;
 
 import java.util.List;
@@ -51,11 +52,20 @@ public class BorrowCardController {
 
     // Lấy thông tin chi tiết phiếu mượn theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<BorrowCard> getBorrowCardDetails(@PathVariable String id) {
-        BorrowCard borrowCard = borrowCardService.getBorrowCardDetails(id);
-        if (borrowCard == null) {
-            return ResponseEntity.status(404).body(null);
+    public ResponseEntity<BorrowCardDetail> getBorrowCardDetails(@PathVariable String id) {
+        BorrowCardDetail details = borrowCardService.getBorrowCardDetails(id);
+        return ResponseEntity.ok(details);
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteBorrowCard(@PathVariable String id) {
+        try {
+            borrowCardService.deleteBorrowCard(id);
+            return ResponseEntity.ok("Xóa phiếu mượn thành công!");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Không tìm thấy phiếu mượn!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Lỗi khi xóa phiếu mượn!");
         }
-        return ResponseEntity.ok(borrowCard);
     }
 }

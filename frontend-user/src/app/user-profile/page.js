@@ -154,7 +154,7 @@ const page = () => {
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="pt-16 flex">
         <LeftSideBar />
-        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2">
+        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
           <div className="flex flex-col p-5 w-full bg-white rounded-xl max-md:max-w-full">
             <UserInfo />
             <BorrowingStats />

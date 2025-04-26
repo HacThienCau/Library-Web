@@ -60,7 +60,7 @@ const LeftSideBar = () => {
             className={`flex justify-start py-5 items-center cursor-pointer w-full  text-[1.125rem] font-normal ${getButtonClass("/borrowed-books")}`}
             onClick={() => handleNavigation("/borrowed-books")}
           >
-            <BookText style={{ width: "1.5rem", height: "1.5rem", strokeWidth: "1.5px" }} className="mr-2 text-2xl" /> Sách đang mượn
+            <BookText style={{ width: "1.5rem", height: "1.5rem", strokeWidth: "1.5px" }} className="mr-2" /> Sách đang mượn
           </Button>
 
           <Button
