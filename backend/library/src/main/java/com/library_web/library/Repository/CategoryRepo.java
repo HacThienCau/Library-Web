@@ -1,4 +1,4 @@
-package com.library_web.library.Respository;
+package com.library_web.library.Repository;
 
 import com.library_web.library.Model.Category;
 

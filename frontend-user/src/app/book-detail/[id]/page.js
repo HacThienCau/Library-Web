@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import LeftSideBar from "@/app/components/LeftSideBar";
 import ChatBotButton from "@/app/components/ChatBotButton";
 import { CheckCircle } from "lucide-react";
+import { BsCartPlus } from "react-icons/bs";
 import { Button } from "@/components/ui/button";
 import BookReview from "@/components/ui/bookreview";
 import { useParams } from "next/navigation";
@@ -46,6 +47,23 @@ function page() {
   const [details, setDetails] = useState(detail);
   const userId = localStorage.getItem("id"); // Lấy userId từ localStorage
 
+  const StatusIndicator = ({ available }) => {
+    return (
+      <div className="flex gap-1.5 justify-center items-center self-start rounded ">
+        <span className="self-stretch my-auto font-normal">
+          {available ? "Còn sẵn" : "Hết sách"}
+        </span>
+        <div className="self-stretch my-auto w-4">
+          <div
+            className={`flex shrink-0 w-4 h-4 ${
+              available ? "bg-green-400" : "bg-[#F7302E]"
+            } rounded-full`}
+          />
+        </div>
+      </div>
+    );
+  };
+
   useEffect(() => {
     const fetchBook = async () => {
       try {
@@ -83,15 +101,47 @@ function page() {
 
   const handleAddToCart = async () => {
     try {
-      const res = await axios.patch(`http://localhost:8081/carts/user/${userId}`, {
-        books: [{ id: id }], // đưa vào mảng 1 phần tử
-      });
-  
+      const res = await axios.patch(
+        `http://localhost:8081/carts/user/${userId}`,
+        {
+          books: [{ id: id }], // đưa vào mảng 1 phần tử
+        }
+      );
+
       alert("Đã thêm sách vào giỏ!");
       console.log(res.data);
+
+      // Reload lại trang để làm mới giỏ hàng
+      window.location.reload();
     } catch (error) {
       console.error("Lỗi khi thêm sách vào giỏ:", error);
       alert("Có lỗi xảy ra khi thêm sách vào giỏ.");
+    }
+  };
+
+  const handleBorrowBooks = async () => {
+    try {
+      const userId = localStorage.getItem("id"); // Lấy userId từ localStorage
+
+      // Gửi yêu cầu đến backend để tạo phiếu mượn
+      const response = await axios.post(
+        "http://localhost:8081/borrow-card/create",
+        {
+          userId: userId,
+        bookIds: [id],
+        }
+      );
+
+      if (response.status === 200) {
+        alert("Phiếu mượn đã được tạo!");
+        console.log(response.data); // Xem chi tiết phiếu mượn
+        window.location.href = "/borrowed-card";
+      } else {
+        alert("Không thể tạo phiếu mượn");
+      }
+    } catch (error) {
+      console.error("Lỗi khi mượn sách:", error);
+      alert("Có lỗi xảy ra khi mượn sách.");
     }
   };
 
@@ -99,7 +149,7 @@ function page() {
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="pt-16 flex">
         <LeftSideBar />
-        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2">
+        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
           <div className="flex flex-col p-6 bg-white rounded-xl shadow-md  md:flex-row gap-6">
             <img
               src={details.cover_image}
@@ -111,8 +161,10 @@ function page() {
               <h1 className="text-2xl font-semibold text-blue-900">
                 {details.title}
               </h1>
-              <p className="text-gray-700 font-semibold">
-                Tác giả: {details.author}
+              <div className="flex flex-col items-start gap-2 mt-2">
+              <p>
+                <span className="font-semibold">Tác giả:</span>{" "}
+                {details.author}
               </p>
               <p>
                 <span className="font-semibold">Thể loại:</span>{" "}
@@ -121,21 +173,40 @@ function page() {
               <p>
                 <span className="font-semibold">NXB:</span> {details.publisher}
               </p>
-              <p className="flex items-center gap-2 font-semibold">
-                <CheckCircle className="text-green-500" /> Trạng thái:{" "}
-                {details.status}
-              </p>
+              <div className="flex items-center">
+              <div className="flex items-center gap-1 font-semibold">
+                <p>Trạng thái:</p>
+                <StatusIndicator available={details.status} />
+              </div>
+              
+              </div>
               <p>
                 <span className="font-semibold">Lượt mượn:</span>{" "}
                 {details.borrow_count} lượt
               </p>
+              </div>
 
-              <Button
-                onClick={handleAddToCart}
-                className="mt-4 bg-[#062D76] hover:bg-[#E6EAF1] hover:text-[#062D76] text-white font-semibold py-2 px-4 rounded-lg cursor-pointer"
-              >
-                Mượn sách
-              </Button>
+              <div className="flex items-center gap-2 mt-4">
+                <Button
+                  onClick={handleBorrowBooks}
+                  className="mt-4 bg-[#062D76] hover:bg-[#E6EAF1] hover:text-[#062D76] text-white font-semibold py-2 px-4 rounded-lg cursor-pointer"
+                >
+                  Mượn ngay
+                </Button>
+                <Button
+                  onClick={handleAddToCart}
+                  className="mt-4 bg-white hover:bg-[#E6EAF1] hover:text-[#062D76] text-[#062D76] font-semibold py-2 px-4 rounded-lg cursor-pointer border-2 border-[#062D76]"
+                >
+                  <BsCartPlus
+                    style={{
+                      width: "1.5rem",
+                      height: "1.5rem",
+                    }}
+                    className="size-6"
+                  />
+                  Thêm vào giỏ sách
+                </Button>
+              </div>
             </div>
           </div>
 

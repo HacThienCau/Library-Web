@@ -1,5 +1,6 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import {
   Disclosure,
   DisclosureButton,
@@ -12,9 +13,6 @@ import {
 import { Menu as MenuIcon, X, Bell, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
-
-
 
 const navigation = [
   { name: "Trang chủ", href: "/" },
@@ -37,18 +35,53 @@ const CartBadge = ({ count }) => {
 
 const Header = () => {
   const pathname = usePathname();
-const router = useRouter();
+  const router = useRouter();
 
-const handleLogout = () => {
-  localStorage.removeItem("jwt");
-  router.push("/user-login");
-};
+  const [cartCount, setCartCount] = useState(); 
+
+  const userId = localStorage.getItem('id');
+
+  const fetchCart = async () => {
+    try {
+      const response = await fetch(`http://localhost:8081/carts/user/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        const booksInCart = data.books || [];
+        setCartCount(booksInCart.length); 
+      } else {
+        console.error("Lỗi khi lấy giỏ hàng");
+      }
+    } catch (error) {
+      console.error("Có lỗi xảy ra:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCart();
+  }, [userId]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwt");
+    router.push("/user-login");
+  };
   return (
     <header className="bg-[#062D76] text-white shadow-lg fixed top-0 left-0 w-full z-50">
       <Disclosure as="nav" className="mx-auto">
         {({ open }) => (
           <>
+          
             <div className="flex justify-between items-center h-14 px-2 md:px-5">
+            <div className="flex justify-center gap-2">
+              {/* Mobile Menu Button */}
+              <div className="sm:hidden ">
+                <DisclosureButton className="p-2 rounded-md hover:bg-blue-700">
+                  {open ? (
+                    <X className="size-6" />
+                  ) : (
+                    <MenuIcon className="size-6" />
+                  )}
+                </DisclosureButton>
+              </div>
               {/* Logo */}
               <div className="flex items-center">
                 <Link href="/">
@@ -64,14 +97,15 @@ const handleLogout = () => {
                   </h1>
                 </Link>
               </div>
+              </div>
 
               {/* Navigation Links */}
-              <div className="hidden sm:flex space-x-6">
+              <div className="hidden sm:flex space-x-5 max-md:space-x-2">
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`px-3 py-2 rounded-md text-lg font-medium transition duration-200 ${
+                    className={`px-3 py-2  rounded-md text-[1.125rem] font-medium transition duration-200 ${
                       pathname === item.href
                         ? "bg-white text-[#052259]"
                         : "hover:bg-white hover:text-[#052259]"
@@ -83,7 +117,7 @@ const handleLogout = () => {
               </div>
 
               {/* Right Icons */}
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center justify-end space-x-4">
                 <button
                   className={`relative pr-2 pl-1.5 py-2 rounded-full cursor-pointer hover:bg-white hover:text-[#052259] ${
                     pathname === "/cart"
@@ -92,7 +126,7 @@ const handleLogout = () => {
                   }`}
                 >
                   <Link href="/cart">
-                    <CartBadge count={3} />
+                    <CartBadge count={cartCount} />
                     <ShoppingCart
                       style={{
                         width: "1.5rem",
@@ -106,12 +140,12 @@ const handleLogout = () => {
 
                 <button
                   className={`relative p-2 rounded-full cursor-pointer hover:bg-white hover:text-[#052259] ${
-                    pathname === "/notifications"
+                    pathname === "/notification"
                       ? "bg-white text-[#052259]"
                       : "hover:bg-white hover:text-[#052259]"
                   }`}
                 >
-                  <Link href="/notifications">
+                  <Link href="/notification">
                     <Bell
                       style={{
                         width: "1.5rem",
@@ -162,29 +196,19 @@ const handleLogout = () => {
                     <MenuItem>
                       {({ active }) => (
                         <button
-                        onClick={handleLogout}
-                        className={`w-full text-left px-4 py-2 text-gray-700 ${
-                          active && "bg-gray-100"
-                        }`}
-                      >
-                        Đăng xuất
-                      </button>
+                          onClick={handleLogout}
+                          className={`w-full text-left px-4 py-2 text-gray-700 ${
+                            active && "bg-gray-100"
+                          }`}
+                        >
+                          Đăng xuất
+                        </button>
                       )}
                     </MenuItem>
                   </MenuItems>
                 </Menu>
               </div>
 
-              {/* Mobile Menu Button */}
-              <div className="sm:hidden">
-                <DisclosureButton className="p-2 rounded-md hover:bg-blue-700">
-                  {open ? (
-                    <X className="size-6" />
-                  ) : (
-                    <MenuIcon className="size-6" />
-                  )}
-                </DisclosureButton>
-              </div>
             </div>
 
             {/* Mobile Menu Panel */}

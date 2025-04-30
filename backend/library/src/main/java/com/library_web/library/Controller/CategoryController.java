@@ -3,7 +3,8 @@ package com.library_web.library.Controller;
 import org.springframework.http.HttpStatus;
 
 import com.library_web.library.Model.Category;
-import com.library_web.library.Respository.CategoryRepo;
+import com.library_web.library.Repository.CategoryRepo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

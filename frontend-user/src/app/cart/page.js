@@ -71,7 +71,7 @@ const page = () => {
   const [selected, setSelected] = useState([]);
   const [books, setBooks] = useState(""); // Giỏ hàng
   const [loading, setLoading] = useState(true); // Trạng thái loading
-  const userId = localStorage.id; // Thay bằng userId thực tế của bạn
+  const userId = localStorage.id;
   let cartId = "";
 
   // Lấy giỏ hàng từ API theo userId
@@ -138,31 +138,42 @@ const page = () => {
 
   const handleBorrowBooks = async () => {
     try {
-      // Gửi request xóa các sách đã chọn, dùng `selected` để lấy các book ID
-      // const response = await axios.delete(
-      //   `http://localhost:8081/carts/user/${userId}`,
-      //   {
-      //     data: selected, // Truyền danh sách các ID sách cần xóa
-      //   }
-      // );
+      const booksInCart = selected; // Các sách đã chọn trong giỏ hàng
+      const userId = localStorage.getItem("id"); // Lấy userId từ localStorage
+  
+      // Gửi yêu cầu đến backend để tạo phiếu mượn
+      const response = await axios.post("http://localhost:8081/borrow-card/create", {
+        userId: userId,
+        bookIds: booksInCart,
+      });
+  
+      if (response.status === 200) {
+        alert("Phiếu mượn đã được tạo!");
+        console.log(response.data); // Xem chi tiết phiếu mượn
 
-      // Cập nhật lại giỏ hàng sau khi xóa
-      // setBooks(response.data.books);
-      console.log("Danh sách id sách muốn mượn:", selected);
-      // Thông báo thành công
-      alert("Đã xóa sách thành công!");
-      setSelected([]); // Reset danh sách đã chọn
+        const deleteResponse = await axios.delete(
+          `http://localhost:8081/carts/user/${userId}`,
+          {
+            data: booksInCart, 
+          }
+        );
+
+        console.log(deleteResponse.data); // Xem sách đã xóa khỏi giỏ hàng
+        window.location.href = "/borrowed-card";
+      } else {
+        alert("Không thể tạo phiếu mượn");
+      }
     } catch (error) {
-      console.error("Lỗi khi xóa sách:", error);
-      alert("Đã có lỗi khi xóa sách!");
+      console.error("Lỗi khi mượn sách:", error);
+      alert("Có lỗi xảy ra khi mượn sách.");
     }
-  }; 
+  };
 
   return (
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="pt-16 flex">
         <LeftSideBar />
-        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2">
+        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
           <div className="flex flex-col p-5 w-full bg-white rounded-xl max-md:max-w-full">
             <div className="flex items-center justify-center gap-3">
               <h2 className="gap-2.5 self-center px-[1.25rem] py-[0.625rem] text-[1.5rem] text-[#062D76] font-semibold rounded-lg">
@@ -170,7 +181,7 @@ const page = () => {
               </h2>
             </div>
             <div className="grid grid-cols-1 max-sm:grid-cols-1 gap-5 items-start mt-5 w-full max-md:max-w-full">
-              {Array.isArray(books) &&
+              {Array.isArray(books) && books.length > 0 ? (
                 books.map((book, index) => (
                   <BookCard
                     key={book.id}
@@ -188,11 +199,16 @@ const page = () => {
                     checked={selected.includes(book.id)} // Kiểm tra nếu ID sách đã được chọn
                     onCheck={(checked) => toggleBook(book.id, checked)} // Truyền ID sách thay vì chỉ số
                   />
-                ))}
+                ))
+              ) : (
+                <div className="text-center col-span-full text-lg text-gray-500">
+                  Giỏ sách trống.
+                </div>
+              )}
             </div>
           </div>
           {selected.length > 0 && (
-            <footer className="fixed bottom-0 self-stretch mr-[1.25rem] md:left-64 ml-[1.25rem] right-0 bg-[#E6EAF1] shadow-lg p-4 flex justify-between">
+            <footer className="fixed bottom-0 self-stretch mr-[1.25rem] md:left-60 ml-[1.25rem] right-0 bg-[#E6EAF1] shadow-lg p-4 flex justify-between">
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -205,18 +221,21 @@ const page = () => {
                 </span>
               </div>
 
-              <button
-                onClick={handleDeleteBooks}
-                className="px-4 py-2 bg-[#F44336] text-white rounded"
-              >
-                Xóa sách ({selected.length})
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleDeleteBooks}
+                  className="px-4 py-2 bg-[#F44336] hover:bg-[#FFA9A2] text-white rounded cursor-pointer"
+                >
+                  Xóa sách ({selected.length})
+                </button>
 
-              <button 
-              onClick={handleBorrowBooks}
-              className="px-4 py-2 bg-[#062D76] text-white rounded">
-                Đăng ký mượn ({selected.length})
-              </button>
+                <button
+                  onClick={handleBorrowBooks}
+                  className="px-4 py-2 bg-[#062D76] text-white rounded cursor-pointer hover:bg-[#6C8299] transition duration-200 ease-in-out"
+                >
+                  Đăng ký mượn ({selected.length})
+                </button>
+              </div>
             </footer>
           )}
         </section>

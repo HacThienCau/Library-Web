@@ -1,5 +1,6 @@
 package com.library_web.library.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.library_web.library.Model.Cart;
 import com.library_web.library.Model.User;
-import com.library_web.library.Respository.CartRepo;
-import com.library_web.library.Respository.UserRepo;
+import com.library_web.library.Repository.CartRepo;
+import com.library_web.library.Repository.UserRepo;
 
 @Service
 public class UserService {
@@ -18,6 +19,8 @@ public class UserService {
     private UserRepo userRepo;
     @Autowired
     private CartRepo cartRepository;
+    @Autowired
+    private NotificationService notificationService;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -28,7 +31,13 @@ public class UserService {
         // Tạo giỏ hàng mới cho người dùng
         Cart cart = new Cart();
         cart.setUser(savedUser);
+        cart.setBooks(new ArrayList<>());
         cartRepository.save(cart);
+
+        // Gửi thông báo chào mừng đến người dùng
+        String message = "Chào mừng " + user.getTenND() + " đã đăng ký tài khoản thành công!";
+        notificationService.sendNotification(user.getId(), message); // Gửi thông báo
+
         return savedUser;
     }
 

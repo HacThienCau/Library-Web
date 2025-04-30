@@ -3,9 +3,9 @@ package com.library_web.library.Service;
 import com.library_web.library.Model.Book;
 import com.library_web.library.Model.Category;
 import com.library_web.library.Model.ChildBook;
-import com.library_web.library.Respository.BookRepo;
-import com.library_web.library.Respository.CategoryRepo;
-import com.library_web.library.Respository.ChildBookRepo;
+import com.library_web.library.Repository.BookRepo;
+import com.library_web.library.Repository.CategoryRepo;
+import com.library_web.library.Repository.ChildBookRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
