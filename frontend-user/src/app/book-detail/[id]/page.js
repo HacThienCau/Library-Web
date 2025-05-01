@@ -46,6 +46,7 @@ function page() {
   const { id } = useParams();
   const [details, setDetails] = useState(detail);
   const userId = localStorage.getItem("id"); // Lấy userId từ localStorage
+  const [isAddedToCart, setIsAddedToCart] = useState(false);
 
   const StatusIndicator = ({ available }) => {
     return (
@@ -99,6 +100,22 @@ function page() {
     fetchBook();
   }, []);
 
+  useEffect(() => {
+    const checkBookInCart = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8081/carts/user/${userId}`);
+        const cartBooks = res.data.books; // giả sử trả về mảng books [{ id: ..., ... }]
+  
+        const found = cartBooks.some(book => book.id === id); // id là id của sách hiện tại
+        setIsAddedToCart(found);
+      } catch (error) {
+        console.error("Lỗi khi kiểm tra giỏ hàng:", error);
+      }
+    };
+  
+    checkBookInCart();
+  }, [userId, id]);
+
   const handleAddToCart = async () => {
     try {
       const res = await axios.patch(
@@ -110,6 +127,7 @@ function page() {
 
       alert("Đã thêm sách vào giỏ!");
       console.log(res.data);
+      setIsAddedToCart(true); // Đánh dấu là đã thêm vào giỏ hàng
 
       // Reload lại trang để làm mới giỏ hàng
       window.location.reload();
@@ -128,7 +146,7 @@ function page() {
         "http://localhost:8081/borrow-card/create",
         {
           userId: userId,
-        bookIds: [id],
+          bookIds: [id],
         }
       );
 
@@ -162,28 +180,28 @@ function page() {
                 {details.title}
               </h1>
               <div className="flex flex-col items-start gap-2 mt-2">
-              <p>
-                <span className="font-semibold">Tác giả:</span>{" "}
-                {details.author}
-              </p>
-              <p>
-                <span className="font-semibold">Thể loại:</span>{" "}
-                {details.category}
-              </p>
-              <p>
-                <span className="font-semibold">NXB:</span> {details.publisher}
-              </p>
-              <div className="flex items-center">
-              <div className="flex items-center gap-1 font-semibold">
-                <p>Trạng thái:</p>
-                <StatusIndicator available={details.status} />
-              </div>
-              
-              </div>
-              <p>
-                <span className="font-semibold">Lượt mượn:</span>{" "}
-                {details.borrow_count} lượt
-              </p>
+                <p>
+                  <span className="font-semibold">Tác giả:</span>{" "}
+                  {details.author}
+                </p>
+                <p>
+                  <span className="font-semibold">Thể loại:</span>{" "}
+                  {details.category}
+                </p>
+                <p>
+                  <span className="font-semibold">NXB:</span>{" "}
+                  {details.publisher}
+                </p>
+                <div className="flex items-center">
+                  <div className="flex items-center gap-1 font-semibold">
+                    <p>Trạng thái:</p>
+                    <StatusIndicator available={details.status} />
+                  </div>
+                </div>
+                <p>
+                  <span className="font-semibold">Lượt mượn:</span>{" "}
+                  {details.borrow_count} lượt
+                </p>
               </div>
 
               <div className="flex items-center gap-2 mt-4">
@@ -193,7 +211,7 @@ function page() {
                 >
                   Mượn ngay
                 </Button>
-                <Button
+                {/* <Button
                   onClick={handleAddToCart}
                   className="mt-4 bg-white hover:bg-[#E6EAF1] hover:text-[#062D76] text-[#062D76] font-semibold py-2 px-4 rounded-lg cursor-pointer border-2 border-[#062D76]"
                 >
@@ -205,6 +223,22 @@ function page() {
                     className="size-6"
                   />
                   Thêm vào giỏ sách
+                </Button> */}
+                <Button
+                  onClick={handleAddToCart}
+                  disabled={isAddedToCart}
+                  className={`mt-4 font-semibold py-2 px-4 rounded-lg border-2 flex items-center gap-2
+    ${
+      isAddedToCart
+        ? "bg-gray-300 text-gray-500 cursor-not-allowed border-gray-400"
+        : "bg-white hover:bg-[#E6EAF1] hover:text-[#062D76] text-[#062D76] cursor-pointer border-[#062D76]"
+    }`}
+                >
+                  <BsCartPlus
+                    style={{ width: "1.5rem", height: "1.5rem" }}
+                    className="size-6"
+                  />
+                  {isAddedToCart ? "Đã thêm" : "Thêm vào giỏ sách"}
                 </Button>
               </div>
             </div>
