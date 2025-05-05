@@ -10,6 +10,8 @@ import { CircleCheck } from "lucide-react";
 const page = () => {
   const [loading, setLoading] = useState(false);
   const [fine, setFine] = useState(0);
+  const [wait, setWait] = useState(0);
+  const [borrow, setBorrow] = useState(0);
   const fetchSetting = async () => {
     try {
       const res = await fetch("http://localhost:8081/settings", {
@@ -17,7 +19,9 @@ const page = () => {
       });
       if (!res.ok) throw new Error("Không thể tải cài đặt.");
       const result = await res.json();
-      setFine(result?.finePerDay)
+      setFine(result?.finePerDay?result?.finePerDay:3000)
+      setWait(result?.waitingToTake?result?.waitingToTake:3)
+      setBorrow(result?.borrowDay?result?.borrowDay:21)
     } catch (error) {
       toast.error(error.message);
     }
@@ -37,6 +41,8 @@ const page = () => {
         },
         body: JSON.stringify({
           finePerDay:fine,
+          waitingToTake:wait,
+          borrowDay:borrow,
         }),
       });
       if (!res.ok) throw new Error("Cập nhật thất bại");
@@ -74,6 +80,26 @@ const page = () => {
               className="font-semibold rounded-lg w-full h-10 flex items-center px-5 bg-white"
               value={fine}
               onChange={(e) => setFine(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col w-full gap-[5px] md:gap-[10px]">
+            <p className="font-semibold text-lg mt-3">Số ngày chờ nhận sách tối đa</p>
+            <Input
+              type="number"
+              placeholder="Nhập số ngày chờ"
+              className="font-semibold rounded-lg w-full h-10 flex items-center px-5 bg-white"
+              value={wait}
+              onChange={(e) => setWait(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col w-full gap-[5px] md:gap-[10px]">
+            <p className="font-semibold text-lg mt-3">Số ngày mượn sách tối đa</p>
+            <Input
+              type="number"
+              placeholder="Nhập số tiền phạt"
+              className="font-semibold rounded-lg w-full h-10 flex items-center px-5 bg-white"
+              value={borrow}
+              onChange={(e) => setBorrow(e.target.value)}
             />
           </div>
 

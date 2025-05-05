@@ -18,9 +18,10 @@ const page = () => {
     const fetchBorrowCards = async () => {
       try {
         const userId = localStorage.getItem("id");
-        const response = await axios.get(
+        var response = await axios.get(
           `http://localhost:8081/borrow-card/user/${userId}`
         );
+        response = Array.isArray(response.data)?response:{data:[]}
         setAllBorrowCards(response.data);
       } catch (error) {
         console.error("Lỗi khi fetch phiếu mượn:", error);
