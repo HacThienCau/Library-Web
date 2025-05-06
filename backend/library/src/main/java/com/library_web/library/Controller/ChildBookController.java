@@ -4,9 +4,11 @@ import com.library_web.library.Model.ChildBook;
 import com.library_web.library.Service.ChildBookService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
+
 
 @RestController
 public class ChildBookController {
@@ -33,4 +35,11 @@ public class ChildBookController {
     public ChildBook capNhatBook(@PathVariable String id, @RequestBody ChildBook.TrangThai status) {
         return childBookService.capNhatBook(id, status);
     }
+
+    @GetMapping("/childNParent/{id}")
+    public ResponseEntity<?> getChildAndParent(@PathVariable String id) {
+        Map<String, Object> result = childBookService.getChildAndParent(id);
+        return ResponseEntity.ok(result);
+    }
+    
 }

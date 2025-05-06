@@ -6,14 +6,15 @@ import com.library_web.library.Repository.ChildBookRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ChildBookService {
 
     @Autowired
     private ChildBookRepo childBookRepo;
+    @Autowired
+    private BookService parentBookService;
 
     public ChildBook themChild(ChildBook childBook) {
         return childBookRepo.save(childBook);
@@ -36,5 +37,11 @@ public class ChildBookService {
         } else {
             throw new RuntimeException("Không tìm thấy ChildBook với id: " + id);
         }
+    }
+
+    public Map<String, Object> getChildAndParent(String childId) {
+        ChildBook child = layBookTheoId(childId);
+        Map<String, Object> parentBook = parentBookService.layBookTheoId(child.getIdParent());
+        return Map.of("childBook", child, "parentBook", parentBook);
     }
 }
