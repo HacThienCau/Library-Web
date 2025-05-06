@@ -4,9 +4,11 @@ import com.library_web.library.DTO.BorrowCardDetail;
 import com.library_web.library.Model.Book;
 import com.library_web.library.Model.BorrowCard;
 import com.library_web.library.Model.Category;
+import com.library_web.library.Model.ChildBook;
 import com.library_web.library.Model.User;
 import com.library_web.library.Repository.BorrowCardRepo;
 import com.library_web.library.Repository.CategoryRepo;
+import com.library_web.library.Repository.ChildBookRepo;
 import com.library_web.library.Repository.BookRepo;
 import com.library_web.library.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,10 @@ public class BorrowCardService {
     private UserRepo userRepo;
     @Autowired
     private CategoryRepo categoryRepo;
+    @Autowired
+    private ChildBookRepo childBookRepo;
+    @Autowired
+    private SettingService settingService;
 
     // Tạo phiếu mượn khi người dùng bấm đăng ký mượn
     public BorrowCard createBorrowCard(String userId, List<String> bookIds) {
@@ -36,16 +42,26 @@ public class BorrowCardService {
     }
 
     // Cập nhật phiếu mượn khi người dùng đến lấy sách
-    public BorrowCard updateBorrowCardToBorrowing(String id) {
+    public BorrowCard updateBorrowCardToBorrowing(String id, List<String> childBookIds) {
         BorrowCard borrowCard = borrowCardRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Phiếu mượn không tồn tại"));
 
         // Cập nhật trạng thái phiếu mượn thành "Đang mượn"
         borrowCard.setStatus("Đang mượn");
-
-        // Tính toán ngày trả sách (15 ngày sau khi lấy sách)
-        borrowCard.setDueDate(borrowCard.getGetBookDate().plusDays(15));
-
+        // Cập nhật ngày mượn
+        borrowCard.setGetBookDate(LocalDateTime.now());
+        // Tính toán ngày trả sách (theo setting)
+        int borrowDay = settingService.getSetting().getBorrowDay();
+        borrowCard.setDueDate(LocalDateTime.now().plusDays(borrowDay));
+        //Thêm danh sách sách con
+        borrowCard.setChildBookIds(childBookIds);
+        //Cập nhật sách con
+        for (String childId : childBookIds) {
+        ChildBook child = childBookRepo.findById(childId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sách con với id: " + childId));
+        child.setTrangThai(ChildBook.TrangThai.DANG_MUON);
+        childBookRepo.save(child); // lưu lại từng sách con
+        }
         // Lưu phiếu mượn đã cập nhật
         return borrowCardRepo.save(borrowCard);
     }
@@ -59,9 +75,17 @@ public class BorrowCardService {
         if (borrowCard.getStatus().equals("Đang mượn")) {
             borrowCard.setStatus("Hết hạn");
         }
-
         borrowCard.updateStatus();
-
+        //Cập nhật ngày trả
+        borrowCard.setDueDate(LocalDateTime.now());
+        //Cập nhật sách con
+        List<String> childBookIds = borrowCard.getChildBookIds();
+        for (String childId : childBookIds) {
+            ChildBook child = childBookRepo.findById(childId)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy sách con với id: " + childId));
+            child.setTrangThai(ChildBook.TrangThai.CON_SAN);
+            childBookRepo.save(child); // lưu lại từng sách con
+            }
         return borrowCardRepo.save(borrowCard);
     }
 

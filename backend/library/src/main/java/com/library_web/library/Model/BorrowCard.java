@@ -23,7 +23,7 @@ public class BorrowCard {
     private LocalDateTime dueDate; // Ngày trả sách (hạn trả sách)
     private String status; // Trạng thái phiếu mượn (Đang yêu cầu / Đang mượn / Hết hạn)
     private List<String> bookIds; // Danh sách sách mượn
-
+    private List<String> childBookIds; // Danh sách sách con
     // Enum cho các trạng thái của phiếu mượn
     public enum Status {
         REQUESTED("Đang yêu cầu"),

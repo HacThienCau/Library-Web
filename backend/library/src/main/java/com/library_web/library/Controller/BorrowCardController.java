@@ -28,8 +28,8 @@ public class BorrowCardController {
 
     // Cập nhật phiếu mượn khi người dùng đến lấy sách
     @PutMapping("/borrow/{id}")
-    public ResponseEntity<BorrowCard> borrowBooks(@PathVariable String id) {
-        BorrowCard borrowCard = borrowCardService.updateBorrowCardToBorrowing(id);
+    public ResponseEntity<BorrowCard> borrowBooks(@PathVariable String id, @RequestBody List<String> childBookIds) {
+        BorrowCard borrowCard = borrowCardService.updateBorrowCardToBorrowing(id,childBookIds);
         return ResponseEntity.ok(borrowCard);
     }
 

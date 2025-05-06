@@ -15,7 +15,11 @@ public class Setting {
     @Id
     private String id;
     private int finePerDay;
-    public Setting(int finePerDay) {
+    private int waitingToTake;
+    private int borrowDay;
+    public Setting(int finePerDay, int waitingToTake,int borrowDay ) {
         this.finePerDay = finePerDay;
+        this.waitingToTake = waitingToTake;
+        this.borrowDay = borrowDay;
     }
 }

@@ -181,7 +181,7 @@ public class UploadService {
             } else {
                 String apiUrl = "http://localhost:8081/user/" + decodedText;
                 ResponseEntity<User> response = restTemplate.getForEntity(apiUrl, User.class);
-                return ResponseEntity.ok(Map.of("user", response.getBody()));
+                return ResponseEntity.ok(response.getBody());
             }
 
         } catch (Exception e) {
