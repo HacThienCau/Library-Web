@@ -33,10 +33,17 @@ public class BorrowCardController {
         return ResponseEntity.ok(borrowCard);
     }
 
-    // Cập nhật phiếu mượn khi người dùng trả sách (hoặc quá hạn)
+    // Cập nhật phiếu mượn khi người dùng trả sách
     @PutMapping("/return/{id}")
     public ResponseEntity<BorrowCard> returnBooks(@PathVariable String id) {
         BorrowCard borrowCard = borrowCardService.updateBorrowCardOnReturn(id);
+        return ResponseEntity.ok(borrowCard);
+    }
+    
+    // Cập nhật phiếu mượn khi người dùng trả sách
+    @PutMapping("/expired/{id}")
+    public ResponseEntity<BorrowCard> expiredCard(@PathVariable String id) {
+        BorrowCard borrowCard = borrowCardService.expiredCard(id);
         return ResponseEntity.ok(borrowCard);
     }
 
@@ -55,6 +62,16 @@ public class BorrowCardController {
     public ResponseEntity<BorrowCardDetail> getBorrowCardDetails(@PathVariable String id) {
         BorrowCardDetail details = borrowCardService.getBorrowCardDetails(id);
         return ResponseEntity.ok(details);
+    }
+
+    // Lấy tất cả phiếu mượn
+    @GetMapping("/")
+    public ResponseEntity<List<BorrowCard>> getAllBorrowCard() {
+        List<BorrowCard> borrowCards = borrowCardService.getAllBorrowCard();
+        if (borrowCards.isEmpty()) {
+            return ResponseEntity.status(204).build(); // Trả về trạng thái 204 nếu không có dữ liệu
+        }
+        return ResponseEntity.ok(borrowCards);
     }
     
     @DeleteMapping("/{id}")

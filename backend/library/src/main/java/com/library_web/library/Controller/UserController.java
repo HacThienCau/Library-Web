@@ -7,6 +7,8 @@ import com.library_web.library.Repository.UserRepo;
 import com.library_web.library.Service.UserService;
 import com.library_web.library.Utils.JWTUtils;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,10 +58,10 @@ public ResponseEntity<?> signIn(@RequestBody SignInRequest loginRequest) {
 }
 
     // Lấy tất cả người dùng
-    // @GetMapping("/users")
-    // public List<User> layTatCaUser() {
-    //     return userRepo.findAll();
-    // }
+    @GetMapping("/users")
+    public List<User> layTatCaUser() {
+        return userRepo.findAll();
+    }
 
     // Lấy người dùng theo ID
      @GetMapping("/user/{id}")

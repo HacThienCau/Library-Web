@@ -36,8 +36,14 @@ public class BorrowCardService {
     // Tạo phiếu mượn khi người dùng bấm đăng ký mượn
     public BorrowCard createBorrowCard(String userId, List<String> bookIds) {
         LocalDateTime borrowDate = LocalDateTime.now();
-        BorrowCard borrowCard = new BorrowCard(userId, borrowDate, bookIds);
-
+        int waitingToTake = settingService.getSetting().getWaitingToTake();
+        BorrowCard borrowCard = new BorrowCard(userId, borrowDate, waitingToTake, bookIds);
+        for (String bookId : bookIds) {
+            Book book = bookRepo.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sách với id: " + bookId));
+            book.setSoLuongMuon(book.getSoLuongMuon()+1);
+            bookRepo.save(book); // lưu lại từng sách
+        }
         return borrowCardRepo.save(borrowCard);
     }
 
@@ -66,7 +72,7 @@ public class BorrowCardService {
         return borrowCardRepo.save(borrowCard);
     }
 
-    // Cập nhật trạng thái phiếu mượn khi người dùng trả sách hoặc quá hạn
+    // Cập nhật trạng thái phiếu mượn khi người dùng trả sách
     public BorrowCard updateBorrowCardOnReturn(String id) {
         BorrowCard borrowCard = borrowCardRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Phiếu mượn không tồn tại"));
@@ -86,12 +92,44 @@ public class BorrowCardService {
             child.setTrangThai(ChildBook.TrangThai.CON_SAN);
             childBookRepo.save(child); // lưu lại từng sách con
             }
+        //Cập nhật số lượng sách available
+        List<String> bookIds = borrowCard.getBookIds();
+        for (String bookId : bookIds) {
+            Book book = bookRepo.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sách với id: " + bookId));
+            book.setSoLuongMuon(book.getSoLuongMuon()-1);
+            bookRepo.save(book); // lưu lại từng sách
+        }
+        return borrowCardRepo.save(borrowCard);
+    }
+
+    public BorrowCard expiredCard(String id) {
+        BorrowCard borrowCard = borrowCardRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Phiếu mượn không tồn tại"));
+
+        // Nếu phiếu mượn vẫn còn đang yêu cầu thì cập nhật trạng thái
+        if (borrowCard.getStatus().equals("Đang yêu cầu")) {
+            borrowCard.setStatus("Hết hạn");
+        }
+        //Cập nhật số lượng sách available
+        List<String> bookIds = borrowCard.getBookIds();
+        for (String bookId : bookIds) {
+            Book book = bookRepo.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sách với id: " + bookId));
+            book.setSoLuongMuon(book.getSoLuongMuon()-1);
+            bookRepo.save(book); // lưu lại từng sách
+        }
         return borrowCardRepo.save(borrowCard);
     }
 
     // Lấy tất cả phiếu mượn theo userId
     public List<BorrowCard> getBorrowCardsByUserId(String userId) {
         return borrowCardRepo.findByUserId(userId); // Trả về tất cả phiếu mượn của userId
+    }
+
+    // Lấy tất cả phiếu mượn theo userId
+    public List<BorrowCard> getAllBorrowCard() {
+        return borrowCardRepo.findAll(); // Trả về tất cả phiếu mượn
     }
 
     // Lấy thông tin chi tiết phiếu mượn theo ID
@@ -138,6 +176,16 @@ public class BorrowCardService {
         if (borrowCard.getStatus().equals("Đang mượn")) {
             throw new RuntimeException("Không thể xóa phiếu đang trong trạng thái 'Đang mượn'");
         }
-        borrowCardRepo.delete(borrowCard);
+        // khi đăng ký mượn = đăng ký trước chỗ => xóa phiếu đăng ký = xóa chỗ đã mượn
+        if(borrowCard.getStatus().equals("Đang yêu cầu")){
+            List<String> bookIds = borrowCard.getBookIds();
+            for (String bookId : bookIds) {
+            Book book = bookRepo.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sách với id: " + bookId));
+            book.setSoLuongMuon(book.getSoLuongMuon()-1);
+            bookRepo.save(book); // lưu lại từng sách
+            }
+        }
+        borrowCardRepo.delete(borrowCard); //xóa phiếu mượn đi thì admin ko được coi lịch sử hả :))
     }
 }
