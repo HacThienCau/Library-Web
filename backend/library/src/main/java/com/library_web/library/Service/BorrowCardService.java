@@ -173,8 +173,8 @@ public class BorrowCardService {
     public void deleteBorrowCard(String id) {
         BorrowCard borrowCard = borrowCardRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Phiếu mượn không tồn tại"));
-        if (borrowCard.getStatus().equals("Đang mượn")) {
-            throw new RuntimeException("Không thể xóa phiếu đang trong trạng thái 'Đang mượn'");
+        if (borrowCard.getStatus().equals("Đang mượn")||borrowCard.getStatus().equals("Hết hạn")) {
+            throw new RuntimeException("Chỉ có thể xóa phiếu khi còn ở trạng thái 'Đang yêu cầu'");
         }
         // khi đăng ký mượn = đăng ký trước chỗ => xóa phiếu đăng ký = xóa chỗ đã mượn
         if(borrowCard.getStatus().equals("Đang yêu cầu")){
@@ -186,6 +186,6 @@ public class BorrowCardService {
             bookRepo.save(book); // lưu lại từng sách
             }
         }
-        borrowCardRepo.delete(borrowCard); //xóa phiếu mượn đi thì admin ko được coi lịch sử hả :))
+        borrowCardRepo.delete(borrowCard); 
     }
 }

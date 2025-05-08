@@ -17,9 +17,11 @@ public class Setting {
     private int finePerDay;
     private int waitingToTake;
     private int borrowDay;
-    public Setting(int finePerDay, int waitingToTake,int borrowDay ) {
+    private int startToMail;
+    public Setting(int finePerDay, int waitingToTake,int borrowDay, int startToMail ) {
         this.finePerDay = finePerDay;
         this.waitingToTake = waitingToTake;
         this.borrowDay = borrowDay;
+        this.startToMail = startToMail;
     }
 }
