@@ -51,10 +51,10 @@ public class BorrowCard {
         }
     }
 
-    public BorrowCard(String userId, LocalDateTime borrowDate, List<String> bookIds) {
+    public BorrowCard(String userId, LocalDateTime borrowDate, int waitingToTake, List<String> bookIds) {
         this.userId = userId;
         this.borrowDate = LocalDateTime.now(); // Ngày tạo phiếu là thời điểm hiện tại
-        this.getBookDate = borrowDate.plusDays(3); // Hạn lấy sách
+        this.getBookDate = borrowDate.plusDays(waitingToTake); // Hạn lấy sách
         this.status = Status.REQUESTED.getStatusDescription(); // Mới tạo phiếu mượn: trạng thái là "Đang yêu cầu"
         this.bookIds = bookIds;
     }
