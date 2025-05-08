@@ -176,6 +176,16 @@ public class BorrowCardService {
         if (borrowCard.getStatus().equals("Đang mượn")) {
             throw new RuntimeException("Không thể xóa phiếu đang trong trạng thái 'Đang mượn'");
         }
-        borrowCardRepo.delete(borrowCard);
+        // khi đăng ký mượn = đăng ký trước chỗ => xóa phiếu đăng ký = xóa chỗ đã mượn
+        if(borrowCard.getStatus().equals("Đang yêu cầu")){
+            List<String> bookIds = borrowCard.getBookIds();
+            for (String bookId : bookIds) {
+            Book book = bookRepo.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sách với id: " + bookId));
+            book.setSoLuongMuon(book.getSoLuongMuon()-1);
+            bookRepo.save(book); // lưu lại từng sách
+            }
+        }
+        borrowCardRepo.delete(borrowCard); //xóa phiếu mượn đi thì admin ko được coi lịch sử hả :))
     }
 }
