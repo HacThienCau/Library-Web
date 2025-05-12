@@ -172,10 +172,11 @@ const UploadImage = () => {
     return(
       <div className={`w-full flex justify-between items-center border-1 ${book?.checked===false?"bg-white":"bg-green-100"} my-3 px-5`}>
         <div className="flex flex-col">
-          <p className={`font-semibold ${currentChoose?.status!=="Đang yêu cầu"}`}>Id:&nbsp;{book?.childId}</p>
+          <p className={`font-semibold ${currentChoose?.status!=="Đang yêu cầu"?"":"hidden"}`}>Id:&nbsp;{book?.childId}</p>
           <p className="font-semibold">{book?.tenSach}</p>
           <p>{book?.tenTacGia}</p>
           <p>{book?.nxb}</p>
+          <p>Vị trí:&nbsp;{book?.viTri}</p>
         </div>
         <img src={book?.hinhAnh[0]} width={140} height={140}/>
       </div>

@@ -32,6 +32,8 @@ public class BorrowCardService {
     private ChildBookRepo childBookRepo;
     @Autowired
     private SettingService settingService;
+    @Autowired
+    private EmailService emailService;
 
     // Tạo phiếu mượn khi người dùng bấm đăng ký mượn
     public BorrowCard createBorrowCard(String userId, List<String> bookIds) {
@@ -68,6 +70,8 @@ public class BorrowCardService {
         child.setTrangThai(ChildBook.TrangThai.DANG_MUON);
         childBookRepo.save(child); // lưu lại từng sách con
         }
+        //gửi mail thông báo
+        emailService.mailTaken(borrowCard);
         // Lưu phiếu mượn đã cập nhật
         return borrowCardRepo.save(borrowCard);
     }
@@ -100,6 +104,7 @@ public class BorrowCardService {
             book.setSoLuongMuon(book.getSoLuongMuon()-1);
             bookRepo.save(book); // lưu lại từng sách
         }
+        emailService.mailReturned(borrowCard);
         return borrowCardRepo.save(borrowCard);
     }
 
@@ -119,6 +124,7 @@ public class BorrowCardService {
             book.setSoLuongMuon(book.getSoLuongMuon()-1);
             bookRepo.save(book); // lưu lại từng sách
         }
+        emailService.mailExpired(borrowCard);
         return borrowCardRepo.save(borrowCard);
     }
 
@@ -155,7 +161,8 @@ public class BorrowCardService {
                     book.getTenTacGia(),
                     category.getTenTheLoaiCon(), // Lấy tên thể loại con
                     book.getNxb(),
-                    book.getSoLuongMuon());
+                    book.getSoLuongMuon(),
+                    category.getViTri());
         }).toList();
 
         return new BorrowCardDetail(
