@@ -30,5 +30,6 @@ public class BorrowCardDetail {
         private String category;
         private String publisher;
         private int borrowCount;
+        private String viTri;
     }
 }

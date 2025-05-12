@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "../components/sidebar/Sidebar";
-import { BookCheck, List, Loader, Plus, Search, TicketX, TimerOff } from "lucide-react";
+import { BookCheck, List, Loader, MailWarning, Plus, Search, TicketX, TimerOff } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import toast from "react-hot-toast";
@@ -78,6 +78,7 @@ const page = () => {
 
   const fetchExpired = async(list) => {
     try {
+      //phiếu nào hết hạn thì gửi
       const responses = await Promise.all(
         list.map(item =>
           fetch(`http://localhost:8081/borrow-card/expired/${item?.id}`, {
@@ -92,6 +93,27 @@ const page = () => {
     }
   }
 
+  const fetchMailing = async(list) => {
+    try {
+      //đưa lên backend để dò với startToMail
+      const response = await fetch('http://localhost:8081/borrow-card/askToReturn',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body:JSON.stringify(list),
+        }
+      );
+      toast.success("Gửi mail hối trả sách thành công")
+      
+      fetchBorrowCards()
+    } catch (error) {    
+      toast.error('Lỗi khi gửi mail hối trả sách');  
+      console.error('Lỗi khi gửi mail hối trả sách :', error);
+    }
+  }
+
   const handleExpired = () =>{
     setSelectedButton("Đang yêu cầu");
     if (confirm('Bạn chắc chắn muốn tiến hành xem xét các phiếu hết hạn?')) {
@@ -101,6 +123,15 @@ const page = () => {
         return new Date(card.getBookDate) < today;
       });
       fetchExpired(expiredList)
+    } else {
+      // Hủy
+    }
+  }
+  const handleMailing = () =>{
+    setSelectedButton("Đang mượn");
+    if (confirm('Bạn chắc chắn muốn tiến hành gửi mail hối trả sách?')) {
+      // Đồng ý
+      fetchMailing(filteredCards)
     } else {
       // Hủy
     }
@@ -278,6 +309,17 @@ const page = () => {
             }}
           >
             <Plus className="w-24 h-24" color="white" />
+          </Button>
+        </div>
+        <div className={`fixed bottom-6 right-10 ${selectedButton==="Đang mượn"?"":"hidden"}`}>
+          <Button
+            title={"Gửi Mail hối trả sách"}
+            className="bg-red-700 rounded-3xl w-12 h-12 border-2 border-white"
+            onClick={() => {
+              handleMailing()
+            }}
+          >
+            <MailWarning className="w-24 h-24" color="white" />
           </Button>
         </div>
           </div>

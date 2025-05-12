@@ -1,6 +1,7 @@
 package com.library_web.library.Controller;
 
 import com.library_web.library.Service.BorrowCardService;
+import com.library_web.library.Service.EmailService;
 import com.library_web.library.DTO.BorrowCardDetail;
 import com.library_web.library.Model.BorrowCard;
 
@@ -16,6 +17,8 @@ public class BorrowCardController {
 
     @Autowired
     private BorrowCardService borrowCardService;
+    @Autowired
+    private EmailService emailService;
 
     // Tạo phiếu mượn
     @PostMapping("/create")
@@ -85,4 +88,19 @@ public class BorrowCardController {
             return ResponseEntity.status(500).body("Lỗi khi xóa phiếu mượn!");
         }
     }
+
+    @PostMapping("/askToReturn")
+    public ResponseEntity<String> mailHoiTraSach(@RequestBody List<BorrowCard> list) {
+        try {
+            emailService.mailHoiTraSach(list);
+            return ResponseEntity.ok("Gửi mail thành công!");
+        } catch (RuntimeException e) {
+            System.out.println("Không tìm thấy!");
+            return ResponseEntity.status(404).body("Không tìm thấy!");
+        } catch (Exception e) {
+            System.out.println("Lỗi khi gửi mail!");
+            return ResponseEntity.status(500).body("Lỗi khi gửi mail!");
+        }
+    }
+    
 }
