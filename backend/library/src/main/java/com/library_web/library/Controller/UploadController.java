@@ -1,6 +1,9 @@
 package com.library_web.library.Controller;
 
 import com.library_web.library.Service.UploadService;
+
+import java.awt.image.BufferedImage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,5 +25,17 @@ public class UploadController {
     public ResponseEntity<?> uploadBarcode(@RequestParam("file") MultipartFile file,
                                            @RequestParam("type") String type) {
         return uploadService.uploadBarcode(file, type);
+    }
+
+    // generate sách lẻ (dùng để debug)
+    @PostMapping("/generate")
+    public ResponseEntity<?> generateBarcode(@RequestParam String name,@RequestParam String id) {
+        try {
+        BufferedImage barcodeImage = uploadService.generateBarcodeImage(id);
+        com.google.api.services.drive.model.File uploadedFile = uploadService.uploadBarcodeToDrive(barcodeImage, name + "_" + id); 
+        return ResponseEntity.ok().body("Upload successful: " + uploadedFile.getId());
+    } catch (Exception e) {
+        return ResponseEntity.status(400).body("Upload failed: " + e.getMessage());
+        }
     }
 }
