@@ -28,11 +28,23 @@ public class UploadController {
     }
 
     // generate sách lẻ (dùng để debug)
-    @PostMapping("/generate")
+    @PostMapping("/childBook/generate")
     public ResponseEntity<?> generateBarcode(@RequestParam String name,@RequestParam String id) {
         try {
         BufferedImage barcodeImage = uploadService.generateBarcodeImage(id);
         com.google.api.services.drive.model.File uploadedFile = uploadService.uploadBarcodeToDrive(barcodeImage, name + "_" + id); 
+        return ResponseEntity.ok().body("Upload successful: " + uploadedFile.getId());
+    } catch (Exception e) {
+        return ResponseEntity.status(400).body("Upload failed: " + e.getMessage());
+        }
+    }
+
+    // generate barcode người dùng
+    @PostMapping("/user/generate")
+    public ResponseEntity<?> generateUserBarcode(@RequestParam String name,@RequestParam String id) {
+        try {
+        BufferedImage barcodeImage = uploadService.generateBarcodeImage(id);
+        com.google.api.services.drive.model.File uploadedFile = uploadService.uploadUserBarcodeToDrive(barcodeImage, name + "_" + id); 
         return ResponseEntity.ok().body("Upload successful: " + uploadedFile.getId());
     } catch (Exception e) {
         return ResponseEntity.status(400).body("Upload failed: " + e.getMessage());
