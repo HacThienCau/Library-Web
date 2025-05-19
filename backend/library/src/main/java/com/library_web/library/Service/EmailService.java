@@ -1,6 +1,7 @@
 package com.library_web.library.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.library_web.library.Model.BorrowCard;
+import com.library_web.library.Model.Fine;
 import com.library_web.library.Model.User;
 import com.library_web.library.Repository.UserRepo;
 import com.library_web.library.config.EmailConfig;
@@ -105,6 +107,60 @@ public class EmailService {
             <p>Cảm ơn bạn đã sử dụng dịch vụ thư viện của chúng tôi. Hy vọng sẽ tiếp tục được phục vụ bạn trong những lần mượn tiếp theo.</p>
             <p>Trân trọng,<br><b>Ja97 Library Web</b></p>
         """, tenND, idPhieu, ngayTra);
+        emailConfig.sendEmail(List.of(email), subject, body);
+    }
+    @Async
+    public void mailFine(Fine fine){
+        User user = userRepo.findById(fine.getUserId()).orElseThrow(null);
+        String email = user.getEmail();
+        String tenND = user.getTenND();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String today = LocalDateTime.now().format(formatter).toString();
+        String idPhieu = fine.getId();
+        String reason = fine.getNoiDung().toString().equals("Khác")?(fine.getNoiDung()+" - "+fine.getCardId()).toString():fine.getNoiDung();
+        String money = Double.toString(fine.getSoTien())+" đồng";   
+        String subject = "Thông báo lập phiếu phạt – Ja97 Library Web";
+        String body = String.format("""
+            <h3><b>Xin chào %s,</b></h3>
+            <p><b>Ja97 Library Web</b> xin thông báo rằng một phiếu phạt đã được lập cho tài khoản của bạn.</p>
+            <p>Thông tin chi tiết phiếu phạt:</p>
+            <ul>
+            <li><b>Mã phiếu:</b> %s</li>
+            <li><b>Lý do:</b> %s</li>
+            <li><b>Số tiền:</b> %s</li>
+            <li><b>Thời gian lập phiếu:</b> %s</li>
+            </ul>
+            <p>Quý bạn vui lòng thanh toán khoản phạt này tại quầy thủ thư hoặc thông qua hệ thống thanh toán trực tuyến trong vòng 7 ngày kể từ khi thông báo. Việc không thanh toán đúng hạn có thể ảnh hưởng đến quyền mượn sách trong tương lai.</p>
+            <p>Nếu bạn có bất kỳ thắc mắc nào về phiếu phạt này, xin vui lòng liên hệ với chúng tôi qua email <b>librarywebja97@gmail.com</b> hoặc số điện thoại <b>0779765688</b>.</p>
+            <p>Trân trọng,<br><b>Ja97 Library Web</b></p>
+        """, tenND, idPhieu, reason, money, today);
+        emailConfig.sendEmail(List.of(email), subject, body);
+    }
+    @Async
+    public void mailPay(Fine fine){
+        User user = userRepo.findById(fine.getUserId()).orElseThrow(null);
+        String email = user.getEmail();
+        String tenND = user.getTenND();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String today = LocalDateTime.now().format(formatter).toString();
+        String idPhieu = fine.getId();
+        String reason = fine.getNoiDung().toString().equals("Khác")?(fine.getNoiDung()+" - "+fine.getCardId()).toString():fine.getNoiDung();
+        String money = Double.toString(fine.getSoTien())+" đồng";   
+        String subject = "Thanh toán phiếu phạt thành công";
+        String body = String.format("""
+            <h3><b>Xin chào %s,</b></h3>
+            <p><b>Ja97 Library Web</b> xin thông báo rằng thanh toán thành công cho phiếu phạt của bạn.</p>
+            <p>Thông tin chi tiết phiếu phạt:</p>
+            <ul>
+            <li><b>Mã phiếu:</b> %s</li>
+            <li><b>Lý do:</b> %s</li>
+            <li><b>Số tiền:</b> %s</li>
+            <li><b>Ngày thanh toán:</b> %s</li>
+            </ul>
+            <p>Chúng tôi xin chân thành cảm ơn Quý bạn vì sự hợp tác và trách nhiệm trong việc sử dụng dịch vụ thư viện.</p>
+            <p>Việc thanh toán của Quý bạn đã được ghi nhận thành công trong hệ thống. Nếu bạn có bất kỳ thắc mắc nào về phiếu phạt này, xin vui lòng liên hệ với chúng tôi qua email <b>librarywebja97@gmail.com</b> hoặc số điện thoại <b>0779765688</b>.</p>
+            <p>Trân trọng,<br><b>Ja97 Library Web</b></p>
+        """, tenND, idPhieu, reason, money, today);
         emailConfig.sendEmail(List.of(email), subject, body);
     }
 }

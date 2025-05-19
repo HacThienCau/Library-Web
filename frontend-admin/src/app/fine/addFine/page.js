@@ -11,128 +11,75 @@ import { ThreeDot } from "react-loading-indicators";
 function AddFine() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null); //user đang chọn
-  const [isDropDownOpen, setDropDownOpen] = useState(false); //user
+  const [userText, setUserText] = useState("")
   const [isBorrowDropDownOpen, setBorrowDropDownOpen] = useState(false);
-  const [isBookDropDownOpen, setBookDropDownOpen] = useState(false);
   const [money, setMoney] = useState(0);
   const [reason, setReason] = useState(null);
   const [more, setMore] = useState("");
   const [borrow, setBorrow] = useState(null); //phiếu mượn đang chọn
   const [book, setBook] = useState(null); //sách đang chọn
+  const [bookText, setBookText] = useState("")
   const route = useRouter();
   const handleGoBack = () => {
     route.back();
   };
   const [userList, setUserList] = useState([]);
   const [borrowList, setBorrowList] = useState([]);
-  const [bookList, setBookList] = useState([]);
+  const fetchUser = async()=>{
+    setLoading(true)
+    try {
+      const response = await fetch(
+        `http://localhost:8081/users`,
+        {
+          method: "GET",
+        }
+      );
+      if(!response.ok){
+        console.log("Không tìm thấy người dùng nào")
+        setLoading(false);       
+        setUserList([]);
+        return;
+      }
+      const res =  await response.json();
+      setUserList(res);
+      setLoading(false);
+    } catch (error) {
+      console.log(error)
+      return [];
+    }
+  }
+  const fetchBorrow = async(userId) =>{
+    setLoading(true)
+    try{
+      const response = await fetch(
+        `http://localhost:8081/borrow-card/user/${userId}`,
+        {
+          method: "GET",
+        }
+      );
+      if(response.status==204){
+        console.log("Không tìm thấy phiếu mượn nào")
+        setLoading(false);       
+        setBorrowList([]);
+        return;
+      }
+      const res =  await response.json();
+      setBorrowList(res);
+      setLoading(false);
+    }catch(error){
+      console.log(error)
+    }
+  }
   useEffect(() => {
-    const fetchUser = [
-      // lấy danh sách người dùng
-
-      {
-        MaNguoiDung: "1234144",
-        TenNguoiDung: "Nguyễn Lê Thanh Huyền",
-        //.....
-      },
-      {
-        MaNguoiDung: "12313314",
-        TenNguoiDung: "Nguyễn Đăng Hương Uyên",
-        //.....
-      },
-      {
-        MaNguoiDung: "12133114",
-        TenNguoiDung: "Lê Nguyễn Thùy Dương",
-        //.....
-      },
-      {
-        MaNguoiDung: "124213314",
-        TenNguoiDung: "Đỗ Mai Tường Vy",
-        //.....
-      },
-    ];
-    setUserList(fetchUser);
-
-    const fetchBorrow = [
-      //Lấy danh sách phiếu mượn
-      {
-        MaPhieuMuon: "1",
-        MaNguoiDung: "1234144",
-        NgayMuon: "01/01/2025",
-        NgayHenTra: "14/01/2025",
-        NgayTra: "01/02/2025",
-        ChiTietPhieuMuon: [
-          {
-            MaSach: "2",
-            SoLuong: 1,
-          },
-          {
-            MaSach: "4",
-            SoLuong: 1,
-          },
-          {
-            MaSach: "7",
-            SoLuong: 2,
-          },
-        ],
-      },
-      {
-        MaPhieuMuon: "13",
-        MaNguoiDung: user?.MaNguoiDung,
-        NgayMuon: "01/01/2025",
-        NgayHenTra: "14/01/2025",
-        NgayTra: "01/02/2025",
-        ChiTietPhieuMuon: [
-          {
-            MaSach: "2",
-            SoLuong: 1,
-          },
-          {
-            MaSach: "4",
-            SoLuong: 1,
-          },
-          {
-            MaSach: "7",
-            SoLuong: 2,
-          },
-        ],
-      },
-    ];
-    setBorrowList(fetchBorrow);
-
-    const fetchBook = [
-      //Lấy danh sách sách
-      {
-        MaSach: "123",
-        TenSach: "Tên sách 3",
-        MoTa: "Mo ta mau",
-        MaTheLoai: "ma tac gia",
-        MaTacGia: "ma the loai",
-        HinhAnh: ["/test.webp", "3133331", "313213131", "31313123"],
-        SoLuongTon: 70,
-        SoLuongMuon: 3,
-      },
-      {
-        MaSach: "23131",
-        TenSach: "Tên sách 3",
-        MoTa: "Mo ta mau",
-        MaTheLoai: "ma tac gia",
-        MaTacGia: "ma the loai",
-        HinhAnh: ["/test.webp", "3133331", "313213131", "31313123"],
-        SoLuongTon: 50,
-        SoLuongMuon: 1,
-      },
-    ];
-    setBookList(fetchBook);
+    fetchUser()
   }, []);
-  const openDropDownUserList = () => {
-    setDropDownOpen(!isDropDownOpen);
-  };
+  useEffect(()=>{
+    if(user){
+      fetchBorrow(user?.id)    
+    }
+  },[user]);
   const openDropDownBorrowList = () => {
     setBorrowDropDownOpen(!isBorrowDropDownOpen);
-  };
-  const openDropDownBookList = () => {
-    setBookDropDownOpen(!isBookDropDownOpen);
   };
   const handleReasonChange = (e) => {
     setReason(e.target.value);
@@ -162,33 +109,64 @@ function AddFine() {
       toast.error("Vui lòng nhập nội dung");
       return;
     }
+    if (reason === "Làm mất sách" && !book) {
+      toast.error("Vui lòng nhập ID sách");
+      return;
+    }
     setLoading(true);
-    console.log(
-      "Nội dung phiếu phạt mới:",
-      "\nMaNguoiDung: ",
-      user?.MaNguoiDung,
-      "\nTenNguoiDung: ",
-      user?.TenNguoiDung,
-      "\nSoTien: ",
-      money,
-      "\nNoiDung: ",
-      reason,
-      "\nMaPhieuMuon: ",
-      reason === "Trả sách trễ hạn"
-        ? borrow.MaPhieuMuon
-        : reason === "Khác"
-        ? more
-        : book,
-      "\nStatus: ",
-      "Chưa Thanh Toán"
-    );
-    // API here
-    await delay(4000);
-    setLoading(false);
-    toast.success("Thêm phiếu phạt thành công.");
-    handleGoBack();
+    const data = {
+      userId: user?.id,
+      soTien: Number.parseFloat(money),
+      noiDung: reason,
+      cardId: reason === "Trả sách trễ hạn"
+      ? borrow.id
+      : reason === "Khác"
+      ? more
+      : book.id,
+    }
+    console.log(data);
+    try {
+      const response = await fetch(
+        `http://localhost:8081/addFine`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        }
+      );
+      if(!response.ok){
+        toast.error("Đã xảy ra lỗi. Vui lòng thử lại.")
+        return;
+      }
+      setLoading(false);
+      toast.success("Thêm phiếu phạt thành công.");
+      handleGoBack();
+    } catch (error) {
+      console.log(error)
+      toast.error("Đã xảy ra lỗi. Vui lòng thử lại.")
+    }    
   };
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms)); // test
+  const handleEnterUser = () =>{
+    const selected = userList.filter((user)=>user?.id === userText)
+    if(selected.length < 1) {
+      toast.error("Không tìm thấy người dùng với id này")
+      return;
+    }
+    setUser(selected.at(0))
+  }
+  const handleEnterBook = async() =>{
+    const selected = await (await fetch(`http://localhost:8081/child/${bookText}`)).json();
+    if(!selected) {
+      toast.error("Không tìm thấy sách con với id này")
+      return;
+    }else{
+      toast.success("Đã tìm thấy sách")
+    }
+    console.log(selected)
+    setBook(selected)
+  }
   return (
     <div className="flex flex-row w-full h-dvh bg-[#EFF3FB]">
       <Sidebar />
@@ -205,7 +183,7 @@ function AddFine() {
       ) : (
         <div className="flex w-full flex-col py-6 md:ml-52 relative mt-10 gap-2 items-center px-10">
           {/*Nút Back*/}
-          <div className="absolute top-5 left-5 md:left-57">
+          <div className="absolute top-5 left-5 md:left-57 fixed">
             <Button
               title={"Quay Lại"}
               className="bg-[#062D76] rounded-3xl w-10 h-10"
@@ -218,43 +196,21 @@ function AddFine() {
           </div>
           {/*Dòng user*/}
           <div className="flex w-full justify-between">
-            {/*Dropdown chọn ID người dùng*/}
             <div className="flex flex-col w-full space-y-2 relative text-left">
               <p className="font-semibold text-lg mt-3">ID Người Dùng</p>
-              <Button
-                title={"ID Người Dùng"}
-                className="bg-white text-black rounded-lg w-120 h-10 hover:bg-gray-300 flex justify-between"
-                onClick={() => {
-                  openDropDownUserList();
-                }}
-              >
-                {user ? user?.MaNguoiDung : "Chọn ID Người Dùng"}
-                <ChevronDown className="w-12 h-12" color="#062D76" />
-              </Button>
-              {isDropDownOpen && (
-                <div className="absolute bg-white rounded-lg w-120 z-50 shadow-lg">
-                  {userList?.map((user, index) => {
-                    return (
-                      <Button
-                        key={index}
-                        className="flex justify-start w-full px-4 py-2 text-left bg-white text-black hover:bg-gray-300 items-center gap-2"
-                        onClick={() => {
-                          setUser(user);
-                          setDropDownOpen(false);
-                        }}
-                      >
-                        {user?.MaNguoiDung}
-                      </Button>
-                    );
-                  })}
-                </div>
-              )}
+              <Input
+                placeholder="Nhập ID người dùng"
+                className="bg-white text-black rounded-lg w-120 h-10 flex justify-between"
+                value={userText}
+                onChange={(e) =>{setUserText(e.target.value)}}
+                onKeyDown={(e) => e.key === "Enter" && handleEnterUser()}
+              />
             </div>
             {/*Tên người dùng*/}
             <div className="flex flex-col w-full gap-[5px] md:gap-[10px]">
               <p className="font-semibold text-lg mt-3">Tên Người Dùng</p>
               <p className="font-semibold text-gray-700 rounded-lg w-120 h-10 flex items-center bg-gray-300 px-5">
-                {user?.TenNguoiDung}
+                {user?.tenND}
               </p>
             </div>
           </div>
@@ -291,11 +247,11 @@ function AddFine() {
                     openDropDownBorrowList();
                   }}
                 >
-                  {borrow ? borrow?.MaPhieuMuon : "Chọn ID Phiếu Mượn"}
+                  {borrow ? borrow?.id : "Chọn ID Phiếu Mượn"}
                   <ChevronDown className="w-12 h-12" color="#062D76" />
                 </Button>
                 {isBorrowDropDownOpen && (
-                  <div className="absolute bg-white rounded-lg w-full z-50 shadow-lg">
+                  <div className="absolute bg-white rounded-lg w-full z-50 shadow-lg max-h-[200px] overflow-y-auto">
                     {borrowList?.map((borrow, index) => {
                       return (
                         <Button
@@ -306,7 +262,7 @@ function AddFine() {
                             setBorrowDropDownOpen(false);
                           }}
                         >
-                          {borrow?.MaPhieuMuon}
+                          {borrow?.id}
                         </Button>
                       );
                     })}
@@ -326,34 +282,13 @@ function AddFine() {
               <p className="font-semibold text-md">Làm mất sách</p>
               <p className="font-semibold text-md ml-53">ID Sách</p>
               <div className="space-y-2 relative inline-block text-left">
-                <Button
-                  title={"ID Sách"}
-                  className="bg-white text-black rounded-lg w-64 h-10 hover:bg-gray-300 flex justify-between"
-                  onClick={() => {
-                    openDropDownBookList();
-                  }}
-                >
-                  {book ? book?.MaSach : "Chọn ID Sách"}
-                  <ChevronDown className="w-12 h-12" color="#062D76" />
-                </Button>
-                {isBookDropDownOpen && (
-                  <div className="absolute bg-white rounded-lg w-full z-50 shadow-lg">
-                    {bookList?.map((book, index) => {
-                      return (
-                        <Button
-                          key={index}
-                          className="flex justify-start w-full px-4 py-2 text-left bg-white text-black hover:bg-gray-300 items-center gap-2"
-                          onClick={() => {
-                            setBook(book);
-                            setBookDropDownOpen(false);
-                          }}
-                        >
-                          {book?.MaSach}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                )}
+              <Input
+                placeholder="Nhập ID sách"
+                className="bg-white text-black rounded-lg w-64 h-10 flex justify-between"
+                value={bookText}
+                onChange={(e) =>{setBookText(e.target.value)}}
+                onKeyDown={(e) => e.key === "Enter" && handleEnterBook()}
+              />
               </div>
             </div>
             {/*Nội dung 3*/}

@@ -2,8 +2,13 @@ package com.library_web.library.Service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.google.api.client.http.FileContent;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.Permission;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import com.library_web.library.Model.ChildBook;
 import com.library_web.library.Model.User;
@@ -27,6 +32,12 @@ public class UploadService {
 
     @Autowired
     private Cloudinary cloudinary;
+
+    private final Drive driveService;
+
+    public UploadService(Drive driveService) {
+        this.driveService = driveService;
+    }
 
     static{
         System.load(new File("backend/library/src/main/resources/native/opencv_java460.dll").getAbsolutePath());
@@ -188,4 +199,84 @@ public class UploadService {
             return ResponseEntity.status(500).body(Map.of("error", "Lỗi truy vấn API: " + e.getMessage()));
         }
     }
+
+    //Tạo barcode
+    public BufferedImage generateBarcodeImage(String text) throws WriterException {
+        BitMatrix bitMatrix = new MultiFormatWriter().encode(text, BarcodeFormat.CODE_128, 300, 100);
+        return MatrixToImageWriter.toBufferedImage(bitMatrix);
+    }
+    public com.google.api.services.drive.model.File uploadBarcodeToDrive(BufferedImage barcodeImage, String fileName) throws IOException {
+        // Thư mục Google Drive mà bạn đã tạo sẵn
+        String folderId = "18QQYaJL0B4sZ3zWoOo0DmeMZ4xKEW18D"; 
+            
+        // Tạo file ảnh tạm
+        File tempFile = File.createTempFile(fileName, ".png");
+        ImageIO.write(barcodeImage, "png", tempFile);
+    
+        // Tạo metadata cho file
+        com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
+        fileMetadata.setName(fileName + ".png");
+        fileMetadata.setParents(Collections.singletonList(folderId)); // Upload vào thư mục cụ thể
+    
+        FileContent mediaContent = new FileContent("image/png", tempFile);
+    
+        // Upload file
+        com.google.api.services.drive.model.File uploadedFile = driveService.files()
+                .create(fileMetadata, mediaContent)
+                .setFields("id, webViewLink")
+                .execute();
+    
+        // Cấp quyền công khai: anyone can view
+        Permission permission = new Permission()
+                .setType("anyone")
+                .setRole("reader");
+    
+        driveService.permissions()
+                .create(uploadedFile.getId(), permission)
+                .setFields("id")
+                .execute();
+    
+        // Xóa file tạm
+        tempFile.delete();
+    
+        return uploadedFile;
+    }
+    public com.google.api.services.drive.model.File uploadUserBarcodeToDrive(BufferedImage barcodeImage, String fileName) throws IOException {
+        // Thư mục Google Drive mà bạn đã tạo sẵn
+        String folderId = "1QJF5GnKg0wzbP6LWLjh4725iiXUoyPdZ"; //UserBarcode
+            
+        // Tạo file ảnh tạm
+        File tempFile = File.createTempFile(fileName, ".png");
+        ImageIO.write(barcodeImage, "png", tempFile);
+    
+        // Tạo metadata cho file
+        com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
+        fileMetadata.setName(fileName + ".png");
+        fileMetadata.setParents(Collections.singletonList(folderId)); // Upload vào thư mục cụ thể
+    
+        FileContent mediaContent = new FileContent("image/png", tempFile);
+    
+        // Upload file
+        com.google.api.services.drive.model.File uploadedFile = driveService.files()
+                .create(fileMetadata, mediaContent)
+                .setFields("id, webViewLink")
+                .execute();
+    
+        // Cấp quyền công khai: anyone can view
+        Permission permission = new Permission()
+                .setType("anyone")
+                .setRole("reader");
+    
+        driveService.permissions()
+                .create(uploadedFile.getId(), permission)
+                .setFields("id")
+                .execute();
+    
+        // Xóa file tạm
+        tempFile.delete();
+    
+        return uploadedFile;
+    }
+
 }
+    

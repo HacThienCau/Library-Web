@@ -5,6 +5,7 @@ import com.library_web.library.Model.Book;
 import com.library_web.library.Model.BorrowCard;
 import com.library_web.library.Model.Category;
 import com.library_web.library.Model.ChildBook;
+import com.library_web.library.Model.Fine;
 import com.library_web.library.Model.User;
 import com.library_web.library.Repository.BorrowCardRepo;
 import com.library_web.library.Repository.CategoryRepo;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -34,6 +36,8 @@ public class BorrowCardService {
     private SettingService settingService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private FineService fineService;
 
     // Tạo phiếu mượn khi người dùng bấm đăng ký mượn
     public BorrowCard createBorrowCard(String userId, List<String> bookIds) {
@@ -86,6 +90,21 @@ public class BorrowCardService {
             borrowCard.setStatus("Hết hạn");
         }
         borrowCard.updateStatus();
+        //Nếu trả trễ
+        long soNgayTre = ChronoUnit.DAYS.between(borrowCard.getDueDate(), LocalDateTime.now());
+        if (soNgayTre < 0) {
+            soNgayTre = 0; // chưa trễ hạn
+        }
+        else{
+            Fine data = new Fine();
+            int finePerDay = settingService.getSetting().getFinePerDay();
+            data.setNoiDung("Trả sách trễ hạn");
+            data.setSoTien(soNgayTre*finePerDay);
+            data.setCardId(borrowCard.getId());
+            data.setUserId(borrowCard.getUserId());
+            fineService.addFine(data);
+        }
+        borrowCard.setSoNgayTre(soNgayTre);
         //Cập nhật ngày trả
         borrowCard.setDueDate(LocalDateTime.now());
         //Cập nhật sách con
@@ -93,7 +112,7 @@ public class BorrowCardService {
         for (String childId : childBookIds) {
             ChildBook child = childBookRepo.findById(childId)
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy sách con với id: " + childId));
-            child.setTrangThai(ChildBook.TrangThai.CON_SAN);
+            if(child.getTrangThai()==ChildBook.TrangThai.DANG_MUON) child.setTrangThai(ChildBook.TrangThai.CON_SAN);
             childBookRepo.save(child); // lưu lại từng sách con
             }
         //Cập nhật số lượng sách available
