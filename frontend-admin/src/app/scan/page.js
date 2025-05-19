@@ -298,17 +298,42 @@ const UploadImage = () => {
   }
 
   const handleLost = async() =>{
-    const lostNumber = currentInfo.filter(book => book.checked === false).length;
-    if(confirm(`Lập phiếu phạt Mất sách cho ${lostNumber} quyển sách chưa quét?`)){
-      setLoadingLoad(true)
+    const lostBooks = currentInfo.filter(book => book.checked === false);
+    const lostNumber = lostBooks.length;
+    if (confirm(`Lập phiếu phạt Mất sách cho ${lostNumber} quyển sách chưa quét?`)) {
+      setLoadingLoad(true);
       try {
-        
-        setInfo(prevInfo => prevInfo.map(book => ({ ...book, checked: true })));
+        for (const book of lostBooks) {
+          const money = prompt(`Nhập số tiền phạt cho sách: ${book?.tenSach}`);
+          if (money !== null && !isNaN(money)) {
+            // Gọi API cho từng cuốn sách
+            const data = {
+              userId: result?.id,
+              noiDung: "Làm mất sách",
+              soTien: money,
+              cardId: book?.childId
+            }
+            const response = await fetch('http://localhost:8081/addFine',{
+              method: 'POST',
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(data)
+            })  
+            // Đánh dấu sách là đã xử lý
+            setInfo(prevInfo =>
+              prevInfo.map(b =>
+                b.id === book.id ? { ...b, checked: true } : b
+              )
+            );
+          }
+        }
       } catch (error) {
-        console.log(error)
-      }      
-      setLoadingLoad(false)
-    }
+        console.error("Lỗi khi xử lý phiếu phạt:", error);
+        alert("Đã xảy ra lỗi khi xử lý phiếu phạt.");
+      }
+      setLoadingLoad(false);
+      }
   }
   return (
     <div className="flex w-full min-h-screen h-full flex-col gap-2 items-center bg-[#EFF3FB]">

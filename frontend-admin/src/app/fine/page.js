@@ -10,9 +10,8 @@ import toast from "react-hot-toast";
 
 const page = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterFines, setFilterFines] = useState([]);
-  const [needToPay, setNeedToPay] = useState([]);
-  const [paid, setPaid] = useState([]);
+  const [allFines, setAllFines] = useState([]);
+  const [filterFines, setFilterFines] = useState([]); //khi tìm kiếm
   const [mode, setMode] = useState(0); //0 là chưa thanh toán, 1 là đã thanh toán
   const [loading, setLoading] = useState(false);
 
@@ -20,11 +19,10 @@ const page = () => {
     //Hàm tìm kiếm
     if (searchQuery) {
       setLoading(true);
-      const fineList = mode === 0 ? needToPay : paid;
-      const filterFine = fineList.filter((book) =>
-        book.id.toString() === searchQuery || //tìm theo id
-        book?.userId.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo tên sách
-          ? book
+      const filterFine = filteredCards.filter((card) =>
+        card.id.toString() === searchQuery || //tìm theo id
+        card?.userId.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo userId
+          ? card
           : null
       );
       setFilterFines(filterFine);
@@ -34,6 +32,13 @@ const page = () => {
       setFilterFines([]);
     }
   };
+
+  const filteredCards = allFines?.filter((card) => {
+    if (mode === 0)
+      return card.trangThai === "CHUA_THANH_TOAN";
+    if (mode === 1) return card.trangThai === "DA_THANH_TOAN";
+    return false;
+  });
 
   const route = useRouter();
   const handleAddFine = () => {
@@ -48,8 +53,6 @@ const page = () => {
   const fetchFine = async () => {
     //Hàm lấy ds phiếu phạt, sau đó chia theo trangThai
     setLoading(true);
-    needToPay.length = 0; //reset mảng
-    paid.length = 0;
     try {
       const response = await fetch(
         `http://localhost:8081/fines`,
@@ -63,11 +66,7 @@ const page = () => {
         return;
       }
       const res = await response.json();
-      res.map((fine) => {
-        fine.trangThai === "CHUA_THANH_TOAN"
-          ? needToPay.push(fine)
-          : paid.push(fine);
-      });
+      setAllFines(res)
     } catch (error) {
       console.log(error)
     }    
@@ -157,6 +156,7 @@ const page = () => {
               className="w-xs md:w-2xl h-10 font-thin italic text-black text-2xl bg-white rounded-[10px]"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
             <Button
               title={"Tìm kiếm"}
@@ -179,27 +179,13 @@ const page = () => {
               textColor="#062D76"
             />
           </div>
-        ) : mode === 0 ? (
-          filterFines.length > 0 ? ( //nếu đang search thì hiện danh sách lọc
-            filterFines.map((fine) => {
-              return <FineCard key={fine?.id} fine={fine} />;
-            })
-          ) : (
-            needToPay.map((fine) => {
-              return <FineCard key={fine?.id} fine={fine} />;
-            })
-          )
-        ) : filterFines.length > 0 ? ( //nếu đang search thì hiện danh sách lọc
-          filterFines.map((fine) => {
-            return <FineCard key={fine?.id} fine={fine} />;
-          })
         ) : (
-          paid.map((fine) => {
+          (filterFines?.length>0?filterFines:filteredCards)?.map((fine) => {
             return <FineCard key={fine?.id} fine={fine} />;
           })
         )}
         {/*Nút Thêm - Floating Button*/}
-        <div className="fixed bottom-10 right-10">
+        <div className={`fixed bottom-10 right-10 ${mode===0?"":"hidden"}`}>
           <Button
             title={"Thêm Phiếu Phạt"}
             className="bg-[#062D76] rounded-3xl w-12 h-12"

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,6 +21,7 @@ public class Fine {
     private String noiDung;
     private String cardId;
     private TrangThai trangThai;
+    private LocalDateTime ngayThanhToan;
     public enum TrangThai {
         CHUA_THANH_TOAN("Chưa Thanh Toán"),
         DA_THANH_TOAN("Đã Thanh Toán");
