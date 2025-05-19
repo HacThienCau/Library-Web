@@ -4,7 +4,7 @@ import { Button } from "../components/ui/button";
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
 import { format } from 'date-fns';
-import { Book, CalendarClock, Undo2 } from "lucide-react";
+import { Book, BookDashed, CalendarClock, Undo2 } from "lucide-react";
 import UploadChild from "./childBook/page";
 
 const UploadImage = () => {
@@ -18,6 +18,7 @@ const UploadImage = () => {
   const [resultChild, setResultChild] = useState(null);
   const [done, setDone] = useState(false);
   const [children, setChildren] = useState([])
+  const [loadingLost, setLoadingLoad] = useState(false)
   // Hàm xử lý khi người dùng chọn ảnh
   const onFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -295,6 +296,45 @@ const UploadImage = () => {
     getBorrowCard()
     setLoading(false)
   }
+
+  const handleLost = async() =>{
+    const lostBooks = currentInfo.filter(book => book.checked === false);
+    const lostNumber = lostBooks.length;
+    if (confirm(`Lập phiếu phạt Mất sách cho ${lostNumber} quyển sách chưa quét?`)) {
+      setLoadingLoad(true);
+      try {
+        for (const book of lostBooks) {
+          const money = prompt(`Nhập số tiền phạt cho sách: ${book?.tenSach}`);
+          if (money !== null && !isNaN(money)) {
+            // Gọi API cho từng cuốn sách
+            const data = {
+              userId: result?.id,
+              noiDung: "Làm mất sách",
+              soTien: money,
+              cardId: book?.childId
+            }
+            const response = await fetch('http://localhost:8081/addFine',{
+              method: 'POST',
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(data)
+            })  
+            // Đánh dấu sách là đã xử lý
+            setInfo(prevInfo =>
+              prevInfo.map(b =>
+                b.id === book.id ? { ...b, checked: true } : b
+              )
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Lỗi khi xử lý phiếu phạt:", error);
+        alert("Đã xảy ra lỗi khi xử lý phiếu phạt.");
+      }
+      setLoadingLoad(false);
+      }
+  }
   return (
     <div className="flex w-full min-h-screen h-full flex-col gap-2 items-center bg-[#EFF3FB]">
       {loading ? (
@@ -353,6 +393,10 @@ const UploadImage = () => {
                     return <BookInfo book={book} key={index}/>
                 })}
               </div>
+              <Button className={`self-end w-[150px] flex z-100 bg-red-700 mb-2 ${currentChoose.status == "Đang mượn"?"":"hidden"}`} onClick={()=>{handleLost()}}>
+                <BookDashed className="w-12 h-12" color="white"/>
+                {loadingLost?"Đang lập phiếu phạt":"Báo mất sách"}
+                </Button>
               <Button className="self-end w-full flex z-100 bg-[#062D76]" disabled={!done} onClick={()=>{handleUpdateBorrowCard()}}>Hoàn tất</Button>
               </div>
               <div className="flex flex-col w-1/2 items-center justify-center">

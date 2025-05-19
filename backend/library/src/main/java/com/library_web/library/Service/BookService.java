@@ -10,6 +10,7 @@ import com.library_web.library.Repository.ChildBookRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.image.BufferedImage;
 import java.util.*;
 
 @Service
@@ -21,20 +22,34 @@ public class BookService {
     private ChildBookRepo childBookRepo;
     @Autowired
     private CategoryRepo categoryRepo;
+    @Autowired
+    private UploadService uploadService;
+
 
     public Book themBook(Book book) {
         book.setTrangThai(Book.TrangThai.CON_SAN);
         Book savedBook = bookRepo.save(book);
+        String tenSach = book.getTenSach();
 
-        List<ChildBook> childBooks = new ArrayList<>();
+        List<String> childIdList = new ArrayList<>();
+        List<String> barcodeLinks = new ArrayList<>();
+
         for (int i = 0; i < book.getTongSoLuong(); i++) {
             ChildBook child = new ChildBook();
             child.setIdParent(savedBook.getId());
             child.setTrangThai(ChildBook.TrangThai.CON_SAN);
-            childBooks.add(child);
-        }
-        childBookRepo.saveAll(childBooks);
+            ChildBook savedChild = childBookRepo.save(child);
 
+            String childId = savedChild.getId(); // Lấy ID đã được lưu
+            childIdList.add(childId);
+            try {
+                BufferedImage barcodeImage = uploadService.generateBarcodeImage(childId);
+                com.google.api.services.drive.model.File uploadedFile = uploadService.uploadBarcodeToDrive(barcodeImage, tenSach + "_" + childId);
+                barcodeLinks.add(uploadedFile.getWebViewLink());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }            
+        }
         return savedBook;
     }
 
