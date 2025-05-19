@@ -8,11 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+
 @RestController
 public class BookController {
 
     @Autowired
     private BookService bookService;
+
     @PostMapping("/addBook")
     public Book themBook(@RequestBody Book book) {
         return bookService.themBook(book);
@@ -42,5 +44,15 @@ public class BookController {
     public ResponseEntity<List<Book>> searchBooks(@RequestParam String query) {
         List<Book> books = bookService.searchBooks(query);
         return books.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(books);
+    }
+
+    @PostMapping("/suggest")
+    public List<Book> suggestBooks(@RequestBody Map<String, Object> requestBody) {
+        String userId = (requestBody.get("userId").toString());
+
+        // Ép kiểu cho danh sách từ khóa
+        List<String> keywords = (List<String>) requestBody.get("keywords");
+
+        return bookService.getSuggestions(userId, keywords);
     }
 }
