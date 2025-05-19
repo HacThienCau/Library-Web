@@ -74,6 +74,7 @@ import axios from "axios";
 const HomePage = () => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [booksSuggest, setBooksSuggest] = useState([]);
 
   useEffect(() => {
     // gọi API lấy toàn bộ sách
@@ -97,7 +98,56 @@ const HomePage = () => {
     };
 
     fetchBooks();
+
+    const fetchBooksSuggest = async () => {
+      try {
+        const userId = localStorage.getItem("id"); // thay bằng userId thật của bạn
+        const searchKeywords = localStorage.getItem("searchKeywords"); // mảng keyword ví dụ
+        const keywords = searchKeywords ? JSON.parse(searchKeywords) : [];
+
+        const response = await axios.post("http://localhost:8081/suggest", {
+          userId: userId,
+          keywords: keywords,
+        });
+        // console.log("Dữ liệu sách:", response.data);
+        const convertedBooks = response.data.map((book) => ({
+          id: book.id,
+          imageSrc: book.hinhAnh[0],
+          available: book.tongSoLuong - book.soLuongMuon - book.soLuongXoa > 0,
+          title: book.tenSach,
+          author: book.tenTacGia,
+          publisher: book.nxb,
+          borrowCount: book.soLuongMuon,
+        }));
+        setBooksSuggest(convertedBooks);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách:", error);
+      }
+    };
+
+    fetchBooksSuggest();
   }, []);
+
+  const MAX_KEYWORDS = 5;
+
+  const saveSearchTermToCache = (term) => {
+    if (!term.trim()) return;
+
+    // Lấy danh sách từ khóa hiện tại
+    const stored = JSON.parse(localStorage.getItem("searchKeywords") || "[]");
+
+    // Xóa nếu đã tồn tại
+    const updated = stored.filter((item) => item !== term);
+
+    // Thêm từ khóa mới vào đầu mảng
+    updated.unshift(term);
+
+    // Giới hạn số lượng từ khóa
+    const limited = updated.slice(0, MAX_KEYWORDS);
+
+    // Lưu lại vào localStorage
+    localStorage.setItem("searchKeywords", JSON.stringify(limited));
+  };
 
   const handleSearch = async () => {
     try {
@@ -110,7 +160,7 @@ const HomePage = () => {
           params: { query: searchTerm },
         });
       }
-
+      saveSearchTermToCache(searchTerm.trim());
       const data = res?.data || [];
 
       const convertedBooks = Array.isArray(data)
@@ -177,6 +227,25 @@ const HomePage = () => {
               />
             </div>
           </div>
+          <section className="flex flex-col p-5 mt-3 w-full bg-white rounded-xl max-md:max-w-full">
+            <h2 className="gap-2.5 self-start px-5 py-2.5 text-[1.25rem] text-white bg-[#062D76] rounded-lg">
+              Có thể bạn sẽ thích
+            </h2>
+            <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-10 items-start mt-5 w-full max-md:max-w-full">
+              {booksSuggest.map((book, index) => (
+                <BookCard
+                  key={book.id}
+                  id={book.id}
+                  imageSrc={book.imageSrc}
+                  available={book.available}
+                  title={book.title}
+                  author={book.author}
+                  publisher={book.publisher}
+                  borrowCount={book.borrowCount}
+                />
+              ))}
+            </div>
+          </section>
           <section className="flex flex-col p-5 mt-3 w-full bg-white rounded-xl max-md:max-w-full">
             <h2 className="gap-2.5 self-start px-5 py-2.5 text-[1.25rem] text-white bg-[#062D76] rounded-lg">
               Sách mới về

@@ -1,9 +1,11 @@
 package com.library_web.library.Service;
 
 import com.library_web.library.Model.Book;
+import com.library_web.library.Model.BorrowCard;
 import com.library_web.library.Model.Category;
 import com.library_web.library.Model.ChildBook;
 import com.library_web.library.Repository.BookRepo;
+import com.library_web.library.Repository.BorrowCardRepo;
 import com.library_web.library.Repository.CategoryRepo;
 import com.library_web.library.Repository.ChildBookRepo;
 
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -23,8 +26,10 @@ public class BookService {
     @Autowired
     private CategoryRepo categoryRepo;
     @Autowired
-    private UploadService uploadService;
 
+    private BorrowCardRepo borrowCardRepo;
+
+    private UploadService uploadService;
 
     public Book themBook(Book book) {
         book.setTrangThai(Book.TrangThai.CON_SAN);
@@ -58,7 +63,7 @@ public class BookService {
         List<Map<String, Object>> resultList = new ArrayList<>();
         for (Book book : books) {
             Category cate = categoryRepo.findById(book.getTheLoai()).orElse(null);
-    
+
             Map<String, Object> resultMap = new HashMap<>();
             resultMap.put("id", book.getId());
             resultMap.put("tenSach", book.getTenSach());
@@ -72,7 +77,7 @@ public class BookService {
             resultMap.put("soLuongMuon", book.getSoLuongMuon());
             resultMap.put("soLuongXoa", book.getSoLuongXoa());
             resultMap.put("trangThai", book.getTrangThai());
-    
+
             if (cate != null) {
                 resultMap.put("tenTheLoaiCha", cate.getTenTheLoaiCha());
                 resultMap.put("tenTheLoaiCon", cate.getTenTheLoaiCon());
@@ -82,10 +87,10 @@ public class BookService {
                 resultMap.put("tenTheLoaiCon", null);
                 resultMap.put("viTri", null);
             }
-    
+
             resultList.add(resultMap);
         }
-    
+
         return resultList;
     }
 
@@ -158,14 +163,15 @@ public class BookService {
         }
     }
 
-     // Tìm kiếm sách theo tên sách, tác giả hoặc thể loại
-     public List<Book> searchBooks(String query) {
+    // Tìm kiếm sách theo tên sách, tác giả hoặc thể loại
+    public List<Book> searchBooks(String query) {
         // Kiểm tra nếu query không phải là null hoặc rỗng
         if (query == null || query.trim().isEmpty()) {
-            return List.of();  // Trả về danh sách rỗng nếu không có input
+            return List.of(); // Trả về danh sách rỗng nếu không có input
         }
 
-        // Tìm kiếm theo tên sách, tên tác giả hoặc thể loại (kiểm tra đầy đủ các trường hợp)
+        // Tìm kiếm theo tên sách, tên tác giả hoặc thể loại (kiểm tra đầy đủ các trường
+        // hợp)
         List<Book> books = bookRepo.findByTenSachContainingIgnoreCase(query);
         if (books.isEmpty()) {
             books = bookRepo.findByTenTacGiaContainingIgnoreCase(query);
@@ -175,5 +181,59 @@ public class BookService {
         }
 
         return books;
+    }
+
+    public List<Book> getSuggestions(String userId, List<String> keywords) {
+        // 1. Lấy 5 phiếu mượn gần nhất của user
+        List<BorrowCard> recentBorrows = borrowCardRepo.findTop5ByUserIdOrderByBorrowDateDesc(userId);
+
+        // 2. Lấy tất cả bookIds đã mượn trong 5 phiếu mượn (id kiểu String)
+        List<String> allBorrowedBookIds = recentBorrows.stream()
+                .map(BorrowCard::getBookIds) // List<String>
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
+
+        if (allBorrowedBookIds.isEmpty()) {
+            // Nếu chưa mượn sách nào, chỉ lọc theo keywords
+            return bookRepo.findAll().stream()
+                    .filter(book -> keywords.stream()
+                            .anyMatch(kw -> book.getTenSach().toLowerCase().contains(kw.toLowerCase()) ||
+                                    book.getTenTacGia().toLowerCase().contains(kw.toLowerCase())))
+                    .limit(10)
+                    .collect(Collectors.toList());
+        }
+
+        // 3. Lấy thông tin sách đã mượn
+        List<Book> borrowedBooks = bookRepo.findAllById(allBorrowedBookIds);
+
+        // 4. Tạo set id sách đã mượn để loại ra
+        Set<String> borrowedBookIdSet = borrowedBooks.stream()
+                .map(Book::getId)
+                .collect(Collectors.toSet());
+
+        // 5. Lấy danh sách tác giả của sách đã mượn, gộp với keywords
+        List<String> authors = borrowedBooks.stream()
+                .map(Book::getTenTacGia)
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<String> allKeywords = new ArrayList<>(keywords);
+        allKeywords.addAll(authors);
+
+        System.out.println("All Keywords: " + allKeywords);
+        System.out.println("Borrowed Book IDs: " + borrowedBookIdSet);
+        // System.out.println("All Books count: " + allBooks.size());
+
+        // 6. Lọc sách chưa mượn, tên hoặc tác giả chứa keyword, trả về tối đa 10 quyển
+        return bookRepo.findAll().stream()
+                .filter(book -> !borrowedBookIdSet.contains(book.getId()))
+                .filter(book -> allKeywords.stream()
+                        .anyMatch(kw -> book.getTenSach().toLowerCase().contains(kw.toLowerCase()) ||
+                                book.getTenTacGia().toLowerCase().contains(kw.toLowerCase()) ||
+                                book.getTheLoai().toLowerCase().contains(kw.toLowerCase()) ||
+                                book.getMoTa().toLowerCase().contains(kw.toLowerCase())))
+                .limit(10)
+                .collect(Collectors.toList());
     }
 }
