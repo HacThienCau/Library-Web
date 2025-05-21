@@ -2,7 +2,9 @@ package com.library_web.library.Controller;
 
 import org.springframework.http.HttpStatus;
 
+import com.library_web.library.Model.Book;
 import com.library_web.library.Model.Category;
+import com.library_web.library.Repository.BookRepo;
 import com.library_web.library.Repository.CategoryRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class CategoryController {
 
   @Autowired
   CategoryRepo CategoryRepo;
+
+  @Autowired
+  BookRepo BookRepo;
 
   // Thêm danh mục
   @PostMapping("/addCategory")
@@ -49,11 +54,10 @@ public class CategoryController {
     return CategoryRepo.findAll();
   }
 
-
   // Lấy thể loại theo ID
   @GetMapping("/category/{id}")
   public Category layBookTheoId(@PathVariable String id) {
-  return CategoryRepo.findById(id).orElse(null);
+    return CategoryRepo.findById(id).orElse(null);
   }
 
   @PutMapping("/books/categories/updateCategory/{id}")
@@ -95,7 +99,8 @@ public class CategoryController {
   @GetMapping("/books/categories/{tenTheLoaiCon}")
   public ResponseEntity<?> getCategoryByTenTheLoaiCon(@PathVariable String tenTheLoaiCon) {
     try {
-      String decodedName = URLDecoder.decode(tenTheLoaiCon, StandardCharsets.UTF_8);
+      String decodedName = URLDecoder.decode(tenTheLoaiCon,
+          StandardCharsets.UTF_8);
       Optional<Category> category = CategoryRepo.findByTenTheLoaiCon(decodedName);
 
       if (category.isPresent()) {
@@ -110,8 +115,18 @@ public class CategoryController {
     }
   }
 
+  // Lấy sách theo thể loại
+  @GetMapping("/books/categories/id/{id}")
+  public ResponseEntity<?> getBooksByCategoryId(@PathVariable String id) {
+    try {
+      List<Book> books = BookRepo.findByTheLoai(id); // 👈 Giả sử `theLoai` là String (id)
 
-
+      return ResponseEntity.ok(books);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("⚠️ Lỗi khi lấy sách theo thể loại: " + e.getMessage());
+    }
+  }
 
   // // Chỉ cập nhật nếu giá trị mới khác null
   // if (BookMoi.getTenSach() != null)
