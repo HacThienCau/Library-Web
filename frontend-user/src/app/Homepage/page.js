@@ -7,6 +7,7 @@ import CollectionCard from "./CollectionCard";
 import ServiceHoursCard from "./ServiceHoursCard";
 import ChatBotButton from "../components/ChatBotButton";
 import axios from "axios";
+import didYouMean from "didyoumean";
 
 // const books = [
 //   {
@@ -74,7 +75,19 @@ import axios from "axios";
 const HomePage = () => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [booksSuggest, setBooksSuggest] = useState([]);
+  const [booksSuggest, setBooksSuggest] = useState([]); // mảng sách {title, ...}
+  const [bookTitles, setBookTitles] = useState([]); // mảng tên sách dạng string
+  const [bookAuthors, setBookAuthors] = useState([]); // mảng tên tác giả dạng string
+  const [suggestions, setSuggestions] = useState([]);
+
+  const removeVietnameseTones = (str) => {
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .replace(/Đ/g, "D")
+      .toLowerCase();
+  };
 
   useEffect(() => {
     // gọi API lấy toàn bộ sách
@@ -92,6 +105,8 @@ const HomePage = () => {
           borrowCount: book.soLuongMuon,
         }));
         setBooks(convertedBooks);
+        setBookTitles(convertedBooks.map((book) => book.title));
+        setBookAuthors(convertedBooks.map((book) => book.author));
       } catch (error) {
         console.error("Lỗi khi fetch sách:", error);
       }
@@ -128,6 +143,54 @@ const HomePage = () => {
     fetchBooksSuggest();
   }, []);
 
+  useEffect(() => {
+    if (!searchTerm) {
+      setSuggestions([]);
+      return;
+    }
+
+    // Lọc sách tên chứa từ khóa (case-insensitive)
+    // let filtered = books.filter(
+    //   (book) =>
+    //     book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //     book.author.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
+    const normalizedTerm = removeVietnameseTones(searchTerm);
+    let filtered = books.filter(
+      (book) =>
+        removeVietnameseTones(book.title).includes(normalizedTerm) ||
+        removeVietnameseTones(book.author).includes(normalizedTerm)
+    );
+
+    // Nếu không có kết quả thì sửa lỗi chính tả với didyoumean
+    // if (filtered.length === 0) {
+    //   const correction = didYouMean(searchTerm, bookTitles ) || didYouMean(searchTerm, bookAuthors);
+    //   if (correction) {
+    //     filtered = books.filter(book => book.title === correction) || books.filter(book => book.author === correction);
+    //   }
+    // }
+    if (filtered.length === 0) {
+      // const correctionTitle = didYouMean(searchTerm, bookTitles);
+      const correctionTitle = didYouMean(
+        normalizedTerm,
+        bookTitles.map(removeVietnameseTones)
+      );
+      // const correctionAuthor = didYouMean(searchTerm, bookAuthors);
+      const correctionAuthor = didYouMean(
+        normalizedTerm,
+        bookAuthors.map(removeVietnameseTones)
+      );
+
+      if (correctionTitle) {
+        filtered = books.filter((book) => book.title === correctionTitle);
+      } else if (correctionAuthor) {
+        filtered = books.filter((book) => book.author === correctionAuthor);
+      }
+    }
+
+    setSuggestions(filtered);
+  }, [searchTerm, books, bookTitles, bookAuthors]);
+
   const MAX_KEYWORDS = 5;
 
   const saveSearchTermToCache = (term) => {
@@ -147,6 +210,14 @@ const HomePage = () => {
 
     // Lưu lại vào localStorage
     localStorage.setItem("searchKeywords", JSON.stringify(limited));
+  };
+
+  // 3. Khi chọn 1 sách trong gợi ý
+  const handleSelect = (title) => {
+    setSearchTerm(title);
+    setSuggestions([]);
+    console.log("Tìm kiếm:", title);
+    handleSearch();
   };
 
   const handleSearch = async () => {
@@ -188,7 +259,7 @@ const HomePage = () => {
       <main className="pt-16 flex">
         <LeftSideBar />
         <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
-          <div className="flex flex-wrap gap-3 items-center px-3 py-2.5 w-full text-[1.25rem] leading-none text-[#062D76] bg-white backdrop-blur-[100px] min-h-[50px] rounded-[100px] max-md:max-w-full">
+          {/* <div className="relative flex flex-wrap gap-3 items-center px-3 py-2.5 w-full text-[1.25rem] leading-none text-[#062D76] bg-white backdrop-blur-[100px] min-h-[50px] rounded-[100px] max-md:max-w-full">
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/669888cc237b300e928dbfd847b76e4236ef4b5a?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816"
               alt="Search icon"
@@ -197,7 +268,7 @@ const HomePage = () => {
             <input
               type="search"
               id="search-input"
-              placeholder="Tìm kiếm"
+              placeholder="Tìm kiếm sách"
               className="flex-1 md:text-[1.25rem] bg-transparent border-none outline-none placeholder-[#062D76] text-[#062D76] focus:ring-2 focus:ring-red-dark focus:ring-opacity-50"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -207,7 +278,72 @@ const HomePage = () => {
                 }
               }}
             />
+            {suggestions.length > 0 && (
+              //
+              <ul className="absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-[250px] overflow-y-auto">
+                {suggestions.map((book, idx) => (
+                  <li
+                    key={idx}
+                    onClick={() => handleSelect(book.title)}
+                    onMouseDown={(e) => e.preventDefault()}
+                    style={{
+                      padding: "8px 16px",
+                      cursor: "pointer",
+                      transition: "background 0.2s",
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.background = "#f2f2f2")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.background = "transparent")
+                    }
+                  >
+                    <strong>{book.title}</strong>
+                    {book.author && ` — ${book.author}`}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div> */}
+          <div className="relative w-full max-md:max-w-full">
+            <div className="flex flex-wrap gap-3 items-center px-3 py-2.5 w-full text-[1.25rem] leading-none text-[#062D76] bg-white backdrop-blur-[100px] min-h-[50px] rounded-[100px]">
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets/TEMP/669888cc237b300e928dbfd847b76e4236ef4b5a?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816"
+                alt="Search icon"
+                className="object-contain shrink-0 self-stretch my-auto aspect-square w-[30px]"
+              />
+              <input
+                type="search"
+                id="search-input"
+                placeholder="Tìm kiếm sách"
+                className="flex-1 md:text-[1.25rem] bg-transparent border-none outline-none placeholder-[#062D76] text-[#062D76] focus:ring-2 focus:ring-red-dark focus:ring-opacity-50"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch();
+                  }
+                }}
+              />
+            </div>
+
+            {suggestions.length > 0 && (
+              <ul className="absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-[250px] overflow-y-auto">
+                {suggestions.map((book, idx) => (
+                  <li
+                    key={idx}
+                    onClick={() => handleSelect(book.title)}
+                    onMouseDown={(e) => e.preventDefault()}
+                    className="px-4 py-2 cursor-pointer hover:bg-[#f2f2f2] transition-colors"
+                  >
+                    <strong>{book.title}</strong>
+                    {book.author && ` — ${book.author}`}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
+
           <div className="flex lg:flex-row justify-between flex-col gap-3.5 mt-5 w-full max-md:max-w-full">
             <ServiceHoursCard />
             <div className="grid md:grid-cols-2 grid-cols-1 gap-3.5 items-center mt-3 lg:w-2/3 h-full self-stretch max-md:max-w-full">
