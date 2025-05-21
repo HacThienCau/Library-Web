@@ -69,6 +69,8 @@ function BookReview() {
   const [editing, setEditing] = useState(null);
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(5);
+  const [questions, setQuestions] = useState([]);
+  const [questionInput, setQuestionInput] = useState("");
   const { id: bookId } = useParams();
   const currentUserId =
     typeof window !== "undefined" ? localStorage.getItem("id") : null;
@@ -102,8 +104,24 @@ function BookReview() {
     }
   };
 
+  const fetchQuestions = async () => {
+    try {
+      const res = await fetch(`http://localhost:8081/questions/book/${bookId}`);
+      const data = await res.json();
+      setQuestions(data);
+
+      const uniqueUserIds = [...new Set(data.map((r) => r.userId))];
+      await Promise.all(uniqueUserIds.map(fetchUserInfo));
+    } catch (error) {
+      console.error("Lỗi khi tải câu hỏi:", error);
+    }
+  };
+
   useEffect(() => {
-    if (bookId) fetchReviews();
+    if (bookId) {
+      fetchReviews();
+      fetchQuestions();
+    }
   }, [bookId]);
 
   const handleSubmit = async () => {
@@ -146,6 +164,39 @@ function BookReview() {
     if (reviews.length === 0) return 0;
     const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
     return (sum / reviews.length).toFixed(1);
+  };
+
+  const handleSubmitQuestion = async () => {
+    if (!questionInput.trim()) return;
+
+    const payload = {
+      bookId,
+      userId: currentUserId,
+      question: questionInput.trim(),
+    };
+
+    try {
+      await fetch("http://localhost:8081/questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      setQuestionInput("");
+      fetchQuestions(); // Refresh danh sách sau khi gửi
+    } catch (error) {
+      console.error("Lỗi khi gửi câu hỏi:", error);
+    }
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "Vừa xong";
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("vi-VN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   };
 
   return (
@@ -347,13 +398,89 @@ function BookReview() {
         </TabsContent>
 
         {/* Tab hỏi đáp */}
-        <TabsContent value="question" className="mt-4">
+        {/* <TabsContent value="question" className="mt-4">
           <p className="font-bold text-xl">Câu hỏi & Trả lời</p>
           <p className="text-gray-500">Hiện chưa có câu hỏi nào.</p>
           <button className="flex items-center gap-2 px-4 py-2 border rounded-md hover:bg-gray-50 mt-4">
             <MessageCircle className="w-5 h-5 text-blue-500" />
             <span>Đặt câu hỏi</span>
           </button>
+        </TabsContent> */}
+        <TabsContent value="question" className="mt-4">
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-gray-800">
+              Câu hỏi & Trả lời
+            </h2>
+
+            {/* Nếu không có câu hỏi */}
+            {questions.length === 0 ? (
+              <p className="text-sm text-gray-500">Hiện chưa có câu hỏi nào.</p>
+            ) : (
+              <div className="space-y-4">
+                {questions?.map((q) => {
+                  const user = usersMap[q.userId] || {};
+                  return (
+                    <div
+                      key={q.id}
+                      className="relative rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+                    >
+                      {/* Header: Avatar + Tên */}
+                      <div className="flex items-center space-x-4">
+                        <img
+                          src={
+                            user.avatarUrl ||
+                            "https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482760jWL/anh-mo-ta.png"
+                          }
+                          alt="avatar"
+                          className="w-10 h-10 rounded-full object-cover border"
+                        />
+                        <div>
+                          <p className="text-base font-semibold text-gray-800">
+                            {user.tenND || "Người dùng ẩn danh"}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            {formatDate(q.createdAt) || "Vừa xong"}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Nội dung câu hỏi */}
+                      <p className="mt-3 text-sm text-gray-700 leading-relaxed">
+                        {q.question}
+                      </p>
+
+                      {/* Nếu có trả lời */}
+                      {q.answer && (
+                        <div className="mt-4 border-l-4 border-blue-500 pl-4 bg-blue-50 text-sm text-gray-800">
+                          <p className="font-medium">Phản hồi từ thư viện:</p>
+                          <p>{q.answer}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Form đặt câu hỏi */}
+            <div className="mt-6 space-y-2 border-t pt-4">
+              <p className="font-medium text-gray-800">Đặt câu hỏi của bạn</p>
+              <textarea
+                value={questionInput}
+                onChange={(e) => setQuestionInput(e.target.value)}
+                placeholder="Bạn muốn biết điều gì về sản phẩm này?"
+                className="w-full border rounded-lg p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+                rows={3}
+              />
+              <button
+                onClick={handleSubmitQuestion}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Gửi câu hỏi</span>
+              </button>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
