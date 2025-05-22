@@ -119,6 +119,7 @@ const Header = () => {
               {/* Right Icons */}
               <div className="flex items-center justify-end space-x-4">
                 <button
+                  title="Giỏ hàng"
                   className={`relative pr-2 pl-1.5 py-2 rounded-full cursor-pointer hover:bg-white hover:text-[#052259] ${
                     pathname === "/cart"
                       ? "bg-white text-[#052259]"
@@ -139,6 +140,7 @@ const Header = () => {
                 </button>
 
                 <button
+                  title="Thông báo"
                   className={`relative p-2 rounded-full cursor-pointer hover:bg-white hover:text-[#052259] ${
                     pathname === "/notification"
                       ? "bg-white text-[#052259]"
@@ -174,7 +176,7 @@ const Header = () => {
                         <Link
                           href="/user-profile"
                           className={`block px-4 py-2 text-gray-700 ${
-                            active && "bg-gray-100"
+                            active && "bg-gray-100 rounded-md"
                           }`}
                         >
                           Hồ sơ của bạn
@@ -186,7 +188,7 @@ const Header = () => {
                         <Link
                           href="/settings"
                           className={`block px-4 py-2 text-gray-700 ${
-                            active && "bg-gray-100"
+                            active && "bg-gray-100 rounded-md"
                           }`}
                         >
                           Cài đặt
@@ -197,8 +199,8 @@ const Header = () => {
                       {({ active }) => (
                         <button
                           onClick={handleLogout}
-                          className={`w-full text-left px-4 py-2 text-gray-700 ${
-                            active && "bg-gray-100"
+                          className={`w-full text-left px-4 py-2 text-gray-700 cursor-pointer ${
+                            active && "bg-gray-100 rounded-md"
                           }`}
                         >
                           Đăng xuất

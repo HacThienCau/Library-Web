@@ -2,7 +2,7 @@ import { Montserrat } from "next/font/google"; // Sử dụng Montserrat font
 import "./globals.css";
 
 import RequireAuth from "@/components/RequireAuth";
-
+import { Toaster } from "react-hot-toast";
 
 // Thêm Montserrat font
 const montserrat = Montserrat({
@@ -19,6 +19,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${montserrat.variable} antialiased`}>
+        <Toaster />
       <RequireAuth>
           {children}
         </RequireAuth>

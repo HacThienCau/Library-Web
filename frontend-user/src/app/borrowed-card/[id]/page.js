@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import LeftSideBar from "@/app/components/LeftSideBar";
 import ChatBotButton from "@/app/components/ChatBotButton";
+import { ChevronDown, CircleCheck, Undo2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
@@ -15,6 +16,10 @@ const BookCard = ({
   author,
   publisher,
   borrowCount,
+  status,
+  setPopUpOpen,
+  index,
+  handleDeleteBook,
 }) => {
   return (
     <article className="flex grow shrink gap-3 min-w-60 cursor-pointer bg-white rounded-xl shadow-[0px_2px_2px_rgba(0,0,0,0.25)] p-5">
@@ -40,6 +45,14 @@ const BookCard = ({
           Lượt mượn: {borrowCount}
         </p>
       </div>
+      {status === "Đang yêu cầu" && (
+        <div
+          onClick={() => handleDeleteBook(index)}
+          className="flex items-center justify-center self-center w-10 h-10 text-[1.125rem] font-medium cursor-pointer text-red-500 hover:text-red-700"
+        >
+          Xóa
+        </div>
+      )}
     </article>
   );
 };
@@ -107,9 +120,14 @@ const ChiTietPhieuMuon = () => {
   const [borrowDetail, setBorrowDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [popUpOpen, setPopUpOpen] = useState(false);
-  const [deleteOne, setDeleteOne] = useState(null);
+  const [popUpBookOpen, setPopUpBookOpen] = useState(false);
+  const [bookToDelete, setBookToDelete] = useState(null);
+  const [status, setStatus] = useState("");
   const router = useRouter();
   useEffect(() => {
+    // Lấy status từ localStorage
+    const storedStatus = localStorage.getItem("status");
+    setStatus(storedStatus);
     const fetchBorrowCardDetail = async () => {
       try {
         const response = await axios.get(
@@ -128,13 +146,64 @@ const ChiTietPhieuMuon = () => {
 
   const handleDelete = async (info) => {
     try {
-      await axios.delete(`http://localhost:8081/borrow-card/${info.borrowCardId}`);
+      await axios.delete(
+        `http://localhost:8081/borrow-card/${info.borrowCardId}`
+      );
       toast.success("Xóa phiếu thành công");
       setPopUpOpen(false);
 
       router.push("/borrowed-card");
     } catch (err) {
       toast.error("Xóa phiếu thất bại");
+    }
+  };
+
+  const handleDeleteBook = (bookIndex) => {
+    setBookToDelete(bookIndex);
+    setPopUpBookOpen(true);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    try {
+      const currentBooks = [...borrowDetail.books];
+      const bookToRemove = currentBooks[bookToDelete];
+      const updatedBooks = currentBooks.filter(
+        (_, index) => index !== bookToDelete
+      );
+
+      console.log("ID sách cần xóa:", bookToRemove.id);
+      console.log("Danh sách bookIds hiện tại:", borrowDetail.bookIds);
+      const bookIds = borrowDetail.books
+        ? borrowDetail.books.map((book) => book.id)
+        : [];
+
+      if (!bookIds.includes(bookToRemove.id)) {
+        toast.error("Sách không tồn tại trong phiếu mượn");
+        return;
+      }
+
+      await axios.put(
+        `http://localhost:8081/borrow-card/${borrowDetail.borrowCardId}/remove-book`,
+        {
+          bookId: bookToRemove.id,
+        }
+      );
+
+      setBorrowDetail((prev) => ({
+        ...prev,
+        books: updatedBooks,
+        totalBooks: updatedBooks.length,
+      }));
+
+      toast.success("Xóa sách thành công");
+      setPopUpBookOpen(false);
+      if (updatedBooks.length === 0) {
+        // Quay về trang danh sách phiếu mượn khi không còn sách nào
+        router.push("/borrowed-card");
+      }
+    } catch (error) {
+      console.error("Lỗi khi xóa sách:", error);
+      toast.error("Xóa sách thất bại");
     }
   };
 
@@ -166,19 +235,38 @@ const ChiTietPhieuMuon = () => {
     );
   }
 
+  const handleGoBack = () => {
+    router.back();
+  };
+
   return (
     <main className="flex flex-col min-h-screen text-foreground">
       <div className="pt-16 flex">
         <LeftSideBar />
         <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
           <div className="flex flex-col w-full max-md:max-w-full">
-            <Button
-              className="flex self-end text-[1rem] cursor-pointer bg-red-500 hover:bg-red-700 text-white w-fit mb-2"
-              onClick={() => setPopUpOpen(true)}
-            >
-              <img src="/icon/trash.svg" alt="Delete" className="mr-2" />
-              Xóa
-            </Button>
+            {/*Nút Back*/}
+            <div className="mb-2 flex justify-between items-center">
+              <Button
+                title={"Quay Lại"}
+                className="bg-[#062D76] rounded-3xl w-10 h-10 cursor-pointer"
+                onClick={() => {
+                  handleGoBack();
+                }}
+              >
+                <Undo2 className="w-12 h-12" color="white" />
+              </Button>
+
+              {status === "Đang yêu cầu" && (
+                <Button
+                  className="flex self-end text-[1rem] cursor-pointer bg-red-500 hover:bg-red-700 text-white w-fit mb-2"
+                  onClick={() => setPopUpOpen(true)}
+                >
+                  <img src="/icon/trash.svg" alt="Delete" className="mr-2" />
+                  Xóa
+                </Button>
+              )}
+            </div>
             <BorrowingInfo info={borrowDetail} />
 
             <h2 className="text-lg font-medium text-[#062D76] text-center mt-5 ">
@@ -194,6 +282,10 @@ const ChiTietPhieuMuon = () => {
                   category={book.category}
                   publisher={book.publisher}
                   borrowCount={book.borrowCount}
+                  status={status}
+                  setPopUpOpen={setPopUpOpen}
+                  index={index}
+                  handleDeleteBook={handleDeleteBook}
                 />
               ))}
             </section>
@@ -210,7 +302,7 @@ const ChiTietPhieuMuon = () => {
                 className="mb-2 w-8 h-8 self-center"
               />
               <p className="flex justify-center">
-                Bạn có chắc chắn muốn xóa phiếu này không?
+                Bạn có chắc chắn muốn xóa phiếu mượn này không?
               </p>
 
               <div className="flex justify-center mt-4 gap-4">
@@ -223,6 +315,37 @@ const ChiTietPhieuMuon = () => {
                 <Button
                   className="bg-red-500 hover:bg-red-700 justify-center  text-white cursor-pointer"
                   onClick={() => handleDelete(borrowDetail)}
+                >
+                  Xóa
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+        {/* Pop-up Xóa Sách */}
+        {popUpBookOpen && (
+          <div className="fixed inset-0 items-center justify-center z-100 flex">
+            <div className="w-full h-full bg-black opacity-[80%] absolute top-0 left-0"></div>
+            <div className="flex flex-col justify-center self-center bg-white p-6 rounded-lg shadow-lg w-auto fixed">
+              <img
+                src="/icon/canh_bao.svg"
+                alt="Delete"
+                className="mb-2 w-8 h-8 self-center"
+              />
+              <p className="flex justify-center">
+                Bạn có chắc chắn muốn xóa sách này không?
+              </p>
+
+              <div className="flex justify-center mt-4 gap-4">
+                <Button
+                  className="bg-gray-500 hover:bg-gray-700  text-white cursor-pointer"
+                  onClick={() => setPopUpBookOpen(false)}
+                >
+                  Hủy
+                </Button>
+                <Button
+                  className="bg-red-500 hover:bg-red-700 justify-center  text-white cursor-pointer"
+                  onClick={() => handleDeleteConfirmed()}
                 >
                   Xóa
                 </Button>
