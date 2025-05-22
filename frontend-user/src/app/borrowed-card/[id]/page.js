@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import LeftSideBar from "@/app/components/LeftSideBar";
 import ChatBotButton from "@/app/components/ChatBotButton";
+import { ChevronDown, CircleCheck, Undo2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
@@ -108,8 +109,12 @@ const ChiTietPhieuMuon = () => {
   const [loading, setLoading] = useState(true);
   const [popUpOpen, setPopUpOpen] = useState(false);
   const [deleteOne, setDeleteOne] = useState(null);
+  const [status, setStatus] = useState("");
   const router = useRouter();
   useEffect(() => {
+    // Lấy status từ localStorage
+    const storedStatus = localStorage.getItem("status");
+    setStatus(storedStatus);
     const fetchBorrowCardDetail = async () => {
       try {
         const response = await axios.get(
@@ -128,7 +133,9 @@ const ChiTietPhieuMuon = () => {
 
   const handleDelete = async (info) => {
     try {
-      await axios.delete(`http://localhost:8081/borrow-card/${info.borrowCardId}`);
+      await axios.delete(
+        `http://localhost:8081/borrow-card/${info.borrowCardId}`
+      );
       toast.success("Xóa phiếu thành công");
       setPopUpOpen(false);
 
@@ -165,6 +172,9 @@ const ChiTietPhieuMuon = () => {
       </div>
     );
   }
+  const handleGoBack = () => {
+    router.back();
+  };
 
   return (
     <main className="flex flex-col min-h-screen text-foreground">
@@ -172,13 +182,28 @@ const ChiTietPhieuMuon = () => {
         <LeftSideBar />
         <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
           <div className="flex flex-col w-full max-md:max-w-full">
-            <Button
-              className="flex self-end text-[1rem] cursor-pointer bg-red-500 hover:bg-red-700 text-white w-fit mb-2"
-              onClick={() => setPopUpOpen(true)}
-            >
-              <img src="/icon/trash.svg" alt="Delete" className="mr-2" />
-              Xóa
-            </Button>
+            {/*Nút Back*/}
+            <div className="mb-2 flex justify-between items-center">
+              <Button
+                title={"Quay Lại"}
+                className="bg-[#062D76] rounded-3xl w-10 h-10"
+                onClick={() => {
+                  handleGoBack();
+                }}
+              >
+                <Undo2 className="w-12 h-12" color="white" />
+              </Button>
+
+              {status === "Đang yêu cầu" && (
+                <Button
+                  className="flex self-end text-[1rem] cursor-pointer bg-red-500 hover:bg-red-700 text-white w-fit mb-2"
+                  onClick={() => setPopUpOpen(true)}
+                >
+                  <img src="/icon/trash.svg" alt="Delete" className="mr-2" />
+                  Xóa
+                </Button>
+              )}
+            </div>
             <BorrowingInfo info={borrowDetail} />
 
             <h2 className="text-lg font-medium text-[#062D76] text-center mt-5 ">

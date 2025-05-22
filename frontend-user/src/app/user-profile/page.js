@@ -49,7 +49,7 @@ const UserInfo = () => {
         </div>
         <button
           onClick={handleEditClick}
-          className="p-2.5 text-[1.25rem] text-white bg-sky-900 rounded-xl"
+          className="p-2.5 text-[1.25rem] text-white bg-[#062D76] rounded-xl"
         >
           {isEditing ? "Lưu" : "Sửa"}
         </button>

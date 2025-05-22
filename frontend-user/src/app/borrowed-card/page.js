@@ -8,6 +8,7 @@ import { LuTimerOff, LuBookCheck } from "react-icons/lu";
 import { FiLoader } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { set } from "react-hook-form";
 
 const page = () => {
   const [allBorrowCards, setAllBorrowCards] = useState([]);
@@ -21,7 +22,11 @@ const page = () => {
         const response = await axios.get(
           `http://localhost:8081/borrow-card/user/${userId}`
         );
-        setAllBorrowCards(response.data);
+        if (Array.isArray(response.data)) {
+          setAllBorrowCards(response.data);
+        } else {
+          setAllBorrowCards([]);
+        }
       } catch (error) {
         console.error("Lỗi khi fetch phiếu mượn:", error);
       }
@@ -48,7 +53,8 @@ const page = () => {
   };
 
   const route = useRouter();
-  const handleDetails = (id) => {
+  const handleDetails = (id, status) => {
+    localStorage.setItem("status", status);
     route.push(`/borrowed-card/${id}`);
   };
 
@@ -191,7 +197,7 @@ const page = () => {
                       className="flex gap-2 justify-center items-center px-3 py-1 text-[1rem] font-normal self-center bg-[#062D76] text-white hover:bg-[#E6EAF1] hover:text-[#062D76] rounded-3xl cursor-pointer"
                       aria-label={`View details for borrowing ${borrowing.id}`}
                       onClick={() => {
-                        handleDetails(borrowing.id);
+                        handleDetails(borrowing.id, borrowing.status);
                       }}
                     >
                       <TbListDetails

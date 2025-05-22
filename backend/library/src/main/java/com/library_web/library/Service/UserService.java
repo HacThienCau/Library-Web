@@ -56,4 +56,20 @@ public class UserService {
         }
     }
 
+    public User changePassword(String userId, String oldPassword, String newPassword) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+
+        // Kiểm tra mật khẩu cũ có đúng không
+        if (!passwordEncoder.matches(oldPassword, user.getMatKhau())) {
+            throw new RuntimeException("Mật khẩu cũ không đúng");
+        }
+
+        // Mã hóa mật khẩu mới
+        user.setMatKhau(passwordEncoder.encode(newPassword));
+
+        // Lưu lại người dùng
+        return userRepo.save(user);
+    }
+
 }
