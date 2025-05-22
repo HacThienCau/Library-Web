@@ -24,6 +24,7 @@ public class BorrowCardDetail {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class BookInfo {
+        private String id;
         private String image;
         private String name;
         private String author;

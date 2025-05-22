@@ -2,12 +2,15 @@ package com.library_web.library.Controller;
 
 import com.library_web.library.DTO.ChangePasswordRequest;
 import com.library_web.library.DTO.SignInRequest;
+import com.library_web.library.DTO.UserDetail;
 import com.library_web.library.Model.User;
 import com.library_web.library.Repository.UserRepo;
+import com.library_web.library.Service.BorrowCardService;
 import com.library_web.library.Service.UserService;
 import com.library_web.library.Utils.JWTUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -61,31 +64,44 @@ public class UserController {
         return userRepo.findAll();
     }
 
-    // Lấy người dùng theo ID
+    @Autowired
+    private BorrowCardService borrowCardService;
+
     @GetMapping("/user/{id}")
-    public User layUserTheoId(@PathVariable String id) {
-        return userRepo.findById(id).orElse(null);
+    public ResponseEntity<?> getUserWithBorrowStats(@PathVariable String id) {
+        Optional<User> userOpt = userRepo.findById(id);
+        if (!userOpt.isPresent()) {
+            return ResponseEntity.status(404).body("Người dùng không tồn tại");
+        }
+        User user = userOpt.get();
+
+        int soSachDangMuon = borrowCardService.countBooksBeingBorrowed(id);
+        int soSachQuaHan = borrowCardService.countBooksOverdue(id);
+
+        UserDetail userDetail = new UserDetail(user, soSachDangMuon, soSachQuaHan);
+        return ResponseEntity.ok(userDetail);
     }
 
-    // // Cập nhật thông tin người dùng
-    // @PutMapping("/user/{id}")
-    // public User capNhatUser(@PathVariable String id, @RequestBody User userMoi) {
-    // Optional<User> optionalUser = userRepo.findById(id);
-    // if (optionalUser.isPresent()) {
-    // User userCu = optionalUser.get();
+    // Cập nhật thông tin người dùng
+    @PutMapping("/user/{id}")
+    public ResponseEntity<?> capNhatUser(@PathVariable String id, @RequestBody User userMoi) {
+        Optional<User> optionalUser = userRepo.findById(id);
+        if (optionalUser.isPresent()) {
+            User userCu = optionalUser.get();
 
-    // // Cập nhật các thông tin người dùng nếu có thay đổi
-    // if (userMoi.getTenND() != null) userCu.setTenND(userMoi.getTenND());
-    // if (userMoi.getEmail() != null) userCu.setEmail(userMoi.getEmail());
-    // if (userMoi.getMatKhau() != null) userCu.setMatKhau(userMoi.getMatKhau());
-    // if (userMoi.getNgaySinh() != null) userCu.setNgaySinh(userMoi.getNgaySinh());
-    // if (userMoi.getGioiTinh() != null) userCu.setGioiTinh(userMoi.getGioiTinh());
+            // Cập nhật các thông tin được cho phép
+            if (userMoi.getTenND() != null && !userMoi.getTenND().isBlank())
+                userCu.setTenND(userMoi.getTenND());
 
-    // return userRepo.save(userCu);
-    // } else {
-    // return null;
-    // }
-    // }
+            if (userMoi.getNgaySinh() != null)
+                userCu.setNgaySinh(userMoi.getNgaySinh());
+
+            userRepo.save(userCu);
+            return ResponseEntity.ok(userCu);
+        } else {
+            return ResponseEntity.status(404).body("Người dùng không tồn tại");
+        }
+    }
 
     // // Xóa người dùng
     // @DeleteMapping("/user/{id}")

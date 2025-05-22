@@ -119,7 +119,7 @@ const userId = localStorage.getItem("id");
                 </div>
               </div>
             </div>
-            <div className="flex flex-col mt-6 justify-center items-center">
+            <div className="flex flex-col justify-center items-center">
               {/* Current Password */}
               <div className="flex flex-col mt-8 w-full max-md:max-w-full">
                 <label
@@ -128,7 +128,7 @@ const userId = localStorage.getItem("id");
                 >
                   Mật khẩu hiện tại
                 </label>
-                <div className="flex gap-2.5 justify-center items-center px-[8px] py-[8px] mt-2 w-full border border-[#041B47] border-solid md:min-h-[3.75rem] min-h-[2rem] max-md:max-w-full">
+                <div className="flex gap-2.5 justify-center items-center px-[8px] py-[8px] mt-2 w-full border border-[#041B47] border-solid md:min-h-[3.25rem] min-h-[2rem] max-md:max-w-full">
                   <input
                     id="currentPassword"
                     type={showCurrentPassword ? "text" : "password"}
@@ -164,7 +164,7 @@ const userId = localStorage.getItem("id");
                 >
                   Mật khẩu mới
                 </label>
-                <div className="flex gap-2.5 justify-center items-center px-[8px] py-[8px] mt-2 w-full border border-[#041B47] border-solid md:min-h-[3.75rem] min-h-[2rem] max-md:max-w-full">
+                <div className="flex gap-2.5 justify-center items-center px-[8px] py-[8px] mt-2 w-full border border-[#041B47] border-solid md:min-h-[3.25rem] min-h-[2rem] max-md:max-w-full">
                   <input
                     id="newPassword"
                     type={showNewPassword ? "text" : "password"}
@@ -191,7 +191,7 @@ const userId = localStorage.getItem("id");
                 >
                   Xác nhận mật khẩu
                 </label>
-                <div className="flex gap-2.5 justify-center items-center px-[8px] py-[8px] mt-2 w-full border border-[#041B47] border-solid md:min-h-[3.75rem] min-h-[2rem] max-md:max-w-full">
+                <div className="flex gap-2.5 justify-center items-center px-[8px] py-[8px] mt-2 w-full border border-[#041B47] border-solid md:min-h-[3.25rem] min-h-[2rem] max-md:max-w-full">
                   <input
                     id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
@@ -214,7 +214,7 @@ const userId = localStorage.getItem("id");
               <div className="justify-center self-center">
                 <button
                   type="button"
-                  className="justify-center self-center p-2.5 mt-7 text-[1rem] text-white bg-[#062D76] font-medium rounded-xl cursor-pointer"
+                  className="justify-center self-center p-2.5 mt-7 text-[1rem] text-white bg-[#062D76] hover:bg-blue-950 font-medium rounded-xl cursor-pointer"
                   onClick={onSubmit}
                 >
                   Cập nhật tài khoản
