@@ -38,6 +38,8 @@ public class BorrowCardService {
     private EmailService emailService;
     @Autowired
     private FineService fineService;
+    @Autowired
+    private NotificationService notificationService;
 
     // Tạo phiếu mượn khi người dùng bấm đăng ký mượn
     public BorrowCard createBorrowCard(String userId, List<String> bookIds) {
@@ -50,7 +52,11 @@ public class BorrowCardService {
             book.setSoLuongMuon(book.getSoLuongMuon() + 1);
             bookRepo.save(book); // lưu lại từng sách
         }
-        return borrowCardRepo.save(borrowCard);
+        borrowCard = borrowCardRepo.save(borrowCard);
+        String message = "Bạn đã tạo phiếu mượn sách thành công! Vui lòng đến lấy sách trong thời gian sớm nhất nhé!\nID Phiếu mượn: "
+                + borrowCard.getId();
+        notificationService.sendNotification(borrowCard.getUserId(), message);
+        return borrowCard;
     }
 
     // Cập nhật phiếu mượn khi người dùng đến lấy sách
@@ -76,6 +82,10 @@ public class BorrowCardService {
         }
         // gửi mail thông báo
         emailService.mailTaken(borrowCard);
+        // Gửi thông báo đến người dùng
+        String message = "Bạn đã mượn sách thành công. ID Phiếu mượn: "
+                + borrowCard.getId();
+        notificationService.sendNotification(borrowCard.getUserId(), message);
         // Lưu phiếu mượn đã cập nhật
         return borrowCardRepo.save(borrowCard);
     }
@@ -102,6 +112,15 @@ public class BorrowCardService {
             data.setCardId(borrowCard.getId());
             data.setUserId(borrowCard.getUserId());
             fineService.addFine(data);
+            // Gửi thông báo trả sách trễ
+            String message = "Bạn đã trả sách trễ " + soNgayTre
+                    + " ngày. Vui lòng thanh toán tiền phạt sớm nhất.\nID Phiếu mượn: " + borrowCard.getId();
+            notificationService.sendNotification(borrowCard.getUserId(), message);
+        }
+        // Nếu không trễ, gửi thông báo trả sách thành công
+        if (soNgayTre == 0) {
+            String message = "Bạn đã trả sách thành công! ID Phiếu mượn: " + borrowCard.getId();
+            notificationService.sendNotification(borrowCard.getUserId(), message);
         }
         borrowCard.setSoNgayTre(soNgayTre);
         // Cập nhật ngày trả
@@ -144,6 +163,10 @@ public class BorrowCardService {
             bookRepo.save(book); // lưu lại từng sách
         }
         emailService.mailExpired(borrowCard);
+        // Gửi thông báo hết hạn
+        String message = "Phiếu mượn ID:" + borrowCard.getId()
+                + " của bạn đã bị hủy. Vui lòng check mail để biết thêm chi tiết.";
+        notificationService.sendNotification(borrowCard.getUserId(), message);
         return borrowCardRepo.save(borrowCard);
     }
 

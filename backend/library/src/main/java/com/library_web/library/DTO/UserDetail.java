@@ -1,6 +1,5 @@
 package com.library_web.library.DTO;
 
-import com.library_web.library.Model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDetail {
-    private User user;
+    private String id;
+    private String tenND;
+    private String email;
+    private String matKhau;
+    private String ngaySinh;
+    private String gioiTinh;
+    private String ngayTao;
+
     private int soSachDangMuon;
     private int soSachQuaHan;
 }

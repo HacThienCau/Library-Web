@@ -14,6 +14,7 @@ const NotiCard = ({ id, message, timestamp, read , refreshNoti}) => {
     hour: "2-digit",
     minute: "2-digit",
   });  
+  const formattedMessage = message.split("\n").join("<br />");
   const handleMarkAsRead = async () => {
     if (!read) {
       try {
@@ -34,7 +35,7 @@ const NotiCard = ({ id, message, timestamp, read , refreshNoti}) => {
     <>
       <FaCircle className="text-red-500 text-xs mt-1" title="Chưa đọc" />
       <div className="flex flex-col">
-        <p className="text-[1.125rem] text-[#131313]/90">{message}</p>
+        <p className="text-[1.125rem] text-[#131313]/90" dangerouslySetInnerHTML={{ __html: formattedMessage }}></p>
         <span className="text-sm text-gray-500 mt-1">
           {formattedDate} lúc {formattedTime}
         </span>
