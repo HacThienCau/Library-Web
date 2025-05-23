@@ -4,7 +4,7 @@ import { Button } from "../components/ui/button";
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
 import { format } from 'date-fns';
-import { Book, BookDashed, CalendarClock, Undo2 } from "lucide-react";
+import { Book, BookDashed, CalendarClock, Camera, Undo2, Upload } from "lucide-react";
 import UploadChild from "./childBook/page";
 
 const UploadImage = () => {
@@ -23,8 +23,8 @@ const UploadImage = () => {
   const onFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
-
-  // Hàm gửi ảnh lên backend
+  
+  // Hàm gửi vừa tải ảnh lên backend
   const handleUpload = async () => {
     if (!selectedFile) {
       alert("Vui lòng chọn ảnh trước khi tải lên.");
@@ -57,6 +57,59 @@ const UploadImage = () => {
       console.error("Lỗi khi gửi ảnh:", error);
     }
     setLoading(false);
+  }
+  //gửi ảnh vừa chụp lên backend
+  const handleMessage = async (event) => {
+    if (event.origin !== window.origin) return;
+    if (event.data.type === "captured-image") {
+      const base64 = event.data.image;
+      const file = base64ToFile(base64, "captured.png");
+
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("file", file); // Đảm bảo rằng 'file' là tên trường mà backend mong đợi
+      formData.append("type", "user");
+
+      try {
+        const response = await fetch(
+          "http://localhost:8081/upload/barcodeImage",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+  
+        if (!response.ok) {
+          const error = await response.json();
+          toast.error(error.error) 
+          setLoading(false);       
+          return;
+        }
+  
+        const result = await response.json();
+        setResult(result);
+        setSelectedFile(null)
+      } catch (error) {
+        console.error("Lỗi khi gửi ảnh:", error);
+      }
+      setLoading(false);
+    }
+  };
+  useEffect(()=>{
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  },[])
+  const base64ToFile = (base64, filename) => {
+    const arr = base64.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) u8arr[n] = bstr.charCodeAt(n);
+    return new File([u8arr], filename, { type: mime });
+  };
+  const openCamera = () => {
+    window.open("/scan/camera", "_blank", "width=800,height=600");
   };
   //hàm xử lý khi nhập id
   const handleEnter = async() =>{
@@ -364,7 +417,16 @@ const UploadImage = () => {
           <p className="text-xl font-semibold ">Tải ảnh barcode mã người dùng của bạn</p>
           <div className="flex gap-5">
             <input type="file" onChange={onFileChange} className="bg-white self-center rounded"/>
-            <Button onClick={handleUpload}>Tải ảnh lên</Button>
+            <Button className="bg-[#062D76]" onClick={handleUpload}>
+              <Upload className="w-12 h-12" color="white"/>
+              Tải ảnh lên
+            </Button>
+          </div>
+          <div className="flex gap-5">
+            <Button className="bg-[#062D76]" onClick={openCamera}>
+              <Camera className="w-12 h-12" color="white"/>
+              Chụp ảnh mới
+            </Button>
           </div>
         </div>
       ) : (
