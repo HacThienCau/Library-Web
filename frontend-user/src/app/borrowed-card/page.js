@@ -21,7 +21,11 @@ const page = () => {
         const response = await axios.get(
           `http://localhost:8081/borrow-card/user/${userId}`
         );
-        setAllBorrowCards(response.data);
+        if (Array.isArray(response.data)) {
+          setAllBorrowCards(response.data);
+        } else {
+          setAllBorrowCards([]);
+        }
       } catch (error) {
         console.error("Lỗi khi fetch phiếu mượn:", error);
       }
