@@ -73,13 +73,22 @@ public class UserController {
         if (!userOpt.isPresent()) {
             return ResponseEntity.status(404).body("Người dùng không tồn tại");
         }
+
         User user = userOpt.get();
 
-        int soSachDangMuon = borrowCardService.countBooksBeingBorrowed(id);
-        int soSachQuaHan = borrowCardService.countBooksOverdue(id);
+        UserDetail detail = new UserDetail();
+        detail.setId(user.getId());
+        detail.setTenND(user.getTenND());
+        detail.setEmail(user.getEmail());
+        detail.setMatKhau(user.getMatKhau());
+        detail.setNgaySinh(user.getNgaySinh().toString());
+        detail.setGioiTinh(user.getGioiTinh().toString());
+        detail.setNgayTao(user.getNgayTao().toString());
 
-        UserDetail userDetail = new UserDetail(user, soSachDangMuon, soSachQuaHan);
-        return ResponseEntity.ok(userDetail);
+        detail.setSoSachDangMuon(borrowCardService.countBooksBeingBorrowed(id));
+        detail.setSoSachQuaHan(borrowCardService.countBooksOverdue(id));
+
+        return ResponseEntity.ok(detail);
     }
 
     // Cập nhật thông tin người dùng

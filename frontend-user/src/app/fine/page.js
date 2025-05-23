@@ -8,25 +8,26 @@ import { useRouter } from "next/navigation";
 import { Plus, Search, ReceiptText, Timer, DollarSign } from "lucide-react";
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
+import axios from "axios"; 
+import { TbListDetails } from "react-icons/tb";
 
 const page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterFines, setFilterFines] = useState([]);
   const [needToPay, setNeedToPay] = useState([]);
   const [paid, setPaid] = useState([]);
-  const [mode, setMode] = useState(0); //0 là chưa thanh toán, 1 là đã thanh toán
+  const [mode, setMode] = useState(0); // 0 là chưa thanh toán, 1 là đã thanh toán
   const [loading, setLoading] = useState(false);
 
   const handleSearch = () => {
-    //Hàm tìm kiếm
+    // Hàm tìm kiếm
     if (searchQuery) {
       setLoading(true);
       const fineList = mode === 0 ? needToPay : paid;
-      const filterFine = fineList.filter((book) =>
-        book.MaPhieuPhat.toString() === searchQuery || //tìm theo id
-        book?.MaNguoiDung.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo tên sách
-          ? book
-          : null
+      const filterFine = fineList.filter(
+        (book) =>
+          book.id.toString() === searchQuery || // Tìm theo ID phiếu phạt
+          book?.userId.toLowerCase().includes(searchQuery.toLowerCase()) // Tìm theo userId
       );
       setFilterFines(filterFine);
       setLoading(false);
@@ -38,61 +39,47 @@ const page = () => {
 
   const route = useRouter();
   const handleAddFine = () => {
-    //Chuyển sang trang thêm phiếu phạt
+    // Chuyển sang trang thêm phiếu phạt
     route.push(`/fine/addFine`);
   };
-  const handleDetail = (MaPhat) => {
-    //Chuyển sang trang chi tiết phiếu phạt
-    route.push(`/fine/${MaPhat}`);
+
+  const handleDetail = (fineId) => {
+    // Chuyển sang trang chi tiết phiếu phạt
+    route.push(`/fine/${fineId}`);
   };
 
   const fetchFine = async () => {
-    //Hàm lấy ds phiếu phạt, sau đó chia theo status
     setLoading(true);
-    needToPay.length = 0; //reset mảng
-    paid.length = 0;
-    const test =
-      //thay API vào đây
-      [
-        {
-          MaPhieuPhat: "1",
-          MaNguoiDung: "userId 1",
-          SoTien: 20000,
-          NoiDung: "Trả sách trễ hạn",
-          MaPhieuMuon: "2",
-          Status: "Đã Thanh Toán",
-        },
-        {
-          MaPhieuPhat: "2",
-          MaNguoiDung: "userId 2",
-          SoTien: 15000,
-          NoiDung: "Trả sách trễ hạn",
-          MaPhieuMuon: "122",
-          Status: "Đã Thanh Toán",
-        },
-        {
-          MaPhieuPhat: "3",
-          MaNguoiDung: "userId 3",
-          SoTien: 750000,
-          NoiDung: "Làm mất sách",
-          MaPhieuMuon: "123", //Nếu nội dung là làm mất/hư hỏng sách thì MaPhieuMuon chứa id sách
-          Status: "Đã Thanh Toán",
-        },
-        {
-          MaPhieuPhat: "4",
-          MaNguoiDung: "userId 2",
-          SoTien: 150000,
-          NoiDung: "Trả sách trễ hạn",
-          MaPhieuMuon: "2",
-          Status: "Chưa Thanh Toán",
-        },
-      ];
-    test.map((fine) => {
-      fine.Status === "Chưa Thanh Toán"
-        ? needToPay.push(fine)
-        : paid.push(fine);
-    });
-    setLoading(false);
+    const userId = localStorage.getItem("id"); // Lấy userId từ localStorage
+
+    try {
+      const response = await axios.get(`http://localhost:8081/fines/${userId}`);
+      console.log("Dữ liệu trả về từ API:", response.data);
+      if (response.status === 200) {
+        const data = response.data;
+
+        // Đảm bảo không bị trùng lặp
+        const newNeedToPay = [];
+        const newPaid = [];
+
+        data.forEach((fine) => {
+          if (fine.trangThai === "DA_THANH_TOAN") {
+            newPaid.push(fine);
+          } else {
+            newNeedToPay.push(fine);
+          }
+        });
+
+        setNeedToPay(newNeedToPay);
+        setPaid(newPaid);
+      } else {
+        toast.error("Lỗi khi lấy phiếu phạt");
+      }
+    } catch (error) {
+      toast.error("Có lỗi xảy ra khi fetch thông báo");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -103,25 +90,45 @@ const page = () => {
   }, []);
 
   const FineCard = ({ fine }) => {
-    //Component phiếu phạt
+    // Component phiếu phạt
     return (
       <div className="flex bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 gap-[20px] md:gap-[50px] items-center">
         <div className="flex flex-col gap-[10px] relative w-full">
-          <p className="font-bold">ID:&nbsp;{fine.MaPhieuPhat}</p>
-          <p className="">User ID:&nbsp;{fine.MaNguoiDung}</p>
-          <p className="font-bold">Số Tiền:&nbsp;{fine.SoTien}&nbsp;đồng</p>
-          <p className="">Nội Dung:&nbsp;{fine.NoiDung}</p>
+          <p className="text-[1rem] font-semibold text-[#131313]/50">
+            ID: <span className="text-[#131313] font-medium ">{fine.id}</span>
+          </p>
+          <p className="text-[1rem] font-semibold text-[#131313]/50">
+            User ID:{" "}
+            <span className="text-[#131313] font-medium ">{fine.userId}</span>
+          </p>
+          <p className="text-[1rem] font-semibold text-[#131313]/50">
+            Số Tiền:{" "}
+            <span className="text-red-600 font-medium ">
+              {fine.soTien}&nbsp;đồng
+            </span>
+          </p>
+          <p className="text-[1rem] font-semibold text-[#131313]/50">
+            Nội Dung:{" "}
+            <span className="text-[#131313] font-medium ">{fine.noiDung}</span>
+          </p>
         </div>
-        <div className="w-full flex justify-end mr-10">
+        <div className="w-fit flex justify-end">
           <Button
             title={"Xem Chi Tiết"}
-            className="w-15 md:w-60 h-10 bg-[#062D76] hover:bg-gray-700 cursor-pointer"
+            className="flex gap-2 justify-center items-center px-3 py-1 text-[1rem] font-normal self-center bg-[#062D76] text-white hover:bg-[#E6EAF1] hover:text-[#062D76] rounded-3xl cursor-pointer"
             onClick={() => {
-              handleDetail(fine.MaPhieuPhat);
+              handleDetail(fine.id);
             }}
           >
-            <ReceiptText className="w-5 h-5" color="white" />
-            <p className="hidden md:block text-[1.125rem] font-medium text-white w-[fit] cursor-pointer">Xem chi tiết</p>
+            <TbListDetails
+              style={{
+                width: "1.5rem",
+                height: "1.5rem",
+                strokeWidth: "1px",
+              }}
+              className="size-6"
+            />
+            Xem chi tiết
           </Button>
         </div>
       </div>
@@ -165,7 +172,7 @@ const page = () => {
                 Đã Thanh Toán
               </Button>
             </div>
-            <div className="flex gap-5">
+            {/* <div className="flex gap-5">
               <Input
                 type="text"
                 placeholder="Tìm kiếm"
@@ -182,7 +189,7 @@ const page = () => {
               >
                 <Search className="w-10 h-10" color="white" />
               </Button>
-            </div>
+            </div> */}
           </div>
           {loading ? (
             <div className="flex md:ml-52 w-full h-screen justify-center items-center">
@@ -195,22 +202,22 @@ const page = () => {
               />
             </div>
           ) : mode === 0 ? (
-            filterFines.length > 0 ? ( //nếu đang search thì hiện danh sách lọc
-              filterFines.map((fine) => {
-                return <FineCard key={fine?.MaPhieuPhat} fine={fine} />;
+            filterFines.length > 0 ? ( // Nếu đang tìm kiếm thì hiện danh sách lọc
+              filterFines.map((fine, index) => {
+                return <FineCard key={index} fine={fine} />;
               })
             ) : (
-              needToPay.map((fine) => {
-                return <FineCard key={fine?.MaPhieuPhat} fine={fine} />;
+              needToPay.map((fine, index) => {
+                return <FineCard key={index} fine={fine} />;
               })
             )
-          ) : filterFines.length > 0 ? ( //nếu đang search thì hiện danh sách lọc
-            filterFines.map((fine) => {
-              return <FineCard key={fine?.MaPhieuPhat} fine={fine} />;
+          ) : filterFines.length > 0 ? ( // Nếu đang tìm kiếm thì hiện danh sách lọc
+            filterFines.map((fine, index) => {
+              return <FineCard key={index} fine={fine} />;
             })
           ) : (
-            paid.map((fine) => {
-              return <FineCard key={fine?.MaPhieuPhat} fine={fine} />;
+            paid.map((fine, index) => {
+              return <FineCard key={index} fine={fine} />;
             })
           )}
         </section>

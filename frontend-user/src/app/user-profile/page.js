@@ -25,11 +25,11 @@ const page = () => {
     try {
       const response = await axios.get(`http://localhost:8081/user/${id}`);
       setUserInfo(response.data);
-      const iso = response.data.user.ngaySinh;
+      const iso = response.data.ngaySinh;
       setDob(iso);
       const date = new Date(iso);
       setDobDisplay(date.toLocaleDateString("vi-VN")); // dd/mm/yyyy
-      setFullName(response.data.user.tenND); // Set initial full name from API
+      setFullName(response.data.tenND); // Set initial full name from API
     } catch (error) {
       console.error("Lỗi khi lấy thông tin người dùng:", error);
     }
@@ -63,10 +63,10 @@ const page = () => {
                 />
                 <div className="flex flex-col gap-2.5">
                   <h2 className="text-[1.25rem] font-bold text-neutral-900">
-                    {userInfo?.user?.tenND}
+                    {userInfo?.tenND}
                   </h2>
                   <p className="text-[1.125rem] text-neutral-900 text-opacity-50">
-                    {userInfo?.user?.email}
+                    {userInfo?.email}
                   </p>
                 </div>
               </div>
@@ -108,7 +108,7 @@ const page = () => {
                 <div className="flex flex-col gap-2">
                   <label className="text-[1.125rem] text-black">Gmail</label>
                   <div className="px-2 py-3 text-[1.125rem] text-black border-b border-black">
-                    {userInfo?.user?.email}
+                    {userInfo?.email}
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -149,7 +149,7 @@ const page = () => {
                     Ngày tham gia
                   </label>
                   <div className="p-2.5 text-[1.125rem] text-black rounded-lg bg-zinc-400 bg-opacity-50">
-                    {new Date(userInfo?.user?.ngayTao).toLocaleDateString(
+                    {new Date(userInfo?.ngayTao).toLocaleDateString(
                       "vi-VN"
                     )}
                   </div>

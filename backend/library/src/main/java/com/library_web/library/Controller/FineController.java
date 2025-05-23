@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.library_web.library.Model.Fine;
 import com.library_web.library.Service.FineService;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 
@@ -41,4 +38,12 @@ public class FineController {
         String result = fineService.thanhToan(id);
         return result!="ok"?ResponseEntity.ok(result):ResponseEntity.badRequest().body(result);
     }
+
+       // Lấy phiếu phạt của người dùng dựa trên userId
+    @GetMapping("/fines/{userId}")
+    public List<Fine> getFinesByUserId(@PathVariable String userId) {
+        // Giả sử bạn có một phương thức trong FineService để lấy phiếu phạt theo userId
+        return fineService.getFinesByUserId(userId);
+    }
+
 }
