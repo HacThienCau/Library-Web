@@ -20,6 +20,7 @@ public class Fine {
     private double soTien;
     private String noiDung;
     private String cardId;
+    private String orderId;
     private TrangThai trangThai;
     private LocalDateTime ngayThanhToan;
     public enum TrangThai {
