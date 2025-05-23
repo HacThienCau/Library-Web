@@ -6,6 +6,7 @@ import com.library_web.library.DTO.BorrowCardDetail;
 import com.library_web.library.Model.BorrowCard;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class BorrowCardController {
     // Cập nhật phiếu mượn khi người dùng đến lấy sách
     @PutMapping("/borrow/{id}")
     public ResponseEntity<BorrowCard> borrowBooks(@PathVariable String id, @RequestBody List<String> childBookIds) {
-        BorrowCard borrowCard = borrowCardService.updateBorrowCardToBorrowing(id,childBookIds);
+        BorrowCard borrowCard = borrowCardService.updateBorrowCardToBorrowing(id, childBookIds);
         return ResponseEntity.ok(borrowCard);
     }
 
@@ -42,7 +43,7 @@ public class BorrowCardController {
         BorrowCard borrowCard = borrowCardService.updateBorrowCardOnReturn(id);
         return ResponseEntity.ok(borrowCard);
     }
-    
+
     // Cập nhật phiếu mượn khi người dùng trả sách
     @PutMapping("/expired/{id}")
     public ResponseEntity<BorrowCard> expiredCard(@PathVariable String id) {
@@ -76,7 +77,7 @@ public class BorrowCardController {
         }
         return ResponseEntity.ok(borrowCards);
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBorrowCard(@PathVariable String id) {
         try {
@@ -86,6 +87,18 @@ public class BorrowCardController {
             return ResponseEntity.status(404).body("Không tìm thấy phiếu mượn!");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Lỗi khi xóa phiếu mượn!");
+        }
+    }
+
+    @PutMapping("/{id}/remove-book")
+    public ResponseEntity<?> removeBookFromBorrowCard(@PathVariable String id,
+            @RequestBody Map<String, String> request) {
+        String bookId = request.get("bookId");
+        try {
+            borrowCardService.removeBookFromBorrowCard(id, bookId);
+            return ResponseEntity.ok("Xóa sách thành công");
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage());
         }
     }
 
@@ -102,5 +115,5 @@ public class BorrowCardController {
             return ResponseEntity.status(500).body("Lỗi khi gửi mail!");
         }
     }
-    
+
 }

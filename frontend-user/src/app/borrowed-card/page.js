@@ -8,6 +8,7 @@ import { LuTimerOff, LuBookCheck } from "react-icons/lu";
 import { FiLoader } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { set } from "react-hook-form";
 
 const page = () => {
   const [allBorrowCards, setAllBorrowCards] = useState([]);
@@ -52,7 +53,8 @@ const page = () => {
   };
 
   const route = useRouter();
-  const handleDetails = (id) => {
+  const handleDetails = (id, status) => {
+    localStorage.setItem("status", status);
     route.push(`/borrowed-card/${id}`);
   };
 
@@ -136,6 +138,12 @@ const page = () => {
             </div> */}
 
             {/* Borrowing Cards Section */}
+            {filteredCards.length === 0 && (
+              <p className="mt-5 text-center text-gray-500 text-[1.125rem]">
+                Không có phiếu mượn nào trong trạng thái{" "}
+                <span className="font-medium">"{selectedButton}"</span>.
+              </p>
+            )}
             <section className="gap-y-2.5 mt-5">
               {filteredCards.map((borrowing) => (
                 <article
@@ -195,7 +203,7 @@ const page = () => {
                       className="flex gap-2 justify-center items-center px-3 py-1 text-[1rem] font-normal self-center bg-[#062D76] text-white hover:bg-[#E6EAF1] hover:text-[#062D76] rounded-3xl cursor-pointer"
                       aria-label={`View details for borrowing ${borrowing.id}`}
                       onClick={() => {
-                        handleDetails(borrowing.id);
+                        handleDetails(borrowing.id, borrowing.status);
                       }}
                     >
                       <TbListDetails

@@ -13,4 +13,5 @@ public interface BookRepo extends MongoRepository<Book, String> {
     List<Book> findByTenSachContainingIgnoreCase(String tenSach);
     List<Book> findByTenTacGiaContainingIgnoreCase(String tenTacGia);
     List<Book> findByTheLoaiContainingIgnoreCase(String theLoai);
+    List<Book> findByTheLoai(String theLoai);
 }
