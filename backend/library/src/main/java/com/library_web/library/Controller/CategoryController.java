@@ -117,16 +117,34 @@ public class CategoryController {
 
   // Lấy sách theo thể loại
   @GetMapping("/books/categories/id/{id}")
-  public ResponseEntity<?> getBooksByCategoryId(@PathVariable String id) {
-    try {
-      List<Book> books = BookRepo.findByTheLoai(id); // 👈 Giả sử `theLoai` là String (id)
-
-      return ResponseEntity.ok(books);
-    } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body("⚠️ Lỗi khi lấy sách theo thể loại: " + e.getMessage());
+public ResponseEntity<?> getBooksByCategoryId(
+    @PathVariable String id,
+    @RequestParam(required = false, defaultValue = "all") String sort
+) {
+  try {
+    List<Book> books;
+    switch (sort) {
+      case "newest":
+        books = BookRepo.findByTheLoaiOrderByNamDesc(id);
+        break;
+      case "mostBorrowed":
+        books = BookRepo.findByTheLoaiOrderBySoLuongMuonDesc(id);
+        break;
+      // Nếu chưa có trường đánh giá thì bỏ comment này
+      // case "topRated":
+      //   books = BookRepo.findByTheLoaiOrderByDanhGiaTrungBinhDesc(id);
+      //   break;
+      default:
+        books = BookRepo.findByTheLoai(id);
+        break;
     }
+
+    return ResponseEntity.ok(books);
+  } catch (Exception e) {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("⚠️ Lỗi khi lấy sách theo thể loại: " + e.getMessage());
   }
+}
 
   // // Chỉ cập nhật nếu giá trị mới khác null
   // if (BookMoi.getTenSach() != null)
