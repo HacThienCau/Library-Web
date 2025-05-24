@@ -10,8 +10,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookRepo extends MongoRepository<Book, String> {
     List<Book> findByTrangThai(Book.TrangThai status);
+
     List<Book> findByTenSachContainingIgnoreCase(String tenSach);
+
     List<Book> findByTenTacGiaContainingIgnoreCase(String tenTacGia);
+
     List<Book> findByTheLoaiContainingIgnoreCase(String theLoai);
+
     List<Book> findByTheLoai(String theLoai);
+
+    // Mới nhất: sắp xếp theo năm giảm dần
+    List<Book> findByTheLoaiOrderByNamDesc(String theLoai);
+
+    // Mượn nhiều nhất
+    List<Book> findByTheLoaiOrderBySoLuongMuonDesc(String theLoai);
+
+    // (Nếu có thêm đánh giá)
+    // List<Book> findByTheLoaiOrderByDanhGiaTrungBinhDesc(String theLoai);
 }
