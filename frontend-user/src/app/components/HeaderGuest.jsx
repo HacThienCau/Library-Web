@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Bell, Menu, Search,  ShoppingBag,  X } from "lucide-react";
-import { motion, useScroll } from "framer-motion";
+import { Menu, Search,  X } from "lucide-react";
+import { useScroll, motion } from "framer-motion";
 import Image from "next/image";
 import {
   FaFacebookF,
@@ -17,16 +17,6 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-
 const menuItems = [
   { name: "Trang chủ", href: "/" },
   { name: "Danh mục", href: "/Categories" },
@@ -34,13 +24,11 @@ const menuItems = [
   { name: "Về chúng tôi", href: "/About" },
 ];
 
-export const Header = () => {
+export const HeaderGuest = () => {
   const [menuState, setMenuState] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { scrollYProgress } = useScroll();
   const pathname = usePathname();
-
-  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.on("change", (latest) => {
@@ -50,11 +38,6 @@ export const Header = () => {
   }, [scrollYProgress]);
 
   const isActive = (href) => pathname === href;
-
-   const handleLogout = () => {
-    localStorage.removeItem("jwt");
-    router.push("/user-login");
-  };
 
   return (
     <header>
@@ -153,16 +136,6 @@ export const Header = () => {
               </div>
             </div>
 
-            {/* Search bar */}
-              <div className="hidden md:flex max-w-xs mx-8 items-center gap-2 ">
-                <input
-                  type="text"
-                  placeholder="Tìm sách ..."
-                  className="w-full border border-gray-300 rounded-full px-4 py-1 focus:outline-none"
-                />
-            <Search color="gray" className="cursor-pointer"/>
-              </div>
-
             <div className="group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
               <div className="lg:hidden">
                 <ul className="space-y-6 text-base">
@@ -183,104 +156,28 @@ export const Header = () => {
                   ))}
                 </ul>
               </div>
-              
-
-<div className="flex flex-grow items-center gap-6">
-
-<ShoppingBag color="gray" className="cursor-pointer" />
-<Bell color="gray" className="cursor-pointer" />
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="h-8 w-8 p-0 rounded-full border"
-      >
-        <Avatar className="h-9 w-9">
-      
-            <AvatarImage src="/images/td.jpg" alt="avatar" />
-      
-        </Avatar>
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end" className="w-44">
-      <DropdownMenuItem
-        onClick={() => router.push(`/user-profile`)}
-      >
-         <img
-                      src="/images/profile.png"
-                      alt="setting"
-                      className="mr-0 h-5"
-                    />
-                    <span className="ml-2 font-semibold">Hồ sơ</span>
-      </DropdownMenuItem>
-      <DropdownMenuItem onClick={() => router.push(`/settings`)}>
-        <img
-                      src="/images/setting.png"
-                      alt="setting"
-                      className="mr-0 h-5"
-                    />
-                    <span className="ml-2 font-semibold">Cài đặt</span>
-      </DropdownMenuItem>
-
-       {/* Phiếu giao dịch có submenu */}
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <DropdownMenuItem className="justify-between">
-          <div className="flex items-center">
-          <img
-                      src="/images/mail.png"
-                      alt="mail"
-                      className="ml-0.5 h-3.5"
-                    />
-          <span className="ml-4 font-semibold">Quản lý</span>
-          </div>
-          <svg
-            className="ml-2 h-4 w-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </DropdownMenuItem>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent className="w-40 left-full top-0 mt-[-4px]">
-        <DropdownMenuItem onClick={() => router.push(`/borrowed-card`)}>
-          Phiếu mượn
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push(`/fine`)}>
-          Phiếu phạt
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-
-
-      <DropdownMenuSeparator />
-      <DropdownMenuItem
-       onClick={handleLogout}
-       >
-        <img
-                      src="/images/logout.png"
-                      alt="logout"
-                      className="mr-0 h-5"
-                    />
-                    <span className="ml-2 font-semibold">Đăng xuất</span>
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-     </div>
-            
+              {/* Search bar */}
+              <div className="hidden md:flex flex-grow max-w-md mx-8 items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="Tìm sách ..."
+                  className="w-full border border-gray-300 rounded-full px-4 py-1 focus:outline-none"
+                />
+                <Search color="gray" className="cursor-pointer"/>
+              </div>
+              {/* Nút đăng nhập  */}
+              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                <Button  asChild variant="outline" size="sm">
+                  <Link href="/user-login">
+                    <span>Đăng nhập</span>
+                  </Link>
+                </Button>
+           
+              </div>
             </div>
           </motion.div>
         </div>
-        
-
       </nav>
-
- 
     </header>
   );
 };

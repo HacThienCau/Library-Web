@@ -150,7 +150,7 @@ const Page = () => {
       <main className="pt-16 flex gap-4 px-4">
         {/* Nếu vẫn giữ CategorySidebar bên ngoài khung trắng, để ngoài hoặc bỏ hẳn */}
         <aside className="w-64 shrink-0">
-          <LeftSideBar />
+        
         </aside>
 
         {/* Khung trắng chung chứa LeftSideBar2 + khu vực chính */}
