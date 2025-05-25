@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import Cropper from "react-easy-crop";
-import { getCroppedImg } from "../../../lib/utils.js";
-import { Button } from "@/app/components/ui/button.jsx";
+import { getCroppedImg } from "../../../lib/utils";
+import { Button } from "../../components/ui/button";
 import { Camera } from "lucide-react";
 
 export default function CameraPage() {
