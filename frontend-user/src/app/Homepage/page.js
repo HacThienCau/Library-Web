@@ -8,6 +8,8 @@ import ServiceHoursCard from "./ServiceHoursCard";
 import ChatBotButton from "../components/ChatBotButton";
 import axios from "axios";
 import didYouMean from "didyoumean";
+import Head from "next/head";
+import Header from "../components/Header";
 
 // const books = [
 //   {
@@ -257,7 +259,8 @@ const HomePage = () => {
   return (
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="pt-16 flex">
-        <LeftSideBar />
+        <Header />
+    
         <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
           {/* <div className="relative flex flex-wrap gap-3 items-center px-3 py-2.5 w-full text-[1.25rem] leading-none text-[#062D76] bg-white backdrop-blur-[100px] min-h-[50px] rounded-[100px] max-md:max-w-full">
             <img

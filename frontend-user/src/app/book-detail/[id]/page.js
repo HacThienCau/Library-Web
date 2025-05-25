@@ -166,7 +166,7 @@ function page() {
   return (
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="pt-16 flex">
-        <LeftSideBar />
+      
         <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
           <div className="flex flex-col p-6 bg-white rounded-xl shadow-md  md:flex-row gap-6">
             <img

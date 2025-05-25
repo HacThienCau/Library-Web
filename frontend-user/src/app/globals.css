@@ -136,3 +136,33 @@
     }
   }
 }
+
+@keyframes marquee {
+  0% { transform: translateX(100%) }
+  100% { transform: translateX(-100%) }
+}
+
+.animate-marquee {
+  animation: marquee 15s linear infinite;
+}
+
+html, body {
+  scrollbar-width: none;         /* Firefox */
+  overflow-y: scroll;            /* vẫn có thể cuộn */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;                 /* Chrome, Safari */
+}
+
+.parallax {
+    /* The image used */
+    background-image: url('https://education.somaiya.edu/assets/b.ed/img/library/banner-library.webp');
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

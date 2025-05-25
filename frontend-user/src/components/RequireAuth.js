@@ -1,48 +1,40 @@
-"use client"; // Thêm dòng này ở đầu file
+"use client";
 
 import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import Header from "@/app/components/Header";
-
+import { usePathname } from "next/navigation";
+import { Header } from "@/app/components/Header";
+import { HeaderGuest } from "@/app/components/HeaderGuest";
 
 const RequireAuth = ({ children }) => {
-  const router = useRouter();
   const pathname = usePathname();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const publicRoutes = ["/user-login"]; // thêm các route không cần login
-
-  // Kiểm tra token khi có sự thay đổi pathname
   useEffect(() => {
     const token = localStorage.getItem("jwt");
-    console.log("TOKEN:", token);
+    setIsLoggedIn(!!token);
+    setIsLoading(false);
+  }, [pathname]);
 
-    if (!token && !publicRoutes.includes(pathname)) {
-      router.push("/user-login");
-    } else {
-      setIsLoading(false);
-    }
-  }, [pathname, router]);
+  if (isLoading) return null; // hoặc loading spinner
 
-  if (isLoading) return null; // Hoặc loading spinner
-
-  // Hàm hiển thị layout với hoặc không có Header
-  const LayoutWithHeader = () => {
-    // Nếu đang ở trên trang /user-login, không hiển thị Header
-    if (pathname === "/user-login") {
-      return <>{children}</>;
-    }
-
-    // Nếu không phải trang đăng nhập, hiển thị Header
+  // Nếu đang ở trang đăng nhập thì không hiện header hoặc hiện HeaderGuest
+  if (pathname === "/user-login") {
     return (
       <>
-        <Header />
+    
         {children}
       </>
     );
-  };
+  }
 
-  return <LayoutWithHeader />;
+  // Các trang khác
+  return (
+    <>
+      {isLoggedIn ? <Header /> : <HeaderGuest />}
+      {children}
+    </>
+  );
 };
 
 export default RequireAuth;
