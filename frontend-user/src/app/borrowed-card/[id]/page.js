@@ -59,7 +59,7 @@ const BookCard = ({
 
 const BorrowingInfo = ({ info }) => {
   return (
-    <section className=" flex flex-col p-5 bg-white rounded-xl shadow-[0px_4px_4px_rgba(0,0,0,0.25)] max-md:px-5 max-md:max-w-full">
+    <section className="flex flex-col p-5 bg-white rounded-xl shadow-[0px_4px_4px_rgba(0,0,0,0.25)] max-md:px-5 max-md:max-w-full">
       <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
         {/* Cột 1 */}
 
@@ -246,7 +246,7 @@ const ChiTietPhieuMuon = () => {
         <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
           <div className="flex flex-col w-full max-md:max-w-full">
             {/*Nút Back*/}
-            <div className="mb-2 flex justify-between items-center">
+            <div className="mb-2 fixed z-50 justify-between items-center">
               <Button
                 title={"Quay Lại"}
                 className="bg-[#062D76] rounded-3xl w-10 h-10 cursor-pointer"
@@ -256,17 +256,15 @@ const ChiTietPhieuMuon = () => {
               >
                 <Undo2 className="w-12 h-12" color="white" />
               </Button>
-
-              {status === "Đang yêu cầu" && (
-                <Button
-                  className="flex self-end text-[1rem] cursor-pointer bg-red-500 hover:bg-red-700 text-white w-fit mb-2"
-                  onClick={() => setPopUpOpen(true)}
-                >
-                  <img src="/icon/trash.svg" alt="Delete" className="mr-2" />
-                  Xóa
-                </Button>
-              )}
             </div>
+            <Button
+              className="flex self-end text-[1rem] cursor-pointer bg-red-500 hover:bg-red-700 text-white w-fit mb-2"
+              disabled={status !== "Đang yêu cầu"} // Vô hiệu hóa nút nếu status khác "Đang yêu cầu"
+              onClick={() => setPopUpOpen(true)}
+            >
+              <img src="/icon/trash.svg" alt="Delete" className="mr-2" />
+              Xóa
+            </Button>
             <BorrowingInfo info={borrowDetail} />
 
             <h2 className="text-lg font-medium text-[#062D76] text-center mt-5 ">

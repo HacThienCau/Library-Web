@@ -5,105 +5,50 @@ import { Button } from "@/components/ui/button";
 import { Receipt, Undo2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 function page() {
   const params = useParams();
   const MaPhieuPhat = params.id;
   const [fine, setFine] = useState(null);
-  const [username, setUsername] = useState(null);
-  const [borrowDetail, setBorrowDetail] = useState(null);
+  const [bookInfo, setBookInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  // Fetch phiếu phạt từ API
   const fetchFine = async () => {
-    const rs =
-      //API lấy phiếu theo MaPhieuPhat
-
-      {
-        MaPhieuPhat: MaPhieuPhat,
-        MaNguoiDung: "userId 1",
-        TongTien: 20000,
-        NoiDung: "Trả sách trễ hạn",
-        MaPhieuMuon: "2",
-        TrangThai: "Đã Thanh Toán",
-        NgayThanhToan: "25/03/2025",
-      };
-    setFine(rs);
-    setUsername(getUsername(rs.MaNguoiDung));
-    setBorrowDetail(await getBorrowDetail(rs.MaPhieuMuon, rs.NoiDung));
-  };
-  const getUsername = async (userId) => {
-    const rs = "Example Username"; //API lấy tên người dùng từ ID người dùng
-    return rs;
-  };
-  const getBorrowDetail = async (id, NoiDung) => {
-    if (NoiDung === "Trả sách trễ hạn") {
-      //id sẽ là mã phiếu mượn
-      const rs =
-        //API lấy chi tiết phiếu mượn từ id , giao bảng ở backend luôn
-        {
-          MaPhieuMuon: id,
-          MaNguoiDung: "1",
-          NgayMuon: "01/01/2025",
-          NgayHenTra: "14/01/2025",
-          NgayTra: "01/02/2025",
-          ChiTietPhieuMuon: [
-            {
-              MaSach: "2",
-              SoLuong: 1,
-            },
-            {
-              MaSach: "4",
-              SoLuong: 1,
-            },
-            {
-              MaSach: "7",
-              SoLuong: 2,
-            },
-          ],
-        };
-      const chiTietSach = await Promise.all(
-        rs.ChiTietPhieuMuon.map(async (book) => {
-          const sach = await getSach(book.MaSach);
-          return { ...book, ...sach }; // Gộp dữ liệu sách vào book
-        })
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `http://localhost:8081/fine/${MaPhieuPhat}`
       );
-      rs.ChiTietPhieuMuon = chiTietSach; // Cập nhật lại danh sách chi tiết phiếu mượn
-      return rs;
+      if (response.status === 200) {
+        const fineData = response.data;
+        setFine(fineData);
+        // Nếu phiếu phạt liên quan đến sách, lấy thông tin sách
+        console.log(fineData);
+        if (
+          fineData.noiDung === "Làm mất sách" ||
+          fineData.noiDung === "Trả sách trễ hạn"
+        ) {
+          const bookData = await getBookInfo(fineData.cardId); // Lấy thông tin sách từ cardId
+          setBookInfo(bookData);
+        }
+      } else {
+        toast.error("Lỗi khi lấy phiếu phạt");
+      }
+    } catch (error) {
+      toast.error("Có lỗi xảy ra khi fetch thông báo");
+    } finally {
+      setLoading(false);
     }
-    if (NoiDung === "Làm mất/hư hỏng sách") {
-      //id sẽ là mã sách
-      const rs = await getSach(id);
-      return { ...rs, SoLuong: 1 };
-    }
-    console.log("bruh");
-    return "Bruh";
   };
-  const getSach = async (MaSach) => {
-    const rs = {
-      //API lấy chi tiết sách
 
-      MaSach: MaSach,
-      TenSach: "Tên sách 3",
-      MoTa: "Mo ta mau",
-      MaTheLoai: "ma tac gia",
-      MaTacGia: "ma the loai",
-      HinhAnh: ["/test.webp", "3133331", "313213131", "31313123"],
-      SoLuongTon: 70,
-      SoLuongMuon: 3,
-    };
-    return rs;
-  };
-  const tinhSoNgayTre = (NgayHenTra, NgayTra) => {
-    // Chuyển đổi chuỗi ngày thành đối tượng Date (định dạng dd/MM/yyyy)
-    const [day1, month1, year1] = NgayHenTra.split("/").map(Number);
-    const [day2, month2, year2] = NgayTra.split("/").map(Number);
-
-    const dateHenTra = new Date(year1, month1 - 1, day1); // Tháng trong Date bắt đầu từ 0
-    const dateTra = new Date(year2, month2 - 1, day2);
-
-    // Tính số ngày trễ
-    const diffTime = dateTra - dateHenTra;
-    const diffDays = Math.max(Math.ceil(diffTime / (1000 * 60 * 60 * 24)), 0); // Đảm bảo không có số âm
-
-    return diffDays;
+  // Lấy thông tin sách (nếu nội dung phạt liên quan đến sách)
+  const getBookInfo = async (cardId) => {
+    if (typeof cardId === "string") {
+      // Nếu cardId là string, đây là trường hợp "Khác", không có sách
+      return null;
+    } else return cardId;
   };
 
   useEffect(() => {
@@ -115,133 +60,158 @@ function page() {
   };
   const BookCard = ({ book }) => {
     return (
-      <div className="flex bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 gap-[20px] md:gap-[50px] items-center">
-        <img src={`${book.HinhAnh[0]}`} className="w-[145px] h-[205px]" />
-        <div className="flex flex-col gap-[10px] relative w-full">
-          <p className="font-bold">{book.TenSach}</p>
-          <p className="italic">{book.MaTacGia}</p>
-          <p className="">ID:&nbsp;{book.MaSach}</p>
-        </div>
-        <div className="w-full flex justify-end gap-5 md:gap-10 items-center">
-          <p className="font-bold">Số Lượng:</p>
-          <p className="w-10 h-10 rounded-lg border-2 flex justify-center items-center">
-            {book.SoLuong}
+      <article className="flex grow shrink gap-3 min-w-60 bg-white rounded-xl shadow-[0px_2px_2px_rgba(0,0,0,0.25)] p-5">
+        <img
+          src={book.parentBook.hinhAnh[0]}
+          alt={book.parentBook.tenSach}
+          className="object-cover shrink rounded-sm aspect-[0.67] w-[100px]"
+        />
+        <div className="flex flex-col flex-1 shrink self-end basis-0">
+          <h3 className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-[1.125rem] font-medium text-black basis-0">
+            {book.parentBook.tenSach}
+          </h3>
+          <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
+            ID sách: {book.childBook.id}
+          </p>
+          <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
+            Tác giả: {book.parentBook.tenTacGia}
+          </p>
+          <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
+            Thể loại: {book.parentBook.theLoai}
+          </p>
+          <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
+            NXB: {book.parentBook.nxb}
           </p>
         </div>
-      </div>
+      </article>
     );
   };
   const handleThanhToan = async () => {
-    //API Thanh Toán
-    fetchFine();
+    const response = await axios.post(
+      `http://localhost:8081/fine/pay-momo/${fine.id}`
+    );
+    const payUrl = response.data;
+    window.location.href = payUrl;
   };
   return (
     <main className="flex flex-col min-h-screen text-foreground">
       <div className="pt-16 flex">
         <LeftSideBar />
         <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
-        {/*Main*/}
-        {/*Nút Back - Floating Button*/}
-        {/* <div className="top-5 left-5 md:left-57 fixed">
-          <Button
-            title={"Quay Lại"}
-            className="bg-[#062D76] rounded-3xl w-10 h-10"
-            onClick={() => {
-              handleGoBack();
-            }}
-          >
-            <Undo2 className="w-12 h-12" color="white" />
-          </Button>
-        </div> */}
-        {fine && (
-          <div className="flex flex-col w-full gap-[5px] md:gap-[10px] items-center">
-            <div className="flex bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 gap-[20px] md:gap-[50px] items-center">
-              <div className="flex flex-col gap-[10px] relative w-full">
-                <p className="font-bold">ID:&nbsp;{fine.MaPhieuPhat}</p>
-                <p className="font-bold">
-                  Số Tiền:&nbsp;{fine.TongTien}&nbsp;đồng
-                </p>
-                <p className="">Nội Dung:&nbsp;{fine.NoiDung}</p>
-              </div>
-              <div className="flex flex-col gap-[10px] relative w-full">
-                <p className="">ID Người Dùng:&nbsp;{fine.MaNguoiDung}</p>
-                <p className="">Tên Người Dùng:&nbsp;{username}</p>
-                <p
-                  className={`font-bold ${
-                    fine?.TrangThai === "Chưa Thanh Toán" ? "hidden" : "flex"
-                  }`}
-                >
-                  Ngày Thanh Toán:&nbsp;{fine.NgayThanhToan}
-                </p>
-              </div>
-            </div>
-            {borrowDetail && (
-              <div className="flex flex-col gap-[10px] relative bg-white w-full rounded-lg mt-2 drop-shadow-lg p-5 items-center">
-                {fine.NoiDung === "Trả sách trễ hạn" && (
-                  <div className="flex flex-col w-full">
-                    <div className="flex w-full gap-[20px] md:gap-[50px]">
-                      <div className="flex flex-col gap-[10px] relative w-full mb-5">
-                        <p className="">
-                          ID Phiếu Mượn:&nbsp;{fine.MaPhieuMuon}
-                        </p>
-                        <p className="">
-                          Số Ngày Trễ Hạn:&nbsp;
-                          {tinhSoNgayTre(
-                            borrowDetail?.NgayHenTra,
-                            borrowDetail?.NgayTra
-                          )}
-                        </p>
-                      </div>
-                      <div className="flex flex-col gap-[10px] relative w-full">
-                        <p className="">
-                          Ngày Mượn Sách:&nbsp;
-                          {borrowDetail?.NgayMuon}
-                        </p>
-                        <p className="">
-                          Ngày Trả Sách:&nbsp;
-                          {borrowDetail?.NgayTra}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="w-full h-70 overflow-y-scroll">
-                      {borrowDetail?.ChiTietPhieuMuon?.map((book, index) => {
-                        return <BookCard key={index} book={book} />;
-                      })}
-                    </div>
-                  </div>
-                )}
-                {fine?.NoiDung === "Làm mất/hư hỏng sách" && (
-                  <div className="w-full h-70 overflow-y-scroll">
-                    <BookCard book={borrowDetail} />
-                  </div>
-                )}
-              </div>
-            )}
+          {/*Nút Back - Floating Button*/}
+          {/*Nút Back*/}
+          <div className="mb-2 fixed z-50 flex justify-between items-center">
+            <Button
+              title={"Quay Lại"}
+              className="bg-[#062D76] rounded-3xl w-10 h-10 cursor-pointer"
+              onClick={() => {
+                handleGoBack();
+              }}
+            >
+              <Undo2 className="w-12 h-12" color="white" />
+            </Button>
           </div>
-        )}
-        <div className="w-full bottom-0 px-10 pr-[1.25rem] md:pl-60 ml-[1.25rem] md:left-52 md:w-[calc(100%-208px)] fixed border-2 h-20 bg-white flex items-center justify-between">
-          {/*Control Bar*/}
-          <div></div>
-          <Button
-            title={"Thanh Toán"}
-            disabled={fine?.TrangThai === "Chưa Thanh Toán" ? false : true}
-            className={`rounded-3xl w-40 h-12 ${
-              fine?.TrangThai === "Chưa Thanh Toán"
-                ? "bg-[#062D76]"
-                : "bg-[#b6cefa]"
-            }`}
-            onClick={() => {
-              console.log("Thanh Toan clicked");
-            }}
-          >
-            <Receipt className="w-24 h-24" color="white" />
-            {fine?.TrangThai === "Chưa Thanh Toán"
-              ? "Thanh Toán"
-              : "Đã Thanh Toán"}
-          </Button>
-        </div>
+          {fine && (
+            <div className="flex pt-10 flex-col w-full gap-[5px] md:gap-[10px] items-center">
+              <div className="flex items-start bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 gap-[20px] md:gap-[50px]">
+                <div className="flex flex-col gap-[10px] relative w-full">
+                  <p className="text-[1rem] font-semibold text-[#131313]/50">
+                    ID Phiếu Phạt:{" "}
+                    <span className="text-[#131313] font-medium ">
+                      {fine.id}
+                    </span>
+                  </p>
+
+                  <p className="text-[1rem] font-semibold text-[#131313]/50">
+                    Số Tiền:{" "}
+                    <span className="text-[#131313] font-medium ">
+                      {fine.soTien}
+                    </span>
+                  </p>
+                  <p className="text-[1rem] font-semibold text-[#131313]/50">
+                    Nội Dung:{" "}
+                    <span className="text-[#131313] font-medium ">
+                      {fine.noiDung === "Khác" ? fine.cardId : fine.noiDung}
+                    </span>
+                  </p>
+                </div>
+                <div className="flex flex-col gap-[10px] justify-start w-full">
+                  <p className="text-[1rem] font-semibold text-[#131313]/50">
+                    ID Người Dùng:{" "}
+                    <span className="text-[#131313] font-medium ">
+                      {fine.userId}
+                    </span>
+                  </p>
+                  <p className="text-[1rem] font-semibold text-[#131313]/50">
+                    Tên Người Dùng:{" "}
+                    <span className="text-[#131313] font-medium ">
+                      {fine.tenND}
+                    </span>
+                  </p>
+                  <p
+                    className={`text-[1rem] font-semibold text-[#131313]/50 ${
+                      fine.trangThai === "CHUA_THANH_TOAN" ? "hidden" : "flex"
+                    }`}
+                  >
+                    Ngày Thanh Toán:{" "}
+                    <span className="text-[#131313] font-medium ">
+                      {fine.ngayThanhToan}
+                    </span>
+                  </p>
+                </div>
+              </div>
+              {bookInfo && (
+                <div className="flex flex-col gap-[10px] relative bg-white w-full rounded-lg mt-2 drop-shadow-lg p-5 items-center">
+                  {fine.NoiDung === "Trả sách trễ hạn" && (
+                    <div className="flex flex-col w-full">
+                      <h2 className="text-lg font-medium text-[#062D76] text-center">
+                        Thông tin sách
+                      </h2>
+                      <div className="w-full h-70 mb-[2rem] overflow-y-scroll">
+                        {bookInfo && (
+                          <BookCard
+                            key={bookInfo.parentBook.id}
+                            book={bookInfo}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {fine.noiDung === "Làm mất sách" && bookInfo && (
+                    <div className="w-full h-70 mb-[2rem] overflow-y-scroll">
+                      <h2 className="text-lg font-medium text-[#062D76] text-center ">
+                        Thông tin sách
+                      </h2>
+                      <BookCard key={bookInfo.parentBook.id} book={bookInfo} />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+          <div className="fixed bottom-0 self-stretch mr-[1.25rem] md:left-60 ml-[1.25rem] right-0 bg-[#E6EAF1] shadow-lg p-3 flex justify-between">
+            {/*Control Bar*/}
+            <div></div>
+            <Button
+              title={"Thanh Toán"}
+              disabled={fine?.trangThai === "CHUA_THANH_TOAN" ? false : true}
+              className={`rounded-3xl w-fit cursor-pointer ${
+                fine?.trangThai === "CHUA_THANH_TOAN"
+                  ? "bg-[#062D76]"
+                  : "bg-[#b6cefa]"
+              }`}
+              onClick={() => {
+                handleThanhToan();
+              }}
+            >
+              <Receipt className="w-24 h-24" color="white" />
+              {fine?.trangThai === "CHUA_THANH_TOAN"
+                ? "Thanh toán ngay!"
+                : "Đã Thanh Toán"}
+            </Button>
+          </div>
         </section>
-        <ChatBotButton />
+        {/* <ChatBotButton /> */}
       </div>
     </main>
   );

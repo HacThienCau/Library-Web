@@ -184,7 +184,9 @@ const page = () => {
                           <>
                             Ngày trả:{" "}
                             <span className="text-[#131313] font-medium">
-                              {formatDate(borrowing.dueDate)}
+                              {borrowing?.dueDate
+                                ? formatDate(borrowing?.dueDate)
+                                : "Không có (Người dùng không lấy sách)."}
                             </span>
                           </>
                         )}
@@ -200,6 +202,7 @@ const page = () => {
                       </p>
                     </div>
                     <Button
+                      title={"Xem Chi Tiết"}
                       className="flex gap-2 justify-center items-center px-3 py-1 text-[1rem] font-normal self-center bg-[#062D76] text-white hover:bg-[#E6EAF1] hover:text-[#062D76] rounded-3xl cursor-pointer"
                       aria-label={`View details for borrowing ${borrowing.id}`}
                       onClick={() => {

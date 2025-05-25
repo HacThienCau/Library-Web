@@ -203,8 +203,8 @@ function BookReview() {
     <div className="border rounded-md p-4 space-y-4 bg-white shadow-sm">
       <Tabs defaultValue="review">
         <TabsList className="flex space-x-2 border-b">
-          <TabsTrigger value="review">Đánh giá</TabsTrigger>
-          <TabsTrigger value="question">Câu hỏi & Trả lời</TabsTrigger>
+          <TabsTrigger value="review" className="cursor-pointer">Đánh giá</TabsTrigger>
+          <TabsTrigger value="question" className="cursor-pointer">Câu hỏi & Trả lời</TabsTrigger>
         </TabsList>
 
         <TabsContent value="review" className="mt-4">
@@ -376,7 +376,7 @@ function BookReview() {
                 />
                 <button
                   onClick={handleSubmit}
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
                 >
                   {editing ? "Cập nhật" : "Gửi đánh giá"}
                 </button>
@@ -477,7 +477,7 @@ function BookReview() {
                 className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span>Gửi câu hỏi</span>
+                <span className="cursor-pointer">Gửi câu hỏi</span>
               </button>
             </div>
           </div>
