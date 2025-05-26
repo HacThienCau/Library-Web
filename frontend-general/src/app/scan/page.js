@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { format } from 'date-fns';
 import { Book, BookDashed, CalendarClock, Camera, Undo2, Upload } from "lucide-react";
 import UploadChild from "./childBook/page";
+import VideoPlayer from "../components/ui/VideoPlayer";
 
 const UploadImage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -109,7 +110,11 @@ const UploadImage = () => {
     return new File([u8arr], filename, { type: mime });
   };
   const openCamera = () => {
-    window.open("/scan/camera", "_blank", "width=800,height=600");
+    const width = 800;
+    const height = 600;
+    const left = window.screenX + (window.outerWidth - width) / 2;
+    const top = window.screenY + (window.outerHeight - height) / 2;
+    window.open("/scan/camera", "_blank", `width=${width},height=${height},left=${left},top=${top}`);
   };
   //hàm xử lý khi nhập id
   const handleEnter = async() =>{
@@ -226,7 +231,7 @@ const UploadImage = () => {
     return(
       <div className={`w-full flex justify-between items-center border-1 ${book?.checked===false?"bg-white":"bg-green-100"} my-3 px-5`}>
         <div className="flex flex-col">
-          <p className={`font-semibold ${currentChoose?.status!=="Đang yêu cầu"?"":"hidden"}`}>Id:&nbsp;{book?.childId}</p>
+          {/*<p className={`font-semibold ${currentChoose?.status!=="Đang yêu cầu"?"":"hidden"}`}>Id:&nbsp;{book?.childId}</p> // dòng này chỉ show khi debug*/}
           <p className="font-semibold">{book?.tenSach}</p>
           <p>{book?.tenTacGia}</p>
           <p>{book?.nxb}</p>
@@ -238,7 +243,7 @@ const UploadImage = () => {
   }
   const CardInfo = ({card}) =>{
     return(
-      <div>
+      <div className="flex flex-col gap-3">
         <p><strong>Id phiếu mượn:</strong>&nbsp;{card?.id}</p>
         <p><strong>Ngày đăng ký mượn:</strong>&nbsp;{format(new Date(card?.borrowDate), "dd/MM/yyyy HH:mm:ss")}</p>
         <p className={`${card?.status==="Đang yêu cầu"?"":"hidden"}`}><strong>Ngày lấy sách dự kiến:</strong>&nbsp;{format(new Date(card?.getBookDate), "dd/MM/yyyy HH:mm:ss")}</p>
@@ -357,7 +362,7 @@ const UploadImage = () => {
       setLoadingLoad(true);
       try {
         for (const book of lostBooks) {
-          const money = prompt(`Nhập số tiền phạt cho sách: ${book?.tenSach}`);
+          const money = prompt(`Nhập số giá cuốn sách: ${book?.tenSach}`);
           if (money !== null && !isNaN(money)) {
             // Gọi API cho từng cuốn sách
             const data = {
@@ -388,27 +393,16 @@ const UploadImage = () => {
       setLoadingLoad(false);
       }
   }
-  return (
-    <div className="flex w-full min-h-screen h-full flex-col gap-2 items-center bg-[#EFF3FB]">
-      {loading ? (
-        <div className="flex md:ml-52 w-full h-screen justify-center items-center">
-          <ThreeDot
-            color="#062D76"
-            size="large"
-            text="Vui lòng chờ"
-            variant="bounce"
-            textColor="#062D76"
-          />
-        </div>
-      ) : !result ? (
-        <div className="flex flex-col w-full items-center h-[10px] mb-10 gap-5 px-10 py-6 ">
-          <img width={200} height={200} src="/images/logo.jpg"/>
-          <p className="text-3xl font-semibold text-#062D76">Library Web</p>
+  const ScanUser = () =>{
+    return(
+      <div className="flex flex-col w-full items-center mb-10 gap-5 px-10 py-6">
+          <img width={200} height={200} className="rounded-4xl" src="/images/logo.jpg"/>
+          <p className="text-3xl font-semibold text-#062D76">Ja97 Library Web</p>
           <p className="text-xl font-semibold ">Vui lòng nhập mã người dùng của bạn</p>
           <div className="flex flex-col w-full items-center justify-center gap-1">
             <input type="text" value={text} onChange={(e)=>setText(e.target.value)} 
             placeholder="Nhập user ID của bạn"
-            className="bg-white rounded w-1/4"
+            className="bg-white rounded w-80 h-10"
             onKeyDown={(e) => e.key === "Enter" && handleEnter()}
             />
             <p className="text-sm italic text-[#062D76]">Nhập Enter để tiến hành tìm kiếm</p>
@@ -429,6 +423,61 @@ const UploadImage = () => {
             </Button>
           </div>
         </div>
+    )
+  }
+
+  const ResultCard = () =>{
+    return(
+      <div className="flex bg-white w-1/2 rounded-lg mt-2 drop-shadow-lg p-5 gap-10 items-center justify-center">
+          <img src={"/images/logo.jpg"} className="w-64 h-64 rounded-4xl"/>
+          <div className="flex flex-col gap-[10px] w-2/3">
+          <p><span className="font-bold">ID Người dùng:</span>&nbsp;{result?.id}</p>
+          <p><span className="font-bold">Tên người dùng:</span>&nbsp;{result?.tenND}</p>
+          <p><span className="font-bold">Email:</span>&nbsp;{result?.email}</p>
+          <p><span className="font-bold">Ngày sinh:</span>&nbsp;{formatDate(result?.ngaySinh)}</p>
+          <p><span className="font-bold">Giới tính:</span>&nbsp;{result?.gioiTinh}</p>
+          </div>
+        </div>
+    )
+  }
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("vi-VN"); // Kết quả: 22/04/2025
+  };
+  return (
+    <div className="flex w-full min-h-screen h-full flex-col gap-2 items-center bg-[#EFF3FB]">
+      {loading ? (
+        <div className="flex w-full h-screen justify-center items-center">
+          <ThreeDot
+            color="#062D76"
+            size="large"
+            text="Vui lòng chờ"
+            variant="bounce"
+            textColor="#062D76"
+          />
+        </div>
+      ) : !result ? (
+        <div className="relative w-full h-screen overflow-hidden flex">
+        {/* Video bên trái */}
+        <VideoPlayer
+        src="/videos/side.mp4"
+        startTime={0}
+        className="absolute left-0 top-0 h-full object-cover w-1/3 z-0"
+        />
+
+        {/* Video bên phải */}
+        <VideoPlayer
+        src="/videos/side.mp4"
+        startTime={0}
+        className="absolute right-0 top-0 h-full object-cover w-1/3 z-0"
+      /> 
+
+        {/* Component chính nằm giữa */}
+        <div className="relative z-10 m-auto w-[600px] max-w-full px-6 bg-white/80 backdrop-blur-md rounded-xl shadow-xl">
+          {/* Component của bạn */}
+          <ScanUser />
+        </div>
+      </div>
       ) : (
         <div className="flex flex-col w-full h-full min-h-screen items-center h-[10px] py-6 gap-5 bg-[#EFF3FB]">
           {/*Nút Back*/}
@@ -468,19 +517,7 @@ const UploadImage = () => {
             <p className="absolute bottom-5 flex text-white italic z-100 text-sm">Nhấn vào khoảng trống để đóng</p>
           </div>
           }
-          <div className="flex flex-col bg-white w-1/2 rounded-lg mt-2 drop-shadow-lg p-5 gap-10 items-center">
-          <h1>ID Người dùng:&nbsp;{result?.id}</h1>
-          <div className="flex flex-col gap-[10px] w-full">
-            <p className="font-bold">
-                  Tên người dùng:&nbsp;{result?.tenND}
-                </p>
-                <p className="">
-                  Email:&nbsp;{result?.email}
-                </p>
-                <p className="">Ngày sinh:&nbsp;{result?.ngaySinh}</p>
-                <p className="">Giới tính:&nbsp;{result?.gioiTinh}</p>
-            </div>
-          </div>
+          <ResultCard />
           <div className="w-full px-10 md:px-40">
             {!borrowCard?(
               <p className="text-xl font-semibold ">Không có lịch sử phiếu mượn nào</p>

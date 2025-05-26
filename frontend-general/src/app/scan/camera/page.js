@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Cropper from "react-easy-crop";
 import { getCroppedImg } from "../../../lib/utils";
 import { Button } from "../../components/ui/button";
-import { Camera } from "lucide-react";
+import { Camera, Check } from "lucide-react";
 
 export default function CameraPage() {
   const videoRef = useRef(null);
@@ -52,7 +52,7 @@ export default function CameraPage() {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 min-h-screen bg-[#EFF3FB]">
       {!hasPhoto ? (
         <div className="relative">
           <video ref={videoRef} autoPlay className="w-full h-[90%] rounded" />
@@ -64,7 +64,7 @@ export default function CameraPage() {
         <>
         {/*Tỉ lệ*/}
         <div className="flex items-center h-5 space-x-5">
-        <label className="block text-sm mb-1 text-gray-700">Tỉ lệ:</label>
+        <label className="block text-sm mb-1 text-gray-700 font-semibold">Tỉ lệ:</label>
         <select
           className="mt-2 border rounded px-2 py-1"
           onChange={(e) => {
@@ -80,7 +80,7 @@ export default function CameraPage() {
         </div>
         {/*Thanh zoom*/}
         <div className="mt-4">
-        <label className="block text-sm mb-1 text-gray-700">Thu phóng:</label>
+        <label className="block text-sm mb-1 font-semibold text-gray-700">Thu phóng:</label>
         <input
         type="range"
         min={1}
@@ -104,6 +104,7 @@ export default function CameraPage() {
             />
           </div>
           <Button onClick={completeCrop} className="mt-4 bg-blue-600 text-white px-4 py-2 rounded absolute right-5 bg-[#062D76]">
+            <Check className="w-12 h-12"/>
             Hoàn tất
           </Button>
         </>

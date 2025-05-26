@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../../components/ui/button";
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
+import { Camera, Upload } from "lucide-react";
 
 const UploadChild = ({resultChild, setResultChild}) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -78,6 +79,59 @@ const UploadChild = ({resultChild, setResultChild}) => {
     }
     setLoading(false);
   }
+  //gửi ảnh vừa chụp lên backend
+  const handleMessage = async (event) => {
+    if (event.origin !== window.origin) return;
+    if (event.data.type === "captured-image") {
+      const base64 = event.data.image;
+      const file = base64ToFile(base64, "captured.png");
+
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("file", file); // Đảm bảo rằng 'file' là tên trường mà backend mong đợi
+      formData.append("type", "user");
+
+      try {
+        const response = await fetch(
+          `http://localhost:8081/childNParent/${text}`,
+          {
+            method: "GET",
+          }
+        );
+        if (!response.ok) {
+          toast.error("Không tìm thấy sách") 
+          setLoading(false);       
+          return;
+        }  
+        const result = await response.json();
+        setResult(result);
+        setText("")
+      } catch (error) {
+        console.error("Lỗi khi gửi ảnh:", error);
+      }
+      setLoading(false);
+    }
+  };
+  useEffect(()=>{
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  },[])
+  const base64ToFile = (base64, filename) => {
+    const arr = base64.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) u8arr[n] = bstr.charCodeAt(n);
+    return new File([u8arr], filename, { type: mime });
+  };
+  const openCamera = () => {
+    const width = 800;
+    const height = 600;
+    const left = window.screenX + (window.outerWidth - width) / 2;
+    const top = window.screenY + (window.outerHeight - height) / 2;
+    window.open("/scan/camera", "_blank", `width=${width},height=${height},left=${left},top=${top}`);
+  };
   return (
     <div className="flex w-full flex-col gap-2 items-center">
       {loading ? (
@@ -96,7 +150,7 @@ const UploadChild = ({resultChild, setResultChild}) => {
           <div className="flex flex-col w-full items-center justify-center gap-1">
             <input type="text" value={text} onChange={(e)=>setText(e.target.value)} 
             placeholder="Nhập ID sách"
-            className="bg-white rounded w-3/4 border-1"
+            className="bg-white rounded w-80 h-10 border-1"
             onKeyDown={(e) => e.key === "Enter" && handleEnter()}
             />
             <p className="text-sm italic text-[#062D76]">Nhập Enter để tiến hành tìm kiếm</p>
@@ -104,8 +158,17 @@ const UploadChild = ({resultChild, setResultChild}) => {
           <p className="text-2xl font-semibold ">Hoặc</p>
           <p className="text-xl font-semibold ">Tải ảnh barcode mã sách</p>
           <div className="flex gap-5">
-            <input type="file" onChange={onFileChange} />
-            <Button onClick={handleUpload}>Tải ảnh lên</Button>
+            <input type="file" onChange={onFileChange} className="bg-white self-center rounded"/>
+            <Button className="bg-[#062D76]" onClick={handleUpload}>
+              <Upload className="w-12 h-12" color="white"/>
+              Tải ảnh lên
+            </Button>
+          </div>
+          <div className="flex gap-5">
+            <Button className="bg-[#062D76]" onClick={openCamera}>
+              <Camera className="w-12 h-12" color="white"/>
+              Chụp ảnh mới
+            </Button>
           </div>
         </div>
       )}

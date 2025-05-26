@@ -48,7 +48,6 @@ const Sidebar = () => {
     { path: "/borrow", icon: "/svg/return_admin.svg", label: "Mượn/Trả" },
     { path: "/fine", icon: "/svg/fine_admin.svg", label: "Phiếu phạt" },
     { path: "/setting", icon: "/svg/setting.svg", label: "Cài đặt" },
-    { path: "/scan", icon: "/svg/scan_admin.svg", label: "Lấy/Trả sách" },
   ];
 
 
