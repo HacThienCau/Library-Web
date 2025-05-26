@@ -189,7 +189,7 @@ function page() {
               <p className="font-semibold text-lg mt-3">Sách</p>
               <div className="flex gap-3">
                 <Button className="bg-white text-black rounded-lg w-200 h-10 flex relative justify-between hover:bg-gray-100" onClick={()=>setOpen(!isDropDownOpen)}>
-                  <p>{book?`${book?.id}-${book?.tenSach}-${book?.tenTacGia}-${book?.nxb}`:"Vui lòng chọn sách"}</p>
+                  <p className="w-200 truncate text-left">{book?`${book?.id}-${book?.tenSach}-${book?.tenTacGia}-${book?.nxb}`:"Vui lòng chọn sách"}</p>
                   <ChevronDown className="w-12 h-12 text-[#062D76]"/>
                   {isDropDownOpen && (
                   <div className="absolute top-12 left-0 w-full h-[300px] overflow-y-auto bg-white rounded border-3">

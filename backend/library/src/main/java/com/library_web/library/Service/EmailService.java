@@ -60,7 +60,7 @@ public class EmailService {
             <li><b>Ngày lấy sách:</b> %s</li>
             <li><b>Ngày trả dự kiến:</b> %s</li>
             </ul>
-            <<p>Chúc bạn có trải nghiệm đọc sách thật tuyệt vời!</p>
+            <p>Chúc bạn có trải nghiệm đọc sách thật tuyệt vời!</p>
             <p>Trân trọng,<br><b>Ja97 Library Web</b></p>
         """, tenND, idPhieu, idPhieu, ngayLay, ngayTra);
         emailConfig.sendEmail(List.of(email), subject, body);
