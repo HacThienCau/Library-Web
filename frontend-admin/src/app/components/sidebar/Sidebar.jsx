@@ -3,6 +3,7 @@ import { Button } from "@/app/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import useSidebarStore from "@/store/sideBarStore";
 import { LogOut } from "lucide-react";
+import Image from "next/image";
 
 import { useRouter, usePathname } from "next/navigation";
 
@@ -62,10 +63,16 @@ const Sidebar = () => {
       <div className="flex flex-col h-full justify-start overflow-y-auto">
         {/* Logo */}
         <div className="flex justify-center items-center my-2">
-          <img src="/images/logo.jpg" alt="ReadHub Logo" className="w-10 items-stretch rounded-full" />
-          <h1 className="text-lg font-bold text-[#062D76] mt-2">
+          <Image
+            src="/images/logo.png"
+            alt="Logo"
+            width={45}
+            height={45}
+            className="w-auto justify-start bg-transparent object-cover border-2 mr-1 rounded-full"
+          />
+          <div className="text-xl font-bold bg-gradient-to-r from-blue-400 to-blue-700 bg-clip-text text-transparent">
             ReadHub
-          </h1>
+          </div>
         </div>
         <hr className="border-t border-[#EDEEF3] mb-6" />
 

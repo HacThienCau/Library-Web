@@ -199,7 +199,7 @@ function page() {
       ) : (
         <div className="flex w-full flex-col py-6 md:ml-52 relative mt-10 gap-2 items-center px-10">
           {/*Nút Back*/}
-          <div className="absolute top-5 left-5 md:left-57 fixed">
+          <div className=" top-5 left-5 md:left-57 fixed">
             <Button
               title={"Quay Lại"}
               className="bg-[#062D76] rounded-3xl w-10 h-10"
@@ -267,7 +267,7 @@ function page() {
                 onChange={(e) => setQuantity(e.target.value)}
               />
             </div>
-            <div className="flex flex-col w-full gap-[5px] md:gap-[10px] space-y-2 relative inline-block text-left">
+            <div className="flex flex-col w-full gap-[5px] md:gap-[10px] space-y-2 relative text-left">
               <p className="font-semibold text-lg mt-3">Thể Loại Chính</p>
               <Button
                 title={"Thể Loại Chính"}
@@ -285,7 +285,7 @@ function page() {
                     return (
                       <Button
                         key={index}
-                        className="flex justify-start block w-full px-4 py-2 text-left bg-white text-black hover:bg-gray-300 items-center gap-2"
+                        className="flex justify-start w-full px-4 py-2 text-left bg-white text-black hover:bg-gray-300 items-center gap-2"
                         onClick={() => {
                           setCategory(cate);
                           setIsCateListOpen(false);
@@ -299,7 +299,7 @@ function page() {
               )}
             </div>
           {/*Thể loại 2*/}
-          <div className="flex flex-col w-full gap-[5px] md:gap-[10px] space-y-2 relative inline-block text-left">
+          <div className="flex flex-col w-full gap-[5px] md:gap-[10px] space-y-2 relative text-left">
               <p className="font-semibold text-lg mt-3">Thể Loại Phụ</p>
               <Button
                 title={"Thể Loại Phụ"}
@@ -317,7 +317,7 @@ function page() {
                     return (
                       <Button
                         key={index}
-                        className="flex justify-start block w-full px-4 py-2 text-left bg-white text-black hover:bg-gray-300 items-center gap-2"
+                        className="flex justify-start w-full px-4 py-2 text-left bg-white text-black hover:bg-gray-300 items-center gap-2"
                         onClick={() => {
                           setCategory2(cate);
                           setIsCateList2Open(false);

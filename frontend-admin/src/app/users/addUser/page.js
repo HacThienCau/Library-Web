@@ -6,6 +6,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ChevronDown, CircleCheck, Undo2 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const CalendarIcon = () => (
   <svg
@@ -51,7 +53,6 @@ const UploadIcon = () => (
 //   </svg>
 // );
 
-
 // Input Field Component
 const InputField = ({ label, placeholder, value, disabled, onChange }) => (
   <div className="flex flex-col w-full">
@@ -66,7 +67,7 @@ const InputField = ({ label, placeholder, value, disabled, onChange }) => (
       disabled={disabled}
       className={`p-3 w-full text-[1.125rem] rounded-xl shadow-sm max-sm:text-[1rem] ${
         disabled
-          ? "bg-zinc-200 text-neutral-500 cursor-not-allowed"
+          ? "bg-[#D8DBE4] text-neutral-500 cursor-not-allowed"
           : "bg-white text-black"
       }`}
     />
@@ -111,11 +112,31 @@ const DatePickerField = ({ value, onChange }) => {
 
 // Avatar Upload Component
 const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
+    if (!file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await axios.post(
+        "http://localhost:8081/upload/image",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const urls = response.data;
+      const imageUrl = urls[0];
       onAvatarChange(imageUrl);
+      toast.success("Tải ảnh thành công!");
+    } catch (error) {
+      toast.error("Tải ảnh thất bại");
+      console.error(error);
     }
   };
 
@@ -129,7 +150,7 @@ const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
         <img
           src={avatarUrl ? avatarUrl : null}
           alt="Avatar"
-          className="border border-red-400 border-solid w-30 aspect-square rounded-full"
+          className="border-3 border-white border-solid w-30 aspect-square rounded-full"
         />
 
         <input
@@ -142,7 +163,7 @@ const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
 
         <label
           htmlFor="avatarUpload"
-          className="flex gap-2.5 justify-center items-center p-3 rounded-xl max-md:w-full w-fit mt-5 bg-[#062D76] cursor-pointer"
+          className="flex gap-2.5 justify-center items-center p-3 rounded-xl max-md:w-full w-fit mt-5 bg-[#062D76] hover:bg-primary/90 cursor-pointer"
         >
           <span className="text-[1rem] font-medium text-center text-white max-sm:text-base">
             Tải ảnh đại diện
@@ -156,7 +177,6 @@ const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
 
 function page() {
   const initialData = {
-    id: "",
     username: "",
     email: "",
     phone: "",
@@ -170,11 +190,28 @@ function page() {
   const [formData, setFormData] = useState(initialData);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const handleSubmit = () => {
+const handleSubmit = async () => {
+  try {
+    const response = await axios.post("http://localhost:8081/user/add-user", {
+      tenND: formData.username,
+      email: formData.email,
+      sdt: formData.phone,
+      ngaySinh: new Date(formData.birthDate),
+      avatarUrl: formData.avatar,
+    });
+
+    toast.success("Thêm người dùng thành công!");
     setIsPopupOpen(true);
-    setTimeout(() => setIsPopupOpen(false), 2000); // Ẩn popup sau 2 giây
-    router.push("/users/");
-  };
+    setTimeout(() => {
+      setIsPopupOpen(false);
+      router.push("/users");
+    }, 2000);
+  } catch (error) {
+    toast.error("Thêm người dùng thất bại");
+    console.error(error);
+  }
+};
+
   const isFormChanged =
     JSON.stringify(formData) !== JSON.stringify(initialData);
 
@@ -289,7 +326,7 @@ function page() {
             disabled={!isFormChanged}
           >
             <CircleCheck className="w-12 h-12" color="white" />
-              Hoàn Tất
+            Hoàn Tất
           </Button>
         </footer>
       </main>

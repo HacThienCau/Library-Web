@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { ThreeDot } from "react-loading-indicators";
 
 const page = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -15,6 +16,7 @@ const page = () => {
   const [filterUsers, setFilterUsers] = useState([]);
   const [popUpOpen, setPopUpOpen] = useState(false);
   const [deleteOne, setDeleteOne] = useState(null);
+    const [loading, setLoading] = useState(false);
   const handleSearch = () => {
     if (searchQuery) {
       const filterUser = userList.filter((user) =>
@@ -38,9 +40,11 @@ const page = () => {
   };
 
   const fetchUser = async () => {
+    setLoading(true);
     try {
       const response = await axios.get("http://localhost:8081/users");
       setUserList(response.data); // Giả sử backend trả về mảng user
+      setLoading(false)
     } catch (error) {
       toast.error("Lỗi khi tải danh sách người dùng");
       console.error(error);
@@ -70,9 +74,9 @@ const page = () => {
         className="flex max-md:flex-wrap w-full rounded-lg mt-2 drop-shadow-lg p-5 gap-[1rem] md:gap-[1.5rem] items-center bg-[url('https://i.pinimg.com/736x/bd/e2/0a/bde20adbd760b57cf19d62a6f6d286f8.jpg')] bg-cover bg-left bg-repeat backdrop-blur-3xl"
       >
         <img
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/fb9987cd966719f0a79fed4d14e27ca697da1ec1?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816"
+          src={user?.avatarUrl}
           alt="User avatar"
-          className="object-contain self-stretch shrink my-auto w-[4rem] max-md:w-[2.5rem] border-2 border-white rounded-full shadow-md"
+          className="object-cover self-stretch my-auto w-[4rem] aspect-square max-md:w-[2.5rem] border-2 border-white rounded-full shadow-md"
         />
         <div className="flex flex-col gap-[10px] justify-start w-full">
           <p className="">ID:&nbsp;{user.id}</p>
@@ -113,6 +117,17 @@ const page = () => {
   return (
     <div className="flex flex-row w-full h-full bg-[#EFF3FB]">
       <Sidebar />
+      {loading ? (
+              <div className="flex md:ml-52 w-full h-screen justify-center items-center">
+                <ThreeDot
+                  color="#062D76"
+                  size="large"
+                  text="Vui lòng chờ"
+                  variant="bounce"
+                  textColor="#062D76"
+                />
+              </div>
+            ) : (
       <div className="flex w-full min-h-screen flex-col py-6 md:ml-52 relative mt-5 gap-2 items-center px-10 max-md:px-4">
         <div className="flex w-full items-center h-[10px] gap-5 mb-10">
           <div className="flex flex-1 gap-5">
@@ -156,18 +171,18 @@ const page = () => {
             : userList.map((user) => {
                 return <UserCard key={user?.id} user={user} />;
               }))}
-      </div>
+      </div>)}
       {popUpOpen && (
         <div className="fixed inset-0 items-center justify-center z-100 flex">
           <div className="w-full h-full bg-black opacity-[80%] absolute top-0 left-0"></div>
           <div className="bg-white p-6 rounded-lg shadow-lg w-120 fixed">
             <h2 className="text-lg font-bold mb-4">Xác nhận xóa</h2>
             <p>Bạn có chắc chắn muốn xóa người dùng này không?</p>
-            <div className="flex bg-white w-full rounded-lg mt-2 relative p-5 gap-[20px] md:gap-[50px] items-center">
+            <div className="flex bg-white w-full rounded-lg mt-2 relative p-5 gap-[20px] md:gap-[50px] items-center border-2 border-gray-300">
               <img
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/fb9987cd966719f0a79fed4d14e27ca697da1ec1?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816"
+                src= {deleteOne?.avatarUrl}
                 alt="User avatar"
-                className="object-contain self-stretch my-auto w-[5rem] max-md:w-[2.5rem] border-2 border-white rounded-full shadow-md"
+                className="object-cover self-stretch my-auto w-[4rem] aspect-square max-md:w-[2.5rem] border-2 border-white rounded-full shadow-md"
               />
               <div className="flex flex-col gap-[10px] relative w-full">
                 <p className="">ID:&nbsp;{deleteOne.id}</p>

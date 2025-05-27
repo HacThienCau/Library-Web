@@ -79,11 +79,13 @@ public class UserController {
         UserDetail detail = new UserDetail();
         detail.setId(user.getId());
         detail.setTenND(user.getTenND());
+        detail.setAvatarUrl(user.getAvatarUrl());
+        detail.setSdt(user.getSdt());
         detail.setEmail(user.getEmail());
         detail.setMatKhau(user.getMatKhau());
-        detail.setNgaySinh(user.getNgaySinh().toString());
-        detail.setGioiTinh(user.getGioiTinh().toString());
-        detail.setNgayTao(user.getNgayTao().toString());
+        detail.setNgaySinh(user.getNgaySinh() != null ? user.getNgaySinh().toString() : null);
+        detail.setGioiTinh(user.getGioiTinh() != null ? user.getGioiTinh().toString() : null);
+        detail.setNgayTao(user.getNgayTao() != null ? user.getNgayTao().toString() : null);
 
         detail.setSoSachDangMuon(borrowCardService.countBooksBeingBorrowed(id));
         detail.setSoSachQuaHan(borrowCardService.countBooksOverdue(id));
@@ -105,6 +107,11 @@ public class UserController {
             if (userMoi.getNgaySinh() != null)
                 userCu.setNgaySinh(userMoi.getNgaySinh());
 
+            if (userMoi.getAvatarUrl() != null && !userMoi.getAvatarUrl().isBlank())
+                userCu.setAvatarUrl(userMoi.getAvatarUrl());
+
+            if (userMoi.getSdt() != null && !userMoi.getSdt().isBlank())
+                userCu.setSdt(userMoi.getSdt());
             userRepo.save(userCu);
             return ResponseEntity.ok(userCu);
         } else {
@@ -135,5 +142,15 @@ public class UserController {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Lỗi server");
         }
+    }
+
+    @PostMapping("/user/add-user")
+    public ResponseEntity<?> themUser(@RequestBody User userMoi) {
+        if (userMoi.getEmail() == null || userMoi.getEmail().isBlank()) {
+            return ResponseEntity.badRequest().body("Email không được để trống");
+        }
+
+        User userDaTao = userService.themUser(userMoi);
+        return ResponseEntity.ok(userDaTao);
     }
 }

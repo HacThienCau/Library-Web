@@ -43,7 +43,7 @@ export default function CategoryPage() {
     <div className="flex flex-row w-full min-h-screen bg-[#EFF3FB]">
       <Sidebar />
       {/*Nút Back*/}
-      <div className="absolute top-5 left-5 md:left-57 fixed">
+      <div className="top-5 left-5 md:left-57 fixed">
           <Button
             title={"Quay Lại"}
             className="bg-[#062D76] rounded-3xl w-10 h-10"
@@ -54,7 +54,7 @@ export default function CategoryPage() {
             <Undo2 className="w-12 h-12" color="white" />
           </Button>
         </div>
-      <div className="flex flex-col py-6 w-full md:ml-52 px-10">
+      <div className="flex flex-col py-6 w-full md:ml-52 px-10 pt-15">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">📚 Danh mục sách</h1>
           <Button

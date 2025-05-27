@@ -1,5 +1,6 @@
 package com.library_web.library.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -81,6 +82,20 @@ public class UserService {
         cartRepository.deleteByUserId(userId);
         // Nếu có, xóa user
         userRepo.deleteById(userId);
+    }
+
+    public User themUser(User userMoi) {
+        // Gán ngày tạo nếu chưa có
+        if (userMoi.getNgayTao() == null) {
+            userMoi.setNgayTao(LocalDateTime.now());
+        }
+
+        // Gán avatar mặc định nếu chưa chọn
+        if (userMoi.getAvatarUrl() == null || userMoi.getAvatarUrl().isBlank()) {
+            userMoi.setAvatarUrl("https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482760jWL/anh-mo-ta.png");
+        }
+
+        return userRepo.save(userMoi);
     }
 
 }
