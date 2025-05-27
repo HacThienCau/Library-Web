@@ -23,6 +23,8 @@ public class User {
     private LocalDate ngaySinh;
     private GioiTinh gioiTinh;
     private LocalDateTime ngayTao;
+    private String avatarUrl;
+    private String sdt;
 
     public enum GioiTinh {
         Nam,

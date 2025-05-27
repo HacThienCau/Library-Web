@@ -20,10 +20,28 @@ export default function EditCategoryPage() {
     viTri: "",
   });
 
+  const safeEncode = (str) => {
+  try {
+    // Giải mã trước, nếu lỗi thì chắc chưa encode
+    const decoded = decodeURIComponent(str);
+    // Nếu decode xong giống input thì đã encode, nên chỉ return input
+    if (decoded === str) {
+      return encodeURIComponent(str);
+    } else {
+      // Nếu decode khác input tức là đã encode, return nguyên
+      return str;
+    }
+  } catch {
+    // Nếu decode lỗi, tức chưa encode, encode ngay
+    return encodeURIComponent(str);
+  }
+};
+
+const encoded = safeEncode(tenTheLoaiCon);
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        const encoded = encodeURIComponent(tenTheLoaiCon);
+        console.log("Encoded param:", encoded);
         const res = await fetch(`http://localhost:8081/books/categories/${encoded}`);
   
         if (!res.ok) {

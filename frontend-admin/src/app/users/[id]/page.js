@@ -1,11 +1,13 @@
 "use client";
 import Sidebar from "../../components/sidebar/Sidebar";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ChevronDown, CircleCheck, Undo2 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const CalendarIcon = () => (
   <svg
@@ -36,20 +38,6 @@ const UploadIcon = () => (
   </svg>
 );
 
-const BackButton = () => {
-  const router = useRouter();
-
-  return (
-    <button
-      onClick={() => router.back()} // Điều hướng về trang trước
-      className="flex justify-center items-center p-2.5 bg-red-400 rounded-xl h-[60px] w-[60px] max-sm:h-[50px] max-sm:w-[50px]"
-      aria-label="Go back"
-    >
-      <BackIcon />
-    </button>
-  );
-};
-
 // Input Field Component
 const InputField = ({ label, placeholder, value, disabled, onChange }) => (
   <div className="flex flex-col w-full">
@@ -64,7 +52,7 @@ const InputField = ({ label, placeholder, value, disabled, onChange }) => (
       disabled={disabled}
       className={`p-3 w-full text-[1.125rem] rounded-xl shadow-sm max-sm:text-[1rem] ${
         disabled
-          ? "bg-zinc-200 text-neutral-500 cursor-not-allowed"
+          ? "bg-[#D8DBE4] text-neutral-500 cursor-not-allowed"
           : "bg-white text-black"
       }`}
     />
@@ -80,40 +68,64 @@ const DatePickerField = ({ value, onChange }) => {
     onChange(date.toLocaleDateString("vi-VN"));
   };
 
-    return (
-      <div className="flex flex-col w-full max-md:w-full">
-        <label className="block mb-2 ml-1 text-[1.125rem] font-semibold text-[#131313]/90 max-sm:text-[1rem]">
-          Ngày Sinh
-        </label>
-        <div className="flex gap-3 w-full items-center">
-          <DatePicker
-            selected={startDate}
-            onChange={handleDateChange}
-            dateFormat="dd/MM/yyyy"
-            className="flex-grow p-3 flex text-[1.125rem] text-black bg-white rounded-xl shadow-sm h-[53px] max-md:text-[1rem] max-md:h-[45px]"
-          />
-          <button
-            className="flex justify-center items-center p-2 bg-[#062D76] rounded-xl h-[45px] w-[45px]" // Giảm kích thước icon
-            onClick={() =>
-              document
-                .querySelector(".react-datepicker__input-container input")
-                .focus()
-            }
-          >
-            <CalendarIcon />
-          </button>
-        </div>
+  return (
+    <div className="flex flex-col w-full max-md:w-full">
+      <label className="block mb-2 ml-1 text-[1.125rem] font-semibold text-[#131313]/90 max-sm:text-[1rem]">
+        Ngày Sinh
+      </label>
+      <div className="flex gap-3 w-full items-center">
+        <DatePicker
+          selected={
+            startDate instanceof Date && !isNaN(startDate)
+              ? startDate
+              : new Date()
+          }
+          onChange={handleDateChange}
+          dateFormat="dd/MM/yyyy"
+          className="flex-grow w-auto p-3 flex text-[1.125rem] text-black bg-white rounded-xl shadow-sm h-[53px] max-md:text-[1rem] max-md:h-[45px]"
+        />
+        <button
+          className="flex justify-center items-center p-2 bg-[#062D76] rounded-xl h-[45px] w-[45px]" // Giảm kích thước icon
+          onClick={() =>
+            document
+              .querySelector(".react-datepicker__input-container input")
+              .focus()
+          }
+        >
+          <CalendarIcon />
+        </button>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
 // Avatar Upload Component
 const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
+    if (!file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await axios.post(
+        "http://localhost:8081/upload/image",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const urls = response.data;
+      const imageUrl = urls[0];
       onAvatarChange(imageUrl);
+      toast.success("Tải ảnh thành công!");
+    } catch (error) {
+      toast.error("Tải ảnh thất bại");
+      console.error(error);
     }
   };
 
@@ -127,7 +139,7 @@ const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
         <img
           src={avatarUrl ? avatarUrl : null}
           alt="Avatar"
-          className="border border-red-400 border-solid w-30 aspect-square rounded-full"
+          className="border-3 border-white border-solid w-30 aspect-square rounded-full"
         />
 
         <input
@@ -153,24 +165,75 @@ const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
 };
 
 function page() {
-  const initialData = {
-    id: "24",
-    username: "Zydo",
-    email: "tuongvy@gmail.com",
-    phone: "0123456789",
-    birthDate: "04/02/2004",
-    avatar:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/c5b345a406a7a540ecb42f22e282d97ddcf0005b",
-    role: "Người Dùng",
-  };
+  const [formData, setFormData] = useState({
+    id: "",
+    username: "",
+    email: "",
+    sdt: "",
+    birthDate: "",
+    avatar: "",
+  });
 
-    const router = useRouter();
-  const [formData, setFormData] = useState(initialData);
+  const { id } = useParams();
+  const [initialData, setInitialData] = useState(formData);
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!id) {
+        toast.error("ID người dùng không hợp lệ");
+        return;
+      }
+      try {
+        const res = await axios.get(`http://localhost:8081/user/${id}`);
+        const data = res.data;
+
+        setFormData({
+          id: data.id,
+          username: data.tenND,
+          email: data.email,
+          sdt: data.sdt,
+          birthDate: new Date(data.ngaySinh),
+          avatar: data.avatarUrl,
+        });
+        setInitialData({
+          id: data.id,
+          username: data.tenND,
+          email: data.email,
+          sdt: data.sdt,
+          birthDate: new Date(data.ngaySinh),
+          avatar: data.avatarUrl,
+        });
+      } catch (error) {
+        toast.error("Không thể tải thông tin người dùng");
+        console.error(error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+  const router = useRouter();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const handleSubmit = () => {
-    setIsPopupOpen(true);
-    setTimeout(() => setIsPopupOpen(false), 2000); // Ẩn popup sau 2 giây
+  const handleSubmit = async () => {
+    try {
+      await axios.put(`http://localhost:8081/user/${id}`, {
+        id: formData.id,
+        tenND: formData.username,
+        email: formData.email,
+        sdt: formData.sdt,
+        ngaySinh: new Date(formData.birthDate),
+        avatarUrl: formData.avatar,
+      });
+
+      toast.success("Cập nhật thành công!");
+      setInitialData(formData); // Cập nhật dữ liệu gốc để nút bị disable
+
+      setIsPopupOpen(true);
+      setTimeout(() => setIsPopupOpen(false), 2000);
+      
+    } catch (error) {
+      toast.error("Lỗi khi cập nhật người dùng");
+      console.error(error);
+    }
   };
   const isFormChanged =
     JSON.stringify(formData) !== JSON.stringify(initialData);
@@ -181,25 +244,21 @@ function page() {
   const handleDateChange = (newDate) => {
     setFormData((prev) => ({ ...prev, birthDate: newDate }));
   };
-  
+
   const handlePhoneChange = (newPhone) => {
-    setFormData((prev) => ({ ...prev, phone: newPhone }));
-  }
+    setFormData((prev) => ({ ...prev, sdt: newPhone }));
+  };
 
   const handleUserNameChange = (newUserName) => {
     setFormData((prev) => ({ ...prev, username: newUserName }));
-  }
+  };
 
-  const handleEmailChange = (newEmail) => {
-    setFormData((prev) => ({ ...prev, email: newEmail }));
-  }
-
-    const handleGoBack = () => {
+  const handleGoBack = () => {
     router.back();
   };
 
   return (
-<div className="flex flex-row w-full h-full bg-[#EFF3FB]">
+    <div className="flex flex-row w-full h-full bg-[#EFF3FB]">
       <Sidebar />
       <main className="flex w-full min-h-screen flex-col md:ml-52 gap-3 ">
         {/*Nút Back*/}
@@ -229,12 +288,7 @@ function page() {
           </div>
 
           <div className="flex max-w-full">
-            <InputField
-              label="Email"
-              placeholder="Nhập email"
-              value={formData.email}
-              onChange={handleEmailChange}
-            />
+            <InputField label="Email" value={formData.email} disabled />
           </div>
 
           <div className="flex max-md:flex-col gap-10 max-md:gap-3">
@@ -242,7 +296,7 @@ function page() {
               <InputField
                 label="Số Điện Thoại"
                 placeholder="Nhập số điện thoại"
-                value={formData.phone}
+                value={formData.sdt}
                 onChange={handlePhoneChange}
               />
             </div>
@@ -286,7 +340,7 @@ function page() {
             disabled={!isFormChanged}
           >
             <CircleCheck className="w-12 h-12" color="white" />
-              Hoàn Tất
+            Cập Nhật
           </Button>
         </footer>
       </main>
