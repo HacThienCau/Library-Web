@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../components/ui/button";
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
 import { format } from 'date-fns';
-import { Book, BookDashed, CalendarClock, Camera, Undo2, Upload } from "lucide-react";
+import { Book, BookDashed, CalendarClock, Camera, FolderSearch, Undo2, Upload } from "lucide-react";
 import UploadChild from "./childBook/page";
 import VideoPlayer from "../components/ui/VideoPlayer";
 
@@ -96,10 +96,12 @@ const UploadImage = () => {
       setLoading(false);
     }
   };
+  //thêm Event để nhận message (ảnh chụp)
   useEffect(()=>{
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
   },[])
+  //hàm chuyển ảnh chụp -> ảnh gửi được
   const base64ToFile = (base64, filename) => {
     const arr = base64.split(",");
     const mime = arr[0].match(/:(.*?);/)[1];
@@ -109,6 +111,7 @@ const UploadImage = () => {
     while (n--) u8arr[n] = bstr.charCodeAt(n);
     return new File([u8arr], filename, { type: mime });
   };
+  //hàm mở tab camera
   const openCamera = () => {
     const width = 800;
     const height = 600;
@@ -144,7 +147,7 @@ const UploadImage = () => {
     }
     setLoading(false);
   }
-  //hàm lấy phiếu mượn
+  //hàm lấy phiếu mượn của người dùng
   const getBorrowCard = async()=>{
     setLoading(true)
     try{
@@ -172,11 +175,12 @@ const UploadImage = () => {
       getBorrowCard()
     }
   },[result])
-
+  //hàm lấy thông tin sách cha
   const fetchBookInfo = async (bookId) => {
     const res = await fetch(`http://localhost:8081/book/${bookId}`);
     return res.json();
   };
+  //hàm lấy thông tin sách của phiếu mượn
   const getBookIdsInfo = async()=>{
     if(currentChoose?.status==="Đang yêu cầu"){
     if (currentChoose?.bookIds?.length > 0) {
@@ -210,6 +214,7 @@ const UploadImage = () => {
       }
     }
   }
+  // gọi hàm khi phiếu mượn đc chọn và chưa quét mã nào
   useEffect(()=>{
     if(currentChoose && !resultChild){
       getBookIdsInfo()
@@ -219,7 +224,7 @@ const UploadImage = () => {
       setInfo(null)
     }
   },[currentChoose])
-
+  //hàm đi về giao diện quét mã người dùng
   const handleGoBack = () =>{
     setResult(null)
     setSelectedFile(null)
@@ -227,6 +232,23 @@ const UploadImage = () => {
     setLoading(false)
     setBorrowCard(null)
   }
+  //Nút quay lại
+  const BackButton = () =>{
+    return(
+    <div className="absolute top-5 left-5 md:left-57 fixed">
+            <Button
+              title={"Quay Lại"}
+              className="bg-[#062D76] rounded-3xl w-10 h-10"
+              onClick={() => {
+                handleGoBack();
+              }}
+            >
+              <Undo2 className="w-12 h-12" color="white" />
+            </Button>
+    </div>
+    )
+  }
+  //Thẻ sách trong phiếu mượn
   const BookInfo = ({book}) =>{
     return(
       <div className={`w-full flex justify-between items-center border-1 ${book?.checked===false?"bg-white":"bg-green-100"} my-3 px-5`}>
@@ -241,10 +263,11 @@ const UploadImage = () => {
       </div>
     )
   }
-  const CardInfo = ({card}) =>{
+  //Thông tin phiếu (dùng chung)
+  const CardInfo = ({card, className}) =>{
     return(
-      <div className="flex flex-col gap-3">
-        <p><strong>Id phiếu mượn:</strong>&nbsp;{card?.id}</p>
+      <div className={`flex flex-col gap-3 ${className}`}>
+        <p><strong>ID phiếu mượn:</strong>&nbsp;{card?.id}</p>
         <p><strong>Ngày đăng ký mượn:</strong>&nbsp;{format(new Date(card?.borrowDate), "dd/MM/yyyy HH:mm:ss")}</p>
         <p className={`${card?.status==="Đang yêu cầu"?"":"hidden"}`}><strong>Ngày lấy sách dự kiến:</strong>&nbsp;{format(new Date(card?.getBookDate), "dd/MM/yyyy HH:mm:ss")}</p>
         <p className={`${card?.status==="Đang yêu cầu"?"hidden":""}`}><strong>Ngày trả sách dự kiến:</strong>&nbsp;{format(new Date(card?.dueDate?card?.dueDate:"2025-01-01T10:15:16.696+00:00"), "dd/MM/yyyy HH:mm:ss")}</p>
@@ -252,6 +275,34 @@ const UploadImage = () => {
       </div>
     )
   }
+  //Thẻ phiếu mượn đang mở
+  const CurrentCard = () =>{
+    return(
+      <div className="fixed inset-0 items-center justify-center z-50 flex">
+            <div className="w-full h-full bg-black opacity-[80%] absolute top-0 left-0" onClick={()=>handleCloseCard()}></div>
+            <div className="flex w-3/4 lg:w-2/3 h-[400px] lg:h-[600px] bg-white p-6 rounded-lg shadow-lg fixed justify-between py-10 bg-[url('/images/CurrentCard.png')] bg-cover bg-center">
+              <div className="flex flex-col w-1/2">
+              <CardInfo card={currentChoose} className="ml-5"/>
+              <div className="h-[400px] overflow-y-auto flex flex-col items-center">
+                {currentInfo?.map((book,index)=>{
+                    return <BookInfo book={book} key={index}/>
+                })}
+              </div>
+              <Button className={`self-end w-[150px] flex z-100 bg-red-700 mb-2 ${currentChoose.status == "Đang mượn"?"":"hidden"}`} onClick={()=>{handleLost()}}>
+                <BookDashed className="w-12 h-12" color="white"/>
+                {loadingLost?"Đang lập phiếu phạt":"Báo mất sách"}
+                </Button>
+              <Button className="self-end w-full flex z-100 bg-[#062D76]" disabled={!done} onClick={()=>{handleUpdateBorrowCard()}}>Hoàn tất</Button>
+              </div>
+              <div className="flex flex-col w-1/2 items-center justify-center">
+                <UploadChild resultChild={resultChild} setResultChild={setResultChild}/>              
+              </div>
+            </div>
+            <p className="absolute bottom-5 flex text-white italic z-100 text-sm">Nhấn vào khoảng trống để đóng</p>
+      </div>
+    )
+  }
+  //Thẻ phiếu mượn trong danh sách phiếu
   const BorrowCard = ({card}) =>{
     return(
       <div className="w-5/6 my-2 px-10 py-5 bg-white rounded-lg hover:cursor-pointer drop-shadow-md"
@@ -261,6 +312,7 @@ const UploadImage = () => {
       </div>
     )
   }
+  //Khi mã sách con được quét
   useEffect(()=>{
     if (resultChild && resultChild?.parentBook?.id) {
       if(currentChoose?.status==="Đang yêu cầu"){  
@@ -298,6 +350,7 @@ const UploadImage = () => {
       }
     }
   },[resultChild])
+  //Kiểm tra xem danh sách sách trong phiếu đã được quét hết chưa
   useEffect(()=>{
     if (currentInfo?.length > 0) {
       const allChecked = currentInfo.every(book => book.checked === true);
@@ -306,12 +359,14 @@ const UploadImage = () => {
       setDone(false); // reset nếu danh sách rỗng
     }
   },[currentInfo])
+  //Đóng phiếu đang mở
   const handleCloseCard = () =>{
     setCurrent(null)
     setInfo(null)
     setResultChild(null)
     setDone(false)
   }
+  //Cập nhật lại phiếu mượn (lấy/trả)
   const handleUpdateBorrowCard = async()=>{
     setLoading(true)
     try {
@@ -355,6 +410,7 @@ const UploadImage = () => {
     setLoading(false)
   }
 
+  //hàm báo mất sách
   const handleLost = async() =>{
     const lostBooks = currentInfo.filter(book => book.checked === false);
     const lostNumber = lostBooks.length;
@@ -393,6 +449,12 @@ const UploadImage = () => {
       setLoadingLoad(false);
       }
   }
+  const inputRef = useRef(null);
+
+  const handleClick = () => {
+    inputRef.current?.click(); // bấm nút sẽ trigger input file ẩn
+  };
+  // Các phương thức lấy mã người dùng (quét, tải, chụp)
   const ScanUser = () =>{
     return(
       <div className="flex flex-col w-full items-center mb-10 gap-5 px-10 py-6">
@@ -410,7 +472,14 @@ const UploadImage = () => {
           <p className="text-2xl font-semibold ">Hoặc</p>
           <p className="text-xl font-semibold ">Tải ảnh barcode mã người dùng của bạn</p>
           <div className="flex gap-5">
-            <input type="file" onChange={onFileChange} className="bg-white self-center rounded"/>
+            <input type="file" onChange={onFileChange} className="bg-white self-center rounded hidden" ref={inputRef}/>
+            {/* Nút chọn file */}
+            <Button onClick={handleClick} className="bg-white text-black border border-gray-300 hover:bg-gray-100" >
+              <FolderSearch className="w-12 h-12"/>
+              Chọn ảnh
+            </Button>
+            {/* Hiển thị tên file đã chọn */}
+            {selectedFile && (<div className="text-sm self-center text-gray-600 italic max-w-64 truncate">{selectedFile.name}</div>)}
             <Button className="bg-[#062D76]" onClick={handleUpload}>
               <Upload className="w-12 h-12" color="white"/>
               Tải ảnh lên
@@ -425,25 +494,49 @@ const UploadImage = () => {
         </div>
     )
   }
-
+  //Hiển thị kết quả là thông tin người dùng
   const ResultCard = () =>{
     return(
-      <div className="flex bg-white w-1/2 rounded-lg mt-2 drop-shadow-lg p-5 gap-10 items-center justify-center">
-          <img src={"/images/logo.jpg"} className="w-64 h-64 rounded-4xl"/>
+      <div className="flex bg-[url('/images/ResultCard.png')] bg-cover bg-center w-1/2 rounded-lg mt-2 drop-shadow-lg p-5 gap-10 items-center justify-center">
+          <img src={`${result?.gioiTinh==="Nu"?"/images/avatar-girl.svg":"/images/avatar-boy.svg"}`} className="w-48 h-48 rounded-full ml-10"/>
           <div className="flex flex-col gap-[10px] w-2/3">
           <p><span className="font-bold">ID Người dùng:</span>&nbsp;{result?.id}</p>
           <p><span className="font-bold">Tên người dùng:</span>&nbsp;{result?.tenND}</p>
           <p><span className="font-bold">Email:</span>&nbsp;{result?.email}</p>
           <p><span className="font-bold">Ngày sinh:</span>&nbsp;{formatDate(result?.ngaySinh)}</p>
-          <p><span className="font-bold">Giới tính:</span>&nbsp;{result?.gioiTinh}</p>
+          <p><span className="font-bold">Giới tính:</span>&nbsp;{result?.gioiTinh==="Nu"?"Nữ":"Nam"}</p>
           </div>
         </div>
     )
   }
+  //"yyyy-MM-dd" => "dd/MM/yyyy"
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("vi-VN"); // Kết quả: 22/04/2025
   };
+  //Trang quét mã người dùng (2 video và component phương thức quét)
+  const ScanPage = () =>{
+    return(
+    <div className="relative w-full h-screen overflow-hidden flex">
+        {/* Video bên trái */}
+        <VideoPlayer
+        src="/videos/left.mp4"
+        startTime={0}
+        className="absolute left-0 top-0 h-full object-cover w-1/3 z-0"
+        />
+        {/* Video bên phải */}
+        <VideoPlayer
+        src="/videos/right.mp4"
+        startTime={0}
+        className="absolute right-0 top-0 h-full object-cover w-1/3 z-0"
+      /> 
+        {/* Component chính nằm giữa */}
+        <div className="relative z-10 m-auto w-[600px] max-w-full px-6 bg-white/80 backdrop-blur-md rounded-xl shadow-xl">
+          <ScanUser />
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="flex w-full min-h-screen h-full flex-col gap-2 items-center bg-[#EFF3FB]">
       {loading ? (
@@ -457,67 +550,16 @@ const UploadImage = () => {
           />
         </div>
       ) : !result ? (
-        <div className="relative w-full h-screen overflow-hidden flex">
-        {/* Video bên trái */}
-        <VideoPlayer
-        src="/videos/side.mp4"
-        startTime={0}
-        className="absolute left-0 top-0 h-full object-cover w-1/3 z-0"
-        />
-
-        {/* Video bên phải */}
-        <VideoPlayer
-        src="/videos/side.mp4"
-        startTime={0}
-        className="absolute right-0 top-0 h-full object-cover w-1/3 z-0"
-      /> 
-
-        {/* Component chính nằm giữa */}
-        <div className="relative z-10 m-auto w-[600px] max-w-full px-6 bg-white/80 backdrop-blur-md rounded-xl shadow-xl">
-          {/* Component của bạn */}
-          <ScanUser />
-        </div>
-      </div>
+        <ScanPage />
       ) : (
         <div className="flex flex-col w-full h-full min-h-screen items-center h-[10px] py-6 gap-5 bg-[#EFF3FB]">
           {/*Nút Back*/}
-          <div className="absolute top-5 left-5 md:left-57 fixed">
-            <Button
-              title={"Quay Lại"}
-              className="bg-[#062D76] rounded-3xl w-10 h-10"
-              onClick={() => {
-                handleGoBack();
-              }}
-            >
-              <Undo2 className="w-12 h-12" color="white" />
-            </Button>
-          </div>
+          <BackButton />
           {/*Phiếu mượn đang chọn*/}
-          {currentChoose &&
-          <div className="fixed inset-0 items-center justify-center z-50 flex">
-            <div className="w-full h-full bg-black opacity-[80%] absolute top-0 left-0" onClick={()=>handleCloseCard()}></div>
-            <div className="flex w-3/4 lg:w-2/3 h-[400px] lg:h-[600px] bg-white p-6 rounded-lg shadow-lg fixed justify-between py-10">
-              <div className="flex flex-col w-1/2">
-              <CardInfo card={currentChoose}/>
-              <div className="h-[400px] overflow-y-auto flex flex-col items-center">
-                {currentInfo?.map((book,index)=>{
-                    return <BookInfo book={book} key={index}/>
-                })}
-              </div>
-              <Button className={`self-end w-[150px] flex z-100 bg-red-700 mb-2 ${currentChoose.status == "Đang mượn"?"":"hidden"}`} onClick={()=>{handleLost()}}>
-                <BookDashed className="w-12 h-12" color="white"/>
-                {loadingLost?"Đang lập phiếu phạt":"Báo mất sách"}
-                </Button>
-              <Button className="self-end w-full flex z-100 bg-[#062D76]" disabled={!done} onClick={()=>{handleUpdateBorrowCard()}}>Hoàn tất</Button>
-              </div>
-              <div className="flex flex-col w-1/2 items-center justify-center">
-                <UploadChild resultChild={resultChild} setResultChild={setResultChild}/>              
-              </div>
-            </div>
-            <p className="absolute bottom-5 flex text-white italic z-100 text-sm">Nhấn vào khoảng trống để đóng</p>
-          </div>
-          }
+          {currentChoose && <CurrentCard />}
+          {/*Thông tin người dùng*/}
           <ResultCard />
+          {/*Danh sách phiếu mượn của người dùng*/}
           <div className="w-full px-10 md:px-40">
             {!borrowCard?(
               <p className="text-xl font-semibold ">Không có lịch sử phiếu mượn nào</p>
@@ -528,12 +570,12 @@ const UploadImage = () => {
                   <div className="flex bg-white text-[#062D76] rounded p-5 justify-center items-center gap-5">
                   <Book width={24} height={24} />
                   <p className="text-lg font-semibold"> Phiếu mượn đang yêu cầu</p>
-                  </div>
-                  <div className="flex flex-col items-center">
+                </div>
+                <div className="flex flex-col items-center">
                   {borrowCard?.filter((c)=>c.status == "Đang yêu cầu" && new Date(c.getBookDate) > new Date()).map((card, index)=>{return(
                   <BorrowCard key={index} card={card}/>
                   )})}
-                  </div>
+                </div>
                 </div>
                 <div>
                   <div className="flex bg-white text-[#062D76] rounded p-5 justify-center items-center gap-5">

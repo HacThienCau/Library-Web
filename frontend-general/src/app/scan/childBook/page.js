@@ -1,9 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../../components/ui/button";
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
-import { Camera, Upload } from "lucide-react";
+import { Camera, FolderSearch, Upload } from "lucide-react";
 
 const UploadChild = ({resultChild, setResultChild}) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -132,6 +132,11 @@ const UploadChild = ({resultChild, setResultChild}) => {
     const top = window.screenY + (window.outerHeight - height) / 2;
     window.open("/scan/camera", "_blank", `width=${width},height=${height},left=${left},top=${top}`);
   };
+  const inputRef = useRef(null);
+
+  const handleClick = () => {
+    inputRef.current?.click(); // bấm nút sẽ trigger input file ẩn
+  };
   return (
     <div className="flex w-full flex-col gap-2 items-center">
       {loading ? (
@@ -158,7 +163,14 @@ const UploadChild = ({resultChild, setResultChild}) => {
           <p className="text-2xl font-semibold ">Hoặc</p>
           <p className="text-xl font-semibold ">Tải ảnh barcode mã sách</p>
           <div className="flex gap-5">
-            <input type="file" onChange={onFileChange} className="bg-white self-center rounded"/>
+            <input type="file" onChange={onFileChange} className="bg-white self-center rounded hidden" ref={inputRef}/>
+            {/* Nút chọn file */}
+            <Button onClick={handleClick} className="bg-white text-black border border-gray-300 hover:bg-gray-100" >
+              <FolderSearch className="w-12 h-12"/>
+              Chọn ảnh
+            </Button>
+            {/* Hiển thị tên file đã chọn */}
+            {selectedFile && (<div className="text-sm self-center text-gray-600 italic max-w-40 truncate">{selectedFile.name}</div>)}
             <Button className="bg-[#062D76]" onClick={handleUpload}>
               <Upload className="w-12 h-12" color="white"/>
               Tải ảnh lên
