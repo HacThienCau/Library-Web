@@ -72,4 +72,15 @@ public class UserService {
         return userRepo.save(user);
     }
 
+    public void deleteUserById(String userId) {
+        // Kiểm tra xem user có tồn tại không
+        if (!userRepo.existsById(userId)) {
+            throw new RuntimeException("Người dùng không tồn tại");
+        }
+        // Xóa giỏ hàng liên quan
+        cartRepository.deleteByUserId(userId);
+        // Nếu có, xóa user
+        userRepo.deleteById(userId);
+    }
+
 }

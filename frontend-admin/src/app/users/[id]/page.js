@@ -4,22 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-// Icons Components remain the same
-const BackIcon = () => (
-  <svg
-    width="40"
-    height="40"
-    viewBox="0 0 40 40"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M38 14V26C38 28.206 36.208 30 34 30H6V24H32V16H10V20L2 13L10 6V10H34C35.0609 10 36.0783 10.4214 36.8284 11.1716C37.5786 11.9217 38 12.9391 38 14Z"
-      fill="white"
-    />
-  </svg>
-);
+import { ChevronDown, CircleCheck, Undo2 } from "lucide-react";
+import { Button } from "@/app/components/ui/button";
 
 const CalendarIcon = () => (
   <svg
@@ -38,8 +24,7 @@ const CalendarIcon = () => (
 
 const UploadIcon = () => (
   <svg
-    width="40"
-    height="40"
+    className="w-7 h-7"
     viewBox="0 0 40 40"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -50,38 +35,6 @@ const UploadIcon = () => (
     />
   </svg>
 );
-
-const DropdownIcon = () => (
-  <svg
-    width="40"
-    height="40"
-    viewBox="0 0 40 40"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M11.6665 16.6665L19.9998 24.9998L28.3332 16.6665H11.6665Z"
-      fill="#D66766"
-    />
-  </svg>
-);
-
-const CompletedIcon = () => (
-  <svg
-    width="40"
-    height="40"
-    viewBox="0 0 40 40"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M29.1211 11.6211L30.8789 13.3789L16.25 28.0078L9.12109 20.8789L10.8789 19.1211L16.25 24.4922L29.1211 11.6211ZM20 0C21.8359 0 23.6068 0.234375 25.3125 0.703125C27.0182 1.17188 28.6133 1.84245 30.0977 2.71484C31.582 3.58724 32.9297 4.62891 34.1406 5.83984C35.3516 7.05078 36.3932 8.40495 37.2656 9.90234C38.138 11.3997 38.8086 12.9948 39.2773 14.6875C39.7461 16.3802 39.987 18.151 40 20C40 21.8359 39.7656 23.6068 39.2969 25.3125C38.8281 27.0182 38.1576 28.6133 37.2852 30.0977C36.4128 31.582 35.3711 32.9297 34.1602 34.1406C32.9492 35.3516 31.5951 36.3932 30.0977 37.2656C28.6003 38.138 27.0052 38.8086 25.3125 39.2773C23.6198 39.7461 21.849 39.987 20 40C18.1641 40 16.3932 39.7656 14.6875 39.2969C12.9818 38.8281 11.3867 38.1576 9.90234 37.2852C8.41797 36.4128 7.07031 35.3711 5.85938 34.1602C4.64844 32.9492 3.60677 31.5951 2.73438 30.0977C1.86198 28.6003 1.19141 27.0117 0.722656 25.332C0.253906 23.6523 0.0130208 21.875 0 20C0 18.1641 0.234375 16.3932 0.703125 14.6875C1.17188 12.9818 1.84245 11.3867 2.71484 9.90234C3.58724 8.41797 4.62891 7.07031 5.83984 5.85938C7.05078 4.64844 8.40495 3.60677 9.90234 2.73438C11.3997 1.86198 12.9883 1.19141 14.668 0.722656C16.3477 0.253906 18.125 0.0130208 20 0Z"
-      fill="white"
-    />
-  </svg>
-);
-
-// Back Button Component
 
 const BackButton = () => {
   const router = useRouter();
@@ -98,18 +51,21 @@ const BackButton = () => {
 };
 
 // Input Field Component
-const InputField = ({ label, value, disabled, onChange }) => (
-  <div className="h-[103px] w-full">
-    <label className="block mb-5 ml-5 text-2xl font-bold text-black max-sm:text-xl">
+const InputField = ({ label, placeholder, value, disabled, onChange }) => (
+  <div className="flex flex-col w-full">
+    <label className="block mb-2 ml-1 text-[1.125rem] font-semibold text-[#131313]/90 max-sm:text-[1rem]">
       {label}
     </label>
     <input
       type="text"
       value={value}
+      placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
-      className={`p-3 w-full text-2xl rounded-xl shadow-sm h-[53px] max-sm:text-xl max-sm:h-[45px] ${
-        disabled ? "bg-zinc-300 text-neutral-500 cursor-not-allowed" : "bg-white text-black"
+      className={`p-3 w-full text-[1.125rem] rounded-xl shadow-sm max-sm:text-[1rem] ${
+        disabled
+          ? "bg-zinc-200 text-neutral-500 cursor-not-allowed"
+          : "bg-white text-black"
       }`}
     />
   </div>
@@ -124,34 +80,32 @@ const DatePickerField = ({ value, onChange }) => {
     onChange(date.toLocaleDateString("vi-VN"));
   };
 
-  return (
-    <div className="h-[107px] w-[300px] max-md:w-full">
-      {" "}
-      {/* Giảm chiều rộng */}
-      <label className="block mb-5 ml-5 text-2xl font-bold text-black max-sm:text-xl">
-        Ngày Sinh
-      </label>
-      <div className="relative flex items-center">
-        <DatePicker
-          selected={startDate}
-          onChange={handleDateChange}
-          dateFormat="dd/MM/yyyy"
-          className="p-3 w-[300px] text-2xl text-black bg-white rounded-xl shadow-sm h-[53px] max-sm:text-xl max-sm:h-[45px]" // Giảm chiều rộng
-        />
-        <button
-          className="absolute right-2 flex justify-center items-center p-2 bg-red-400 rounded-xl h-[45px] w-[45px]" // Giảm kích thước icon
-          onClick={() =>
-            document
-              .querySelector(".react-datepicker__input-container input")
-              .focus()
-          }
-        >
-          <CalendarIcon />
-        </button>
+    return (
+      <div className="flex flex-col w-full max-md:w-full">
+        <label className="block mb-2 ml-1 text-[1.125rem] font-semibold text-[#131313]/90 max-sm:text-[1rem]">
+          Ngày Sinh
+        </label>
+        <div className="flex gap-3 w-full items-center">
+          <DatePicker
+            selected={startDate}
+            onChange={handleDateChange}
+            dateFormat="dd/MM/yyyy"
+            className="flex-grow p-3 flex text-[1.125rem] text-black bg-white rounded-xl shadow-sm h-[53px] max-md:text-[1rem] max-md:h-[45px]"
+          />
+          <button
+            className="flex justify-center items-center p-2 bg-[#062D76] rounded-xl h-[45px] w-[45px]" // Giảm kích thước icon
+            onClick={() =>
+              document
+                .querySelector(".react-datepicker__input-container input")
+                .focus()
+            }
+          >
+            <CalendarIcon />
+          </button>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
 // Avatar Upload Component
 const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
@@ -164,16 +118,16 @@ const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
   };
 
   return (
-    <div className="h-[342px] w-[380px] max-md:w-full">
-      <h2 className="mb-5 ml-5 text-2xl font-bold text-black max-sm:text-xl">
+    <div className="flex flex-col max-md:w-full">
+      <h2 className="flex  mb-2 ml-1 text-[1.125rem] font-semibold text-[#131313]/90 max-sm:text-[1rem]">
         Ảnh Đại Diện
       </h2>
 
       <div className="flex flex-col items-center">
         <img
-          src={avatarUrl}
+          src={avatarUrl ? avatarUrl : null}
           alt="Avatar"
-          className="border border-red-400 border-solid h-[200px] w-[200px] rounded-full"
+          className="border border-red-400 border-solid w-30 aspect-square rounded-full"
         />
 
         <input
@@ -186,51 +140,14 @@ const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
 
         <label
           htmlFor="avatarUpload"
-          className="flex gap-5 justify-center items-center px-9 py-2.5 bg-red-400 rounded-xl h-[60px] w-[300px] mt-5 max-md:w-[80%] max-sm:h-[50px] cursor-pointer"
+          className="flex gap-2.5 justify-center items-center p-3 rounded-xl max-md:w-full w-fit mt-5 bg-[#062D76] hover:bg-primary/90 cursor-pointer"
         >
-          <span className="text-xl font-bold text-center text-white max-sm:text-base">
+          <span className="text-[1rem] font-medium text-center text-white max-sm:text-base">
             Tải ảnh đại diện
           </span>
           <UploadIcon />
         </label>
       </div>
-    </div>
-  );
-};
-
-// Role Selector Component
-const roles = ["Quản trị viên", "Người dùng", "Nhân viên"];
-const RoleSelector = ({ value, onChange }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div className="h-[103px] w-[500px] max-md:w-full relative">
-      <h2 className="mb-5 ml-5 text-2xl font-bold text-black max-sm:text-xl">
-        Vai Trò
-      </h2>
-      <button
-        className="flex justify-between items-center px-2.5 py-2 bg-white rounded-xl shadow-sm h-[53px] w-full max-sm:h-[45px]"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span>{value}</span>
-        <DropdownIcon />
-      </button>
-      {isOpen && (
-        <ul className="absolute top-[60px] w-full bg-white shadow-lg rounded-xl z-10">
-          {roles.map((role) => (
-            <li
-              key={role}
-              className="p-3 text-black hover:bg-red-400 hover:text-white cursor-pointer"
-              onClick={() => {
-                onChange(role);
-                setIsOpen(false);
-              }}
-            >
-              {role}
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 };
@@ -247,6 +164,7 @@ function page() {
     role: "Người Dùng",
   };
 
+    const router = useRouter();
   const [formData, setFormData] = useState(initialData);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -276,80 +194,100 @@ function page() {
     setFormData((prev) => ({ ...prev, email: newEmail }));
   }
 
-  const handleRoleChange = (newRole) => {
-    setFormData((prev) => ({ ...prev, role: newRole }));
+    const handleGoBack = () => {
+    router.back();
   };
 
   return (
-    <div className="flex flex-row w-full h-full" style={{ backgroundColor: "#FFF7F8" }}>
+<div className="flex flex-row w-full h-full bg-[#EFF3FB]">
       <Sidebar />
-      <main className="relative mx-auto my-0 w-full h-[1080px] max-w-[1420px] max-md:p-5 max-md:h-auto max-sm:p-2.5" style={{ backgroundColor: "#FFF7F8" }}>
-        <div className="absolute left-[30px] top-[30px] max-md:relative max-md:left-0 max-md:top-0">
-          <BackButton />
+      <main className="flex w-full min-h-screen flex-col md:ml-52 gap-3 ">
+        {/*Nút Back*/}
+        <div className="mb-2 py-6 px-10 max-md:px-4 fixed z-50 justify-between items-center">
+          <Button
+            title={"Quay Lại"}
+            className="bg-[#062D76] rounded-3xl w-10 h-10 cursor-pointer"
+            onClick={() => {
+              handleGoBack();
+            }}
+          >
+            <Undo2 className="w-12 h-12" color="white" />
+          </Button>
         </div>
+        <div className="flex flex-col w-full min-h-screen py-6 gap-3 px-10 mb-15 max-md:px-4">
+          <div className="flex pt-12 max-md:w-full">
+            <InputField label="ID" value={formData.id} disabled />
+          </div>
 
-        <section className="absolute left-[30px] top-[110px] w-[1351px] max-md:relative max-md:top-0 max-md:left-0 max-md:w-full">
-          <InputField label="ID" value={formData.id} disabled />
-        </section>
-
-        <section className="absolute left-[30px] top-[233px] w-[1351px] max-md:relative max-md:top-0 max-md:left-0 max-md:w-full">
-          <InputField label="Tên Người Dùng" value={formData.username} onChange={handleUserNameChange}/>
-        </section>
-
-        <section className="absolute left-[30px] top-[356px] w-[1351px] max-md:relative max-md:top-0 max-md:left-0 max-md:w-full">
-          <InputField label="Email" value={formData.email} onChange={handleEmailChange}/>
-        </section>
-
-        <div className="flex flex-wrap gap-20 absolute left-[30px] top-[500px] max-md:relative max-md:top-0 max-md:left-0">
-          <section className="w-[400px] max-md:w-full">
-            <InputField label="Số Điện Thoại" value={formData.phone} onChange={handlePhoneChange}/>
-          </section>
-
-          <section className="max-md:w-full">
-            <DatePickerField
-              value={formData.birthDate}
-              onChange={handleDateChange}
+          <div className="flex max-md:w-full">
+            <InputField
+              label="Tên Người Dùng"
+              placeholder="Nhập tên người dùng"
+              value={formData.username}
+              onChange={handleUserNameChange}
             />
-          </section>
+          </div>
 
-          <section className="max-md:w-full">
+          <div className="flex max-w-full">
+            <InputField
+              label="Email"
+              placeholder="Nhập email"
+              value={formData.email}
+              onChange={handleEmailChange}
+            />
+          </div>
+
+          <div className="flex max-md:flex-col gap-10 max-md:gap-3">
+            <div className="flex basis-1/2 min-w-0 max-md:w-full">
+              <InputField
+                label="Số Điện Thoại"
+                placeholder="Nhập số điện thoại"
+                value={formData.phone}
+                onChange={handlePhoneChange}
+              />
+            </div>
+
+            <div className="flex basis-1/2 min-w-0 max-md:w-full">
+              <DatePickerField
+                value={formData.birthDate}
+                onChange={handleDateChange}
+              />
+            </div>
+
+            {/* <div className="max-md:w-full">
             <RoleSelector value={formData.role} onChange={handleRoleChange} />
-          </section>
-        </div>
+          </div> */}
+          </div>
 
-        <div className="flex flex-wrap gap-20 absolute left-[30px] top-[630px] max-md:relative max-md:top-0 max-md:left-0">
-          <section className="max-md:w-full">
+          <div className="flex flex-wrap gap-20">
             <AvatarUpload
               avatarUrl={formData.avatar}
               onAvatarChange={handleAvatarChange}
             />
-          </section>
+          </div>
         </div>
-
-        <footer className="flex absolute left-0 justify-end items-center px-8 py-2.5 bg-white shadow-sm h-[100px] top-[980px] w-[1415px] max-md:relative max-md:top-0 max-md:left-0 max-md:w-full">
+        <footer className="w-full bottom-0 px-10 right-0 md:w-[calc(100%-208px)] fixed h-18 bg-white flex items-center justify-end">
           {isPopupOpen && (
-            <div className="fixed top-10 right-10 bg-white p-4 rounded-lg shadow-lg border border-green-400">
+            <div className="flex bg-white p-4 rounded-lg shadow-lg border border-green-400">
               <p className="text-green-600 font-semibold">
                 Cập nhật thành công!
               </p>
             </div>
           )}
-          <button
+          <Button
             onClick={handleSubmit}
-            className={`flex gap-5 justify-center items-center px-24 py-5 h-20 rounded-xl w-[400px] max-md:w-full max-md:max-w-[400px] max-sm:px-12 max-sm:py-4 max-sm:h-[60px] 
+            className={`flex gap-2.5 justify-center items-center p-3 rounded-xl max-md:w-full w-fit
       ${
         isFormChanged
-          ? "bg-red-400 cursor-pointer"
+          ? "bg-[#062D76] cursor-pointer"
           : "bg-gray-400 cursor-not-allowed"
       }
     `}
             disabled={!isFormChanged}
           >
-            <span className="text-3xl font-bold text-center text-white max-sm:text-2xl">
+            <CircleCheck className="w-12 h-12" color="white" />
               Hoàn Tất
-            </span>
-            <CompletedIcon />
-          </button>
+          </Button>
         </footer>
       </main>
     </div>

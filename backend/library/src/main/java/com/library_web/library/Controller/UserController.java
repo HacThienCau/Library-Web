@@ -113,10 +113,15 @@ public class UserController {
     }
 
     // // Xóa người dùng
-    // @DeleteMapping("/user/{id}")
-    // public void xoaUser(@PathVariable String id) {
-    // userRepo.deleteById(id);
-    // }
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable String userId) {
+        try {
+            userService.deleteUserById(userId);
+            return ResponseEntity.ok("Xóa người dùng thành công");
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(404).body(ex.getMessage());
+        }
+    }
 
     // Đổi mật khẩu
     @PutMapping("/user/{id}/change-password")
