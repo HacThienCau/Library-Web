@@ -1,11 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import Sidebar from "../components/sidebar/Sidebar";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { useRouter } from "next/navigation";
 import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const page = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,9 +18,8 @@ const page = () => {
   const handleSearch = () => {
     if (searchQuery) {
       const filterUser = userList.filter((user) =>
-        user.MaSach.toString() === searchQuery || //tìm theo id
-        user?.TenSach.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên sách
-        user?.MaTheLoai?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo nội dung bài viết
+        user.id.toString() === searchQuery || //tìm theo id
+        user?.tenND.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo tên user
           ? user
           : null
       );
@@ -37,76 +38,73 @@ const page = () => {
   };
 
   const fetchUser = async () => {
-    const test = [
-      {
-        MaND: "1",
-        TenND: "Nguyễn Lê Thanh Huyền",
-        VaiTro: "Admin",
-        HinhAnh: ["/test.webp", "3133331", "313213131", "31313123"],
-      },
-      {
-        MaND: "2",
-        TenND: "Nguyễn Thị Hoàng Yến",
-        VaiTro: "Admin",
-        HinhAnh: ["/test.webp", "3133331", "313213131", "31313123"],
-      },
-      {
-        MaND: "3",
-        TenND: "Đỗ Mai Tường Vy",
-        VaiTro: "Admin",
-        HinhAnh: ["/test.webp", "3133331", "313213131", "31313123"],
-      },
-      {
-        MaND: "4",
-        TenND: "Nguyễn Hữu Huy",
-        VaiTro: "Admin",
-        HinhAnh: ["/test.webp", "3133331", "313213131", "31313123"],
-      },
-    ];
-    setUserList(test);
+    try {
+      const response = await axios.get("http://localhost:8081/users");
+      setUserList(response.data); // Giả sử backend trả về mảng user
+    } catch (error) {
+      toast.error("Lỗi khi tải danh sách người dùng");
+      console.error(error);
+    }
   };
 
   useEffect(() => {
     fetchUser();
   }, []);
 
-  const handleDelete = async (book) => {
-    //Gọi API...
-    //await fetchBook()
-    setDeleteOne(null);
-    setPopUpOpen(false);
-    toast.success("Xóa user thành công");
+  const handleDelete = async (user) => {
+    try {
+      await axios.delete(`http://localhost:8081/user/${user.id}`);
+      toast.success("Xóa người dùng thành công");
+      setPopUpOpen(false);
+      setDeleteOne(null);
+      fetchUser(); // tải lại danh sách mới
+    } catch (error) {
+      toast.error("Xóa người dùng thất bại");
+      console.error(error);
+    }
   };
 
   const UserCard = ({ user }) => {
     return (
-      <div className="flex bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 gap-[20px] md:gap-[50px] items-center">
-        <img src={`${user.HinhAnh[0]}`} className="w-[145px] h-[205px]" />
-        <div className="flex flex-col gap-[10px] relative w-full">
-          <p className="">ID:&nbsp;{user.MaND}</p>
-          <p className="font-bold">{user.TenND}</p>
-          <p className="">Vai trò:&nbsp;{user.VaiTro}</p>
-          <div className="w-full flex justify-end gap-5 md:gap-10">
-            <Button
-              className="w-10 md:w-40 h-10 bg-[#062D76] hover:bg-gray-700 cursor-pointer"
-              onClick={() => {
-                handleEdit(user.MaND);
-              }}
-            >
-              <Pencil className="w-5 h-5" color="white" />
-              <p className="hidden md:block">Sửa người dùng</p>
-            </Button>
-            <Button
-              className="w-10 md:w-40 h-10 bg-[#D66766] hover:bg-gray-700 cursor-pointer"
-              onClick={() => {
-                setDeleteOne(user);
-                setPopUpOpen(true);
-              }}
-            >
-              <Trash2 className="w-5 h-5" color="white" />
-              <p className="hidden md:block">Xóa người dùng</p>
-            </Button>
-          </div>
+      <div
+        className="flex max-md:flex-wrap w-full rounded-lg mt-2 drop-shadow-lg p-5 gap-[1rem] md:gap-[1.5rem] items-center bg-[url('https://i.pinimg.com/736x/bd/e2/0a/bde20adbd760b57cf19d62a6f6d286f8.jpg')] bg-cover bg-left bg-repeat backdrop-blur-3xl"
+      >
+        <img
+          src="https://cdn.builder.io/api/v1/image/assets/TEMP/fb9987cd966719f0a79fed4d14e27ca697da1ec1?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816"
+          alt="User avatar"
+          className="object-contain self-stretch shrink my-auto w-[4rem] max-md:w-[2.5rem] border-2 border-white rounded-full shadow-md"
+        />
+        <div className="flex flex-col gap-[10px] justify-start w-full">
+          <p className="">ID:&nbsp;{user.id}</p>
+          <p className="text-[1rem]">
+            Tên người dùng:{" "}
+            <span className="text-[#131313] font-bold ">{user.tenND}</span>
+          </p>
+          <p className="">
+            Ngày tham gia:&nbsp;
+            {new Date(user.ngayTao).toLocaleDateString("vi-VN")}
+          </p>
+        </div>
+        <div className="w-full flex justify-end gap-2 md:gap-3.5">
+          <Button
+            className="w-fit h-10 bg-[#062D76] hover:bg-gray-700 cursor-pointer"
+            onClick={() => {
+              handleEdit(user.id);
+            }}
+          >
+            <Pencil className="w-5 h-5" color="white" />
+            <p className="hidden md:block">Sửa</p>
+          </Button>
+          <Button
+            className="w-fit h-10 bg-[#D66766] hover:bg-gray-700 cursor-pointer"
+            onClick={() => {
+              setDeleteOne(user);
+              setPopUpOpen(true);
+            }}
+          >
+            <Trash2 className="w-5 h-5" color="white" />
+            <p className="hidden md:block">Xóa</p>
+          </Button>
         </div>
       </div>
     );
@@ -115,15 +113,20 @@ const page = () => {
   return (
     <div className="flex flex-row w-full h-full bg-[#EFF3FB]">
       <Sidebar />
-      <div className="flex w-full flex-col py-6 md:ml-52 relative mt-5 gap-2 items-center px-10">
-        <div className="flex w-full items-center h-[10px] justify-between mb-10">
-          <div className="flex gap-5">
+      <div className="flex w-full min-h-screen flex-col py-6 md:ml-52 relative mt-5 gap-2 items-center px-10 max-md:px-4">
+        <div className="flex w-full items-center h-[10px] gap-5 mb-10">
+          <div className="flex flex-1 gap-5">
             <Input
               type="text"
               placeholder="Tìm kiếm người dùng"
-              className="w-sm md:w-3xl h-10 font-thin italic text-black text-2xl bg-white rounded-[10px]"
+              className="flex flex-1 h-10 font-thin italic text-black text-[1.5rem] self-center bg-white rounded-[10px] placeholder:text-[1rem]"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch();
+                }
+              }}
             />
             <Button
               className="w-10 h-10 cursor-pointer text-[20px] bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
@@ -135,7 +138,7 @@ const page = () => {
             </Button>
           </div>
           <Button
-            className="w-40 h-10 cursor-pointer bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
+            className="flex w-40 h-10 cursor-pointer bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
             onClick={() => {
               handleAddUser();
             }}
@@ -144,13 +147,14 @@ const page = () => {
             Thêm người dùng
           </Button>
         </div>
+
         {userList &&
           (filterUsers.length > 0 //nếu đang search thì hiện danh sách lọc
             ? filterUsers.map((user) => {
-                return <UserCard key={user?.MaND} user={user} />;
+                return <UserCard key={user?.id} user={user} />;
               })
             : userList.map((user) => {
-                return <UserCard key={user?.MaND} user={user} />;
+                return <UserCard key={user?.id} user={user} />;
               }))}
       </div>
       {popUpOpen && (
@@ -161,13 +165,22 @@ const page = () => {
             <p>Bạn có chắc chắn muốn xóa người dùng này không?</p>
             <div className="flex bg-white w-full rounded-lg mt-2 relative p-5 gap-[20px] md:gap-[50px] items-center">
               <img
-                src={`${deleteOne.HinhAnh[0]}`}
-                className="w-[145px] h-[205px]"
+                src="https://cdn.builder.io/api/v1/image/assets/TEMP/fb9987cd966719f0a79fed4d14e27ca697da1ec1?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816"
+                alt="User avatar"
+                className="object-contain self-stretch my-auto w-[5rem] max-md:w-[2.5rem] border-2 border-white rounded-full shadow-md"
               />
               <div className="flex flex-col gap-[10px] relative w-full">
-                <p className="">ID:&nbsp;{deleteOne.MaND}</p>
-                <p className="font-bold">{deleteOne.TenND}</p>
-                <p className="italic">Vai trò:&nbsp;{deleteOne.VaiTro}</p>
+                <p className="">ID:&nbsp;{deleteOne.id}</p>
+                <p className="text-[1rem]">
+                  Tên người dùng:{" "}
+                  <span className="text-[#131313] font-bold ">
+                    {deleteOne.tenND}
+                  </span>
+                </p>
+                <p className="">
+                  Ngày tham gia:&nbsp;
+                  {new Date(deleteOne.ngayTao).toLocaleDateString("vi-VN")}
+                </p>
               </div>
             </div>
             <div className="flex justify-end mt-4 gap-4">
