@@ -17,7 +17,7 @@ export default function VideoPlayer({ src, startTime = 0, className = "" }) {
     playsInline
     src={src}
     ref={videoRef}
-    className={className}
+    className={`pointer-events-none select-none ${className}`}
     />
   )
 }
