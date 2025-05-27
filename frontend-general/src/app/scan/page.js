@@ -460,14 +460,14 @@ const UploadImage = () => {
         <div className="relative w-full h-screen overflow-hidden flex">
         {/* Video bên trái */}
         <VideoPlayer
-        src="/videos/side.mp4"
+        src="/videos/left.mp4"
         startTime={0}
         className="absolute left-0 top-0 h-full object-cover w-1/3 z-0"
         />
 
         {/* Video bên phải */}
         <VideoPlayer
-        src="/videos/side.mp4"
+        src="/videos/right.mp4"
         startTime={0}
         className="absolute right-0 top-0 h-full object-cover w-1/3 z-0"
       /> 
