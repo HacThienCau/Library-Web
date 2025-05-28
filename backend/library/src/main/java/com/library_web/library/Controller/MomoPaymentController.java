@@ -25,4 +25,11 @@ public class MomoPaymentController {
     public ResponseEntity<?> handleMomoIpn(@RequestBody Map<String, Object> payload) {
         return momoService.handleIpn(payload);
     }
+
+    @PostMapping("/payment/confirm")
+    public ResponseEntity<?> confirmPayment(@RequestBody Map<String, Object> payload) {
+        String orderId = (String) payload.get("orderId");
+        String amount = (String) payload.get("amount");
+        return momoService.confirmPayment(orderId, amount);
+    }
 }
