@@ -25,6 +25,7 @@
     "framer-motion": "^12.12.2",
     "jwt-decode": "^4.0.0",
     "lineicons-react": "^2.0.0",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.482.0",
     "next": "15.2.1",
     "react": "^19.0.0",

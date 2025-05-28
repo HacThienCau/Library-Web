@@ -51,23 +51,33 @@ public class MomoService {
             String orderId = UUID.randomUUID().toString();
             String requestType = "captureWallet";
 
-            double amount = fine.getSoTien(); // Lấy từ phiếu phạt
+            double amountDouble = fine.getSoTien();
+            int amountInt = (int) Math.round(amountDouble);
 
             Map<String, String> rawData = new LinkedHashMap<>();
             rawData.put("accessKey", accessKey);
             rawData.put("partnerCode", partnerCode);
             rawData.put("requestId", requestId);
-            rawData.put("amount", String.valueOf(amount));
+            rawData.put("amount", String.valueOf(amountInt));
             rawData.put("orderId", orderId);
-            rawData.put("orderInfo", "Thanh toán phiếu phạt " + fineId);
+            rawData.put("orderInfo", "Thanh toán phiếu phạt với ID: " + fineId);
             rawData.put("redirectUrl", redirectUrl);
             rawData.put("ipnUrl", ipnUrl);
             rawData.put("extraData", "");
             rawData.put("requestType", requestType);
 
-            String rawSignature = rawData.entrySet().stream()
-                    .map(e -> e.getKey() + "=" + e.getValue())
-                    .reduce((a, b) -> a + "&" + b).orElse("");
+            String rawSignature = String.format(
+                    "accessKey=%s&amount=%d&extraData=%s&ipnUrl=%s&orderId=%s&orderInfo=%s&partnerCode=%s&redirectUrl=%s&requestId=%s&requestType=%s",
+                    accessKey,
+                    amountInt,
+                    "",
+                    ipnUrl,
+                    orderId,
+                    "Thanh toán phiếu phạt với ID: " + fineId,
+                    partnerCode,
+                    redirectUrl,
+                    requestId,
+                    requestType);
 
             String signature = new HmacUtils(HmacAlgorithms.HMAC_SHA_256, secretKey)
                     .hmacHex(rawSignature);
@@ -86,9 +96,8 @@ public class MomoService {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             JsonNode jsonResponse = new ObjectMapper().readTree(response.body());
-
+            System.out.println("Response body from MoMo: " + response.body());
             if (jsonResponse.has("payUrl")) {
-                // Ghi lại orderId để xác minh sau
                 fine.setOrderId(orderId);
                 fineRepo.save(fine);
                 return ResponseEntity.ok(jsonResponse.get("payUrl").asText());
@@ -110,21 +119,49 @@ public class MomoService {
                 Optional<Fine> optionalFine = fineRepo.findByOrderId(orderId);
                 if (optionalFine.isPresent()) {
                     Fine fine = optionalFine.get();
-                    fine.setTrangThai(Fine.TrangThai.DA_THANH_TOAN);
-                    fine.setNgayThanhToan(LocalDateTime.now());
-                    fineRepo.save(fine);
-                    System.out.println("✅ Cập nhật thanh toán thành công cho orderId: " + orderId);
-                } else {
-                    System.out.println("⚠️ Không tìm thấy phiếu phạt với orderId: " + orderId);
+                    if (fine.getTrangThai() != Fine.TrangThai.DA_THANH_TOAN) {
+                        fine.setTrangThai(Fine.TrangThai.DA_THANH_TOAN);
+                        fine.setNgayThanhToan(LocalDateTime.now());
+                        fineRepo.save(fine);
+                    }
                 }
-            } else {
-                System.out.println("❌ Thanh toán thất bại cho orderId: " + orderId);
             }
-
+            // Trả về acknowledged để MoMo biết đã nhận IPN
             return ResponseEntity.ok("acknowledged");
 
         } catch (Exception e) {
+            // Log lỗi để debug
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Lỗi khi xử lý IPN: " + e.getMessage());
         }
     }
+
+    public ResponseEntity<?> confirmPayment(String orderId, String amountStr) {
+        try {
+            Optional<Fine> optionalFine = fineRepo.findByOrderId(orderId);
+            if (optionalFine.isEmpty()) {
+                return ResponseEntity.status(404).body("Không tìm thấy phiếu phạt với orderId: " + orderId);
+            }
+
+            Fine fine = optionalFine.get();
+
+            int amountInt = (int) Math.round(fine.getSoTien());
+            if (!String.valueOf(amountInt).equals(amountStr)) {
+                return ResponseEntity.status(400).body("Số tiền không hợp lệ");
+            }
+
+            if (fine.getTrangThai() != Fine.TrangThai.DA_THANH_TOAN) {
+                fine.setTrangThai(Fine.TrangThai.DA_THANH_TOAN);
+                fine.setNgayThanhToan(LocalDateTime.now());
+                fineRepo.save(fine);
+            }
+
+            return ResponseEntity.ok("Xác nhận thanh toán thành công");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Lỗi khi xác nhận thanh toán: " + e.getMessage());
+        }
+    }
+
 }
