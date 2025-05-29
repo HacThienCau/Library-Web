@@ -55,4 +55,10 @@ public class BookController {
 
         return bookService.getSuggestions(userId, keywords);
     }
+
+    @GetMapping("/books/newest")
+    public List<Book> getNewestBooks() {
+        return bookService.getNewestBooks();
+    }
+
 }

@@ -18,14 +18,14 @@ const bookData = [
     books: [
       {
         title: "Hội Kí Vanitas - Tập 10",
-        image: "/books/vanitas10.jpg",
-        status: "Còn sẵn",
+        hinhAnh: ["/books/vanitas10.jpg"],
+        status: "CON_SAN",
         rating: 5,
       },
       {
         title: "Conan - Tập 101",
-        image: "/books/conan101.jpg",
-        status: "Còn sẵn",
+        hinhAnh: ["/books/conan101.jpg"],
+        status: "CON_SAN",
         rating: 4,
       },
     ],
@@ -36,14 +36,14 @@ const bookData = [
     books: [
       {
         title: "Nhà Giả Kim",
-        image: "/sach/nhagiakim.jpg",
-        status: "Còn sẵn",
+        hinhAnh: ["/sach/nhagiakim.jpg"],
+        status: "CON_SAN",
         rating: 5,
       },
       {
         title: "Tư Duy Mở",
-        image: "/sach/tuduymo.png",
-        status: "Còn sẵn",
+        hinhAnh: ["/sach/tuduymo.png"],
+        status: "CON_SAN",
         rating: 4,
       },
     ],
@@ -54,14 +54,14 @@ const bookData = [
     books: [
       {
         title: "Conan - Tập 102",
-        image: "/banner/img1.webp",
-        status: "Còn sẵn",
+        hinhAnh: ["/banner/img1.webp"],
+        status: "CON_SAN",
         rating: 4,
       },
       {
         title: "Vanitas - Tập 4",
-        image: "/books/vanitas4.jpg",
-        status: "Còn sẵn",
+        hinhAnh: ["/books/vanitas4.jpg"],
+        status: "CON_SAN",
         rating: 5,
       },
     ],
@@ -72,7 +72,7 @@ const bookData = [
     books: [
       {
         title: "Atomic Habits",
-        image: "/books/atomichabits.jpg",
+        hinhAnh: ["/books/atomichabits.jpg"],
         status: "Còn sẵn",
         rating: 5,
       },
@@ -84,7 +84,7 @@ const bookData = [
     books: [
       {
         title: "Atomic Habits",
-        image: "/books/atomichabits.jpg",
+        hinhAnh: "/books/atomichabits.jpg",
         status: "Còn sẵn",
         rating: 5,
       },
@@ -219,6 +219,7 @@ export function HeroSection() {
     const fetchNewBooks = async () => {
     try {
       const res = await axios.get("http://localhost:8081/books/newest");
+      console.log("Dữ liệu sách mới:", res.data);
       setNewBooks(res.data);
     } catch (error) {
       console.error("Lỗi khi fetch sách mới:", error);

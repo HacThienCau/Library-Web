@@ -39,4 +39,5 @@ public interface BookRepo extends MongoRepository<Book, String> {
     List<Map<String, Object>> getBooksImportStatsByMonth();
 
     List<Book> findTop3ByOrderBySoLuongMuonDesc();
+    List<Book> findTop10ByTrangThaiOrderByNgayTaoDesc(Book.TrangThai trangThai);
 }
