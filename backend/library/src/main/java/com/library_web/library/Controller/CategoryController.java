@@ -115,36 +115,66 @@ public class CategoryController {
     }
   }
 
-  // Lấy sách theo thể loại
-  @GetMapping("/books/categories/id/{id}")
-public ResponseEntity<?> getBooksByCategoryId(
-    @PathVariable String id,
-    @RequestParam(required = false, defaultValue = "all") String sort
-) {
+  // Lấy sách theo tên thể loại cha
+  @GetMapping("/books/categories/parent/{tenTheLoaiCha}")
+public ResponseEntity<?> getBooksByParentCategory(
+    @PathVariable String tenTheLoaiCha) {
   try {
-    List<Book> books;
-    switch (sort) {
-      case "newest":
-        books = BookRepo.findByTheLoaiOrderByNamDesc(id);
-        break;
-      case "mostBorrowed":
-        books = BookRepo.findByTheLoaiOrderBySoLuongMuonDesc(id);
-        break;
-      // Nếu chưa có trường đánh giá thì bỏ comment này
-      // case "topRated":
-      //   books = BookRepo.findByTheLoaiOrderByDanhGiaTrungBinhDesc(id);
-      //   break;
-      default:
-        books = BookRepo.findByTheLoai(id);
-        break;
+    // Decode tên thể loại cha nếu cần
+    String decodedName = URLDecoder.decode(tenTheLoaiCha, StandardCharsets.UTF_8);
+
+    // Tìm các thể loại con
+    List<Category> categories = CategoryRepo.findByTenTheLoaiCha(decodedName);
+    System.out.println("Categories found: " + categories);
+    if (categories.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+          .body("Không tìm thấy thể loại con nào của: " + decodedName);
     }
 
+    // Lấy danh sách tên thể loại con
+    List<String> id = categories.stream()
+        .map(Category::getId)
+        .toList();
+
+    // Tìm sách có thể loại nằm trong danh sách thể loại con
+    List<Book> books = BookRepo.findByTheLoaiIn(id);
+    System.out.println("Books found: " + books);
     return ResponseEntity.ok(books);
   } catch (Exception e) {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body("⚠️ Lỗi khi lấy sách theo thể loại: " + e.getMessage());
+        .body("⚠️ Lỗi khi lấy sách theo thể loại cha: " + e.getMessage());
   }
 }
+
+  // Lấy sách theo thể loại
+  @GetMapping("/books/categories/id/{id}")
+  public ResponseEntity<?> getBooksByCategoryId(
+      @PathVariable String id,
+      @RequestParam(required = false, defaultValue = "all") String sort) {
+    try {
+      List<Book> books;
+      switch (sort) {
+        case "newest":
+          books = BookRepo.findByTheLoaiOrderByNamDesc(id);
+          break;
+        case "mostBorrowed":
+          books = BookRepo.findByTheLoaiOrderBySoLuongMuonDesc(id);
+          break;
+        // Nếu chưa có trường đánh giá thì bỏ comment này
+        // case "topRated":
+        // books = BookRepo.findByTheLoaiOrderByDanhGiaTrungBinhDesc(id);
+        // break;
+        default:
+          books = BookRepo.findByTheLoai(id);
+          break;
+      }
+
+      return ResponseEntity.ok(books);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("⚠️ Lỗi khi lấy sách theo thể loại: " + e.getMessage());
+    }
+  }
 
   // // Chỉ cập nhật nếu giá trị mới khác null
   // if (BookMoi.getTenSach() != null)

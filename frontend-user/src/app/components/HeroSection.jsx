@@ -18,14 +18,14 @@ const bookData = [
     books: [
       {
         title: "Hội Kí Vanitas - Tập 10",
-        image: "/books/vanitas10.jpg",
-        status: "Còn sẵn",
+        hinhAnh: ["/books/vanitas10.jpg"],
+        status: "CON_SAN",
         rating: 5,
       },
       {
         title: "Conan - Tập 101",
-        image: "/books/conan101.jpg",
-        status: "Còn sẵn",
+        hinhAnh: ["/books/conan101.jpg"],
+        status: "CON_SAN",
         rating: 4,
       },
     ],
@@ -36,14 +36,14 @@ const bookData = [
     books: [
       {
         title: "Nhà Giả Kim",
-        image: "/sach/nhagiakim.jpg",
-        status: "Còn sẵn",
+        hinhAnh: ["/sach/nhagiakim.jpg"],
+        status: "CON_SAN",
         rating: 5,
       },
       {
         title: "Tư Duy Mở",
-        image: "/sach/tuduymo.png",
-        status: "Còn sẵn",
+        hinhAnh: ["/sach/tuduymo.png"],
+        status: "CON_SAN",
         rating: 4,
       },
     ],
@@ -54,37 +54,37 @@ const bookData = [
     books: [
       {
         title: "Conan - Tập 102",
-        image: "/banner/img1.webp",
-        status: "Còn sẵn",
+        hinhAnh: ["/banner/img1.webp"],
+        status: "CON_SAN",
         rating: 4,
       },
       {
         title: "Vanitas - Tập 4",
-        image: "/books/vanitas4.jpg",
+        hinhAnh: ["/books/vanitas4.jpg"],
+        status: "CON_SAN",
+        rating: 5,
+      },
+    ],
+  },
+  {
+    title: "Ngoại ngữ",
+    slug: "ngoai-ngu",
+    books: [
+      {
+        title: "Atomic Habits",
+        hinhAnh: ["/books/atomichabits.jpg"],
         status: "Còn sẵn",
         rating: 5,
       },
     ],
   },
   {
-    title: "Tâm lí - Kĩ năng sống",
-    slug: "tam-li-ki-nang-song",
+    title: "Kinh tế",
+    slug: "kinh-te",
     books: [
       {
         title: "Atomic Habits",
-        image: "/books/atomichabits.jpg",
-        status: "Còn sẵn",
-        rating: 5,
-      },
-    ],
-  },
-  {
-    title: "Manga - Comic",
-    slug: "manga",
-    books: [
-      {
-        title: "Atomic Habits",
-        image: "/books/atomichabits.jpg",
+        hinhAnh: "/books/atomichabits.jpg",
         status: "Còn sẵn",
         rating: 5,
       },
@@ -153,6 +153,10 @@ export function HeroSection() {
   const [bookAuthors, setBookAuthors] = useState([]); // mảng tên tác giả dạng string
   const [suggestions, setSuggestions] = useState([]);
   const [newBooks, setNewBooks] = useState([]);
+  const [popularBooks, setPopularBooks] = useState([]);
+  const [literatureBooks, setLiteratureBooks] = useState([]);
+  const [foreignBooks, setForeignBooks] = useState([]);
+  const [economicsBooks, setEconomicsBooks] = useState([]);
 
   const removeVietnameseTones = (str) => {
     return str
@@ -217,15 +221,68 @@ export function HeroSection() {
     console.log("Dữ liệu sách gợi ý:", booksSuggest);
 
     const fetchNewBooks = async () => {
-    try {
-      const res = await axios.get("http://localhost:8081/books/newest");
-      setNewBooks(res.data);
-    } catch (error) {
-      console.error("Lỗi khi fetch sách mới:", error);
-    }
-  };
-  fetchNewBooks();
-  console.log("Dữ liệu sách mới:", newBooks);
+      try {
+        const res = await axios.get("http://localhost:8081/books/newest");
+        // console.log("Dữ liệu sách mới:", res.data);
+        setNewBooks(res.data);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách mới:", error);
+      }
+    };
+    fetchNewBooks();
+    // console.log("Dữ liệu sách mới:", newBooks);
+
+    const fetchPopularBooks = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8081/books/most-borrowed"
+        );
+        // console.log("Dữ liệu sách phổ biến:", res.data);
+        setPopularBooks(res.data);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách phổ biến:", error);
+      }
+    };
+    fetchPopularBooks();
+
+    const fetchLiteratureBooks = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8081/books/categories/parent/Văn%20học"
+        );
+        // console.log("Dữ liệu sách văn học:", res.data);
+        setLiteratureBooks(res.data);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách văn học:", error);
+      }
+    };
+    fetchLiteratureBooks();
+
+    const fetchForeignBooks = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8081/books/categories/parent/Ngoại%20ngữ"
+        );
+        // console.log("Dữ liệu sách ngoại ngữ:", res.data);
+        setForeignBooks(res.data);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách ngoại ngữ:", error);
+      }
+    };
+    fetchForeignBooks();
+
+    const fetchEconomicsBooks = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8081/books/categories/parent/Kinh%20tế"
+        );
+        // console.log("Dữ liệu sách kinh tế:", res.data);
+        setEconomicsBooks(res.data);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách kinh tế:", error);
+      }
+    };
+    fetchEconomicsBooks();
   }, []);
 
   useEffect(() => {
@@ -498,7 +555,19 @@ export function HeroSection() {
               <div className="px-6 max-w-7xl mx-auto">
                 <BookSection
                   title={section.title}
-                  books={section.slug === "sach-moi" ? newBooks : section.books}
+                  books={
+                    section.slug === "sach-moi"
+                      ? newBooks
+                      : section.slug === "sach-pho-bien"
+                      ? popularBooks
+                      : section.slug === "van-hoc"
+                      ? literatureBooks
+                      : section.slug === "ngoai-ngu"
+                      ? foreignBooks
+                      : section.slug === "kinh-te"
+                      ? economicsBooks
+                      : section.books // fallback mặc định
+                  }
                   slug={section.slug}
                 />
               </div>

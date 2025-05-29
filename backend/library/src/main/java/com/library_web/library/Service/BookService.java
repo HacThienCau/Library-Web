@@ -245,4 +245,12 @@ public class BookService {
                 .limit(10)
                 .collect(Collectors.toList());
     }
+
+    public List<Book> getNewestBooks() {
+        return bookRepo.findTop10ByTrangThaiOrderByNgayTaoDesc(Book.TrangThai.CON_SAN);
+    }
+
+    public List<Book> getMostBorrowedBooks() {
+        return bookRepo.findTop10ByTrangThaiOrderBySoLuongMuonDesc(Book.TrangThai.CON_SAN);
+    }
 }

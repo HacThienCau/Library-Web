@@ -55,4 +55,15 @@ public class BookController {
 
         return bookService.getSuggestions(userId, keywords);
     }
+
+    @GetMapping("/books/newest")
+    public List<Book> getNewestBooks() {
+        return bookService.getNewestBooks();
+    }
+
+    @GetMapping("/books/most-borrowed")
+    public List<Book> getMostBorrowedBooks() {
+        return bookService.getMostBorrowedBooks();
+    }
+
 }
