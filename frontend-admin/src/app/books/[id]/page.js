@@ -23,6 +23,8 @@ function page() {
   const [description, setDescription] = useState(""); // Mô tả
   const [category, setCategory] = useState(null);
   const [category2, setCategory2] = useState(null);
+  const [price, setPrice] = useState("")
+  const [pages, setPages] = useState("")
   const fileInputRef = useRef(null);
   const fileInputRef1 = useRef(null);
   const fileInputRef2 = useRef(null);
@@ -77,6 +79,8 @@ function page() {
         setYear(data.nam);
         setQuantity(data.tongSoLuong);
         setOrigin(data.tongSoLuong);
+        setPages(data.soTrang)
+        setPrice(data.gia)
         setImage((prev) =>
         prev.map((item, index) => ({
         ...item,
@@ -157,6 +161,8 @@ function page() {
       description === "" ||
       category === "" ||
       category2 === "" ||
+      pages === "" ||
+      price === "" ||
       quantity === ""
     ) {
       toast.error("Vui lòng điền đầy đủ thông tin");
@@ -204,6 +210,8 @@ function page() {
       nam: year,      
       nxb: publisher,      
       tongSoLuong : quantity, 
+      gia : price,
+      soTrang: pages,
     };
     try {
       const res = await fetch(`http://localhost:8081/book/${id}`, {
@@ -296,6 +304,29 @@ function page() {
                 className="font-semibold rounded-lg w-full h-10 flex items-center px-5 bg-white"
                 value={publisher}
                 onChange={(e) => setPublisher(e.target.value)}
+              />
+            </div>
+          </div>
+          {/*Dòng giá và số trang */}
+          <div className="flex w-full justify-between gap-10">
+            <div className="flex flex-col w-2/3 gap-[5px] md:gap-[10px]">
+              <p className="font-semibold text-lg mt-3">Giá sách</p>
+              <Input
+                type="number"
+                placeholder="Nhập giá sách"
+                className="font-semibold rounded-lg w-full h-10 flex items-center px-5 bg-white"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col w-full gap-[5px] md:gap-[10px]">
+              <p className="font-semibold text-lg mt-3">Số trang</p>
+              <Input
+                type="number"
+                placeholder="Nhập số trang"
+                className="font-semibold rounded-lg w-full h-10 flex items-center px-5 bg-white"
+                value={pages}
+                onChange={(e) => setPages(e.target.value)}
               />
             </div>
           </div>

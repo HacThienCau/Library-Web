@@ -22,7 +22,7 @@ const detail = {
   book_code: "DRPN001",
   size: "14.5 x 20.5 cm",
   pages: 340,
-  isbn: "978-604-2-18920-5",
+  price: "978-604-2-18920-5",
   language: "Tiếng Việt",
   publish_year: 1986,
   cover_image:
@@ -83,8 +83,8 @@ function page() {
           borrow_count: book.soLuongMuon,
           book_code: book.id,
           size: "14.5 x 20.5 cm",
-          pages: 256,
-          isbn: "978-604-2-18920-5",
+          pages: book.soTrang,
+          price: book.gia + " vnd",
           language: "Tiếng Việt",
           publish_year: book.nam,
           cover_image: book.hinhAnh[0],
@@ -261,7 +261,7 @@ function page() {
                 <span className="font-semibold">Số trang:</span> {details.pages}
               </p>
               <p>
-                <span className="font-semibold">ISBN:</span> {details.isbn}
+                <span className="font-semibold">Giá:</span> {details.price}
               </p>
               <p>
                 <span className="font-semibold">Năm xuất bản:</span>{" "}
