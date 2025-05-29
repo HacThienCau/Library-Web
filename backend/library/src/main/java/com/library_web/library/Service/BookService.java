@@ -75,6 +75,9 @@ public class BookService {
             resultMap.put("nam", book.getNam());
             resultMap.put("tongSoLuong", book.getTongSoLuong());
             resultMap.put("soLuongMuon", book.getSoLuongMuon());
+            resultMap.put("gia", book.getGia());
+            resultMap.put("soTrang", book.getSoTrang());
+            resultMap.put("ngayTao", book.getNgayTao());
             resultMap.put("soLuongXoa", book.getSoLuongXoa());
             resultMap.put("trangThai", book.getTrangThai());
 
@@ -110,6 +113,9 @@ public class BookService {
         resultMap.put("tongSoLuong", book.getTongSoLuong());
         resultMap.put("soLuongMuon", book.getSoLuongMuon());
         resultMap.put("soLuongXoa", book.getSoLuongXoa());
+        resultMap.put("soTrang", book.getSoTrang());
+        resultMap.put("ngayTao", book.getNgayTao());
+        resultMap.put("soLuongXoa", book.getSoLuongXoa());
         resultMap.put("trangThai", book.getTrangThai());
         resultMap.put("tenTheLoaiCha", cate.getTenTheLoaiCha());
         resultMap.put("tenTheLoaiCon", cate.getTenTheLoaiCon());
@@ -132,6 +138,8 @@ public class BookService {
             bookCu.setTenTacGia(bookMoi.getTenTacGia());
             bookCu.setNam(bookMoi.getNam());
             bookCu.setNxb(bookMoi.getNxb());
+            bookCu.setGia(bookMoi.getGia());
+            bookCu.setSoTrang(bookMoi.getSoTrang());
             bookCu.setTongSoLuong(newSoLuong);
 
             Book savedBook = bookRepo.save(bookCu);
