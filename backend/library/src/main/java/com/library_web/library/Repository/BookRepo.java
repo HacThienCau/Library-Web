@@ -21,6 +21,9 @@ public interface BookRepo extends MongoRepository<Book, String> {
 
     List<Book> findByTheLoai(String theLoai);
 
+    List <Book> findByTheLoai(List<String> theLoai);
+    List<Book> findByTheLoaiIn(List<String> theLoai);
+
     // Mới nhất: sắp xếp theo năm giảm dần
     List<Book> findByTheLoaiOrderByNamDesc(String theLoai);
 
@@ -40,4 +43,5 @@ public interface BookRepo extends MongoRepository<Book, String> {
 
     List<Book> findTop3ByOrderBySoLuongMuonDesc();
     List<Book> findTop10ByTrangThaiOrderByNgayTaoDesc(Book.TrangThai trangThai);
+    List<Book> findTop10ByTrangThaiOrderBySoLuongMuonDesc(Book.TrangThai trangThai);
 }

@@ -61,4 +61,9 @@ public class BookController {
         return bookService.getNewestBooks();
     }
 
+    @GetMapping("/books/most-borrowed")
+    public List<Book> getMostBorrowedBooks() {
+        return bookService.getMostBorrowedBooks();
+    }
+
 }

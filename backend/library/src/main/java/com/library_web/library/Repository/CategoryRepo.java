@@ -14,4 +14,6 @@ public interface CategoryRepo extends MongoRepository<Category, String> {
   boolean existsByTenTheLoaiChaAndTenTheLoaiCon(String tenTheLoaiCha, String tenTheLoaiCon);
 
   Optional<Category> findByTenTheLoaiCon(String tenTheLoaiCon);
+
+  List<Category> findByTenTheLoaiCha(String tenTheLoaiCha);
 }
