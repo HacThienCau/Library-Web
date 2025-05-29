@@ -221,61 +221,69 @@ export function HeroSection() {
     console.log("Dữ liệu sách gợi ý:", booksSuggest);
 
     const fetchNewBooks = async () => {
-    try {
-      const res = await axios.get("http://localhost:8081/books/newest");
-      // console.log("Dữ liệu sách mới:", res.data);
-      setNewBooks(res.data);
-    } catch (error) {
-      console.error("Lỗi khi fetch sách mới:", error);
-    }
-  };
-  fetchNewBooks();
-  // console.log("Dữ liệu sách mới:", newBooks);
+      try {
+        const res = await axios.get("http://localhost:8081/books/newest");
+        // console.log("Dữ liệu sách mới:", res.data);
+        setNewBooks(res.data);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách mới:", error);
+      }
+    };
+    fetchNewBooks();
+    // console.log("Dữ liệu sách mới:", newBooks);
 
-  const fetchPopularBooks = async () => {
-    try {
-      const res = await axios.get("http://localhost:8081/books/most-borrowed");
-      // console.log("Dữ liệu sách phổ biến:", res.data);
-      setPopularBooks(res.data);
-    } catch (error) {
-      console.error("Lỗi khi fetch sách phổ biến:", error);
-    }
-  }
-  fetchPopularBooks();
+    const fetchPopularBooks = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8081/books/most-borrowed"
+        );
+        // console.log("Dữ liệu sách phổ biến:", res.data);
+        setPopularBooks(res.data);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách phổ biến:", error);
+      }
+    };
+    fetchPopularBooks();
 
-  const fetchLiteratureBooks = async () => {
-    try {
-      const res = await axios.get("http://localhost:8081/books/categories/parent/Văn%20học");
-      // console.log("Dữ liệu sách văn học:", res.data);
-      setLiteratureBooks(res.data);
-    } catch (error) {
-      console.error("Lỗi khi fetch sách văn học:", error);
-    }
-  }
-  fetchLiteratureBooks();
+    const fetchLiteratureBooks = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8081/books/categories/parent/Văn%20học"
+        );
+        // console.log("Dữ liệu sách văn học:", res.data);
+        setLiteratureBooks(res.data);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách văn học:", error);
+      }
+    };
+    fetchLiteratureBooks();
 
-  const fetchForeignBooks = async () => {
-    try {
-      const res = await axios.get("http://localhost:8081/books/categories/parent/Ngoại%20ngữ");
-      // console.log("Dữ liệu sách ngoại ngữ:", res.data);
-      setForeignBooks(res.data);
-    } catch (error) {
-      console.error("Lỗi khi fetch sách ngoại ngữ:", error);
-    }
-  }
-  fetchForeignBooks();
+    const fetchForeignBooks = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8081/books/categories/parent/Ngoại%20ngữ"
+        );
+        // console.log("Dữ liệu sách ngoại ngữ:", res.data);
+        setForeignBooks(res.data);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách ngoại ngữ:", error);
+      }
+    };
+    fetchForeignBooks();
 
-  const fetchEconomicsBooks = async () => {
-    try {
-      const res = await axios.get("http://localhost:8081/books/categories/parent/Kinh%20tế");
-      // console.log("Dữ liệu sách kinh tế:", res.data);
-      setEconomicsBooks(res.data);
-    } catch (error) {
-      console.error("Lỗi khi fetch sách kinh tế:", error);
-    }
-  }
-  fetchEconomicsBooks();
-}, []);
+    const fetchEconomicsBooks = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8081/books/categories/parent/Kinh%20tế"
+        );
+        // console.log("Dữ liệu sách kinh tế:", res.data);
+        setEconomicsBooks(res.data);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách kinh tế:", error);
+      }
+    };
+    fetchEconomicsBooks();
+  }, []);
 
   useEffect(() => {
     if (!searchTerm) {
@@ -545,24 +553,24 @@ export function HeroSection() {
               )}
 
               <div className="px-6 max-w-7xl mx-auto">
-  <BookSection
-    title={section.title}
-    books={
-      section.slug === "sach-moi"
-        ? newBooks
-        : section.slug === "sach-pho-bien"
-        ? popularBooks
-        : section.slug === "van-hoc"
-        ? literatureBooks
-        : section.slug === "ngoai-ngu"
-        ? foreignBooks
-        : section.slug === "kinh-te"
-        ? economicsBooks
-        : section.books // fallback mặc định
-    }
-    slug={section.slug}
-  />
-</div>
+                <BookSection
+                  title={section.title}
+                  books={
+                    section.slug === "sach-moi"
+                      ? newBooks
+                      : section.slug === "sach-pho-bien"
+                      ? popularBooks
+                      : section.slug === "van-hoc"
+                      ? literatureBooks
+                      : section.slug === "ngoai-ngu"
+                      ? foreignBooks
+                      : section.slug === "kinh-te"
+                      ? economicsBooks
+                      : section.books // fallback mặc định
+                  }
+                  slug={section.slug}
+                />
+              </div>
             </React.Fragment>
           ))}
         </div>
