@@ -2,8 +2,8 @@ import React from "react";
 
 const StatisticsCard = ({ icon, title, value, percentage }) => {
   return (
-    <article className="self-stretch px-3 pt-1 my-auto rounded-3xl bg-blue-950 h-full max-md:max-w-full">
-      <header className="flex gap-3 items-center px-3 py-[1.25rem] w-full text-[1.25rem] text-white">
+    <article className="self-stretch px-3 pt-1 my-auto rounded-3xl bg-white border-1 h-full max-md:max-w-full">
+      <header className="flex gap-3 items-center px-3 py-[1.25rem] w-full text-[1.125rem] text-[#131313]">
         {icon && (
           <img
             src={icon}

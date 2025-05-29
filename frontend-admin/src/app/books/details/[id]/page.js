@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import { useParams } from "next/navigation";
-import { CalendarClock, Check, Search, X } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { CalendarClock, Check, Search, X, Undo2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { ThreeDot } from "react-loading-indicators";
 import Sidebar from "@/app/components/sidebar/Sidebar";
@@ -51,7 +51,10 @@ const page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [childBookList, setChildBookList] = useState(null);
   const [filterBooks, setFilterBooks] = useState([]);
-
+  const route = useRouter();
+  const handleGoBack = () => {
+    route.back();
+  };
   const handleSearch = () => {
     if (searchQuery) {
       const filterBook = childBookList?.filter((book) =>
@@ -67,7 +70,7 @@ const page = () => {
   };
   const BookCard = ({ book }) => {
     return (
-      <div className="flex bg-white w-full rounded-lg relative drop-shadow-lg px-5 py-3 gap-[10px] md:gap-[30px] items-center">
+      <div className="flex bg-white w-full rounded-lg shadow-lg px-5 py-3 gap-[10px] md:gap-[30px] items-center">
         <img src={`${book.hinhAnh[0]}`} className="w-[145px] h-[205px]" />
         <div className="flex flex-col gap-[10px] relative w-full">
           <p className="">ID:&nbsp;{book.id}</p>
@@ -91,7 +94,7 @@ const page = () => {
   };
   const ChildBookCard = ({ book }) => {
     return (
-      <div className="flex bg-white w-full rounded-lg relative drop-shadow-lg justify-between">
+      <div className="flex bg-white w-full rounded-lg shadow-lg justify-between">
         <div className="flex w-full p-3 gap-2">
           <p className="">ID:&nbsp;{book.id}</p>
           {book.trangThai === "Còn sẵn" ? (
@@ -101,7 +104,7 @@ const page = () => {
           ) : (
             <X className="w-5 h-5" color="#f50000" />
           )}
-      </div>
+        </div>
       </div>
     );
   };
@@ -121,12 +124,24 @@ const page = () => {
         </div>
       ) : (
         <div className="flex w-full flex-col py-6 md:ml-52 relative mt-5 gap-2 items-center px-10">
-          <div className="flex w-full items-center h-[10px] justify-between mb-5">
-            <div className="flex gap-5">
+          {/*Nút Back*/}
+          <div className="top-5 left-5 md:left-57 fixed">
+            <Button
+              title={"Quay Lại"}
+              className="bg-[#062D76] rounded-3xl w-10 h-10 cursor-pointer"
+              onClick={() => {
+                handleGoBack();
+              }}
+            >
+              <Undo2 className="w-12 h-12" color="white" />
+            </Button>
+          </div>
+          <div className="flex w-full items-center h-[10px] justify-between mb-5 pt-15">
+            <div className="flex flex-1 gap-5">
               <Input
                 type="text"
                 placeholder="Tìm kiếm"
-                className="w-sm md:w-3xl h-10 font-thin italic text-black text-2xl bg-white rounded-[10px]"
+                className="flex flex-1 h-10 font-thin text-black text-2xl bg-white rounded-[10px]"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />

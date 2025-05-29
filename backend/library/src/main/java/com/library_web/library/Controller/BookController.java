@@ -55,4 +55,9 @@ public class BookController {
 
         return bookService.getSuggestions(userId, keywords);
     }
+
+    @GetMapping("/books/top5")
+    public List<Map<String, Object>> getTop5Books() {
+        return bookService.layTop5Book();
+    }
 }

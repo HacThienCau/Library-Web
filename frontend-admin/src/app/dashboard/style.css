@@ -1,0 +1,32 @@
+/* Bỏ đường kẻ bảng ô */
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border: none;
+}
+
+/* Làm ngày nhẹ nhàng hơn */
+.fc-daygrid-day-frame {
+  padding: 0.4rem 0.2rem;
+  transition: 0.2s;
+  border-radius: 0.375rem;
+}
+
+.fc-daygrid-day:hover .fc-daygrid-day-frame {
+  background-color: #f3f4f6;
+}
+
+.fc-day-today {
+  background-color: #e0e7ff !important; /* Light blue */
+  border-radius: 0.5rem;
+}
+
+/* Làm event gọn như react-day-picker */
+.fc .fc-event {
+  font-size: 0.75rem;
+  padding: 2px 4px;
+  border-radius: 6px;
+  background-color: #062D76 !important;
+  color: white !important;
+  border: none;
+  margin-top: 2px;
+}

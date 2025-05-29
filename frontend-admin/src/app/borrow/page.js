@@ -197,7 +197,7 @@ const page = () => {
             <Input
               type="text"
               placeholder="Tìm kiếm"
-              className="w-full h-10 font-thin italic text-black text-2xl bg-white rounded-[10px]"
+              className="w-full h-10 font-thin text-black text-2xl bg-white rounded-[10px]"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -270,7 +270,7 @@ const page = () => {
                       </p>
                     </div>
                     <Button
-                      className="flex gap-2 justify-center items-center px-3 py-1 text-[1rem] font-normal self-center bg-[#062D76] text-white hover:bg-[#E6EAF1] hover:text-[#062D76] rounded-3xl cursor-pointer"
+                      className="flex gap-2 justify-center items-center px-3 py-1 text-[1rem] font-normal self-center bg-[#062D76] text-white hover:bg-[#E6EAF1] hover:text-[#062D76] rounded-xl cursor-pointer"
                       aria-label={`View details for borrowing ${borrowing.id}`}
                       onClick={() => {
                         handleDetails(borrowing.id);
