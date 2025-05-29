@@ -418,14 +418,12 @@ const UploadImage = () => {
     if (confirm(`Lập phiếu phạt Mất sách cho ${lostNumber} quyển sách chưa quét?`)) {
       setLoadingLoad(true);
       try {
-        for (const book of lostBooks) {
-          const money = prompt(`Nhập số giá cuốn sách: ${book?.tenSach}`);
-          if (money !== null && !isNaN(money)) {
+        for (const book of lostBooks) {          
             // Gọi API cho từng cuốn sách
             const data = {
               userId: result?.id,
               noiDung: "Làm mất sách",
-              soTien: money,
+              soTien: 0,
               cardId: book?.childId
             }
             const response = await fetch('http://localhost:8081/addFine',{
@@ -441,7 +439,6 @@ const UploadImage = () => {
                 b.id === book.id ? { ...b, checked: true } : b
               )
             );
-          }
         }
       } catch (error) {
         console.error("Lỗi khi xử lý phiếu phạt:", error);
@@ -461,7 +458,7 @@ const UploadImage = () => {
     return(
       <div className="flex flex-col w-full items-center mb-10 gap-5 px-10 py-6">
           <img width={200} height={200} className="rounded-4xl" src="/images/logo.jpg"/>
-          <p className="text-3xl font-semibold text-#062D76">Ja97 Library Web</p>
+          <p className="text-3xl font-semibold text-#062D76">ReadHub</p>
           <p className="text-xl font-semibold ">Vui lòng nhập mã người dùng của bạn</p>
           <div className="flex flex-col w-full items-center justify-center gap-1">
             <input type="text" value={text} onChange={(e)=>setText(e.target.value)} 

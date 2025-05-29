@@ -113,6 +113,7 @@ public class BookService {
         resultMap.put("tongSoLuong", book.getTongSoLuong());
         resultMap.put("soLuongMuon", book.getSoLuongMuon());
         resultMap.put("soLuongXoa", book.getSoLuongXoa());
+        resultMap.put("gia", book.getGia());
         resultMap.put("soTrang", book.getSoTrang());
         resultMap.put("ngayTao", book.getNgayTao());
         resultMap.put("soLuongXoa", book.getSoLuongXoa());
