@@ -192,6 +192,7 @@ const Page = () => {
                     >
                       <BookCard
                         key={book.id || index}
+                        id={book.id}
                         imageSrc={book.hinhAnh[0]}
                         available={
                           book.tongSoLuong -
