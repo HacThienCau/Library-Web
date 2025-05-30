@@ -60,4 +60,14 @@ public class BookController {
     public List<Map<String, Object>> getTop5Books() {
         return bookService.layTop5Book();
     }
+    @GetMapping("/books/newest")
+    public List<Book> getNewestBooks() {
+        return bookService.getNewestBooks();
+    }
+
+    @GetMapping("/books/most-borrowed")
+    public List<Book> getMostBorrowedBooks() {
+        return bookService.getMostBorrowedBooks();
+    }
+
 }

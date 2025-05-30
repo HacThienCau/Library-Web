@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Ja97 Library Web",
+  title: "ReadHub",
   description: "Hệ thống quản lý thư viện thông minh, hỗ trợ tra cứu, mượn trả sách một cách hiệu quả.",
 };
 

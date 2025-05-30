@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -26,6 +28,12 @@ public class Book {
     private Integer tongSoLuong;
     private Integer soLuongMuon;
     private Integer soLuongXoa;
+    private double gia;
+    private int soTrang;
+
+    @CreatedDate
+    private LocalDateTime ngayTao;
+
     private TrangThai trangThai;
     public enum TrangThai {
         CON_SAN("Còn sẵn"),

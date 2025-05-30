@@ -6,6 +6,7 @@ import { ShoppingCart } from "lucide-react"; // dùng icon từ lucide-react (ho
 
 export default function BookSection({ title, books, slug }) {
   const router = useRouter();
+  console.log("BookSection rendered with books:", books);
 
   return (
     <section className="bg-white my-6 rounded-lg shadow p-6">
@@ -17,9 +18,10 @@ export default function BookSection({ title, books, slug }) {
             className="relative group  rounded-lg p-3 shadow hover:shadow-md transition"
           >
             <div className="relative overflow-hidden rounded h-[180px] w-[150px] flex justify-center">
-              <Image
-                src={book.image}
-                alt={book.title}
+              {/* t đổi thẻ img này rồi nha */}
+              <img
+                src={book.hinhAnh?.[0]}
+                alt={book.title || book.tenSach}
                 width={120}
                 height={180}
                 className="rounded object-cover h-full transition-transform duration-300 group-hover:scale-115"
@@ -44,7 +46,7 @@ export default function BookSection({ title, books, slug }) {
               {"★".repeat(book.rating || 4)}
             </p>
             <p className="text-green-600 text-sm font-semibold">
-              ● {book.status}
+              ● {book.trangThai === "CON_SAN" ? "Còn sẵn" : "Đã hết"}
             </p>
           </div>
         ))}

@@ -219,7 +219,7 @@ function AddFine() {
             <p className="font-semibold text-lg mt-3">Số Tiền</p>
             <Input
               type="number"
-              placeholder="Nhập số tiền phạt"
+              placeholder="Nhập số tiền phạt (bỏ qua nếu làm mất sách)"
               className="font-semibold rounded-lg w-full h-10 flex items-center px-5 bg-white"
               value={money}
               onChange={(e) => setMoney(e.target.value)}

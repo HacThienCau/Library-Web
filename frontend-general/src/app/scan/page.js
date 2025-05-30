@@ -7,11 +7,11 @@ import { format } from 'date-fns';
 import { Book, BookDashed, CalendarClock, Camera, FolderSearch, Undo2, Upload } from "lucide-react";
 import UploadChild from "./childBook/page";
 import VideoPlayer from "../components/ui/VideoPlayer";
+import ParticlesBackground from "../components/ui/ParticlesBackground";
 
 const UploadImage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [text, setText] = useState("")
   const [borrowCard,setBorrowCard] = useState(null)
   const [result, setResult] = useState(null);
   const [currentChoose, setCurrent] = useState(null)
@@ -120,7 +120,7 @@ const UploadImage = () => {
     window.open("/scan/camera", "_blank", `width=${width},height=${height},left=${left},top=${top}`);
   };
   //hàm xử lý khi nhập id
-  const handleEnter = async() =>{
+  const handleEnter = async(text) =>{
     if(text==""){
       alert("Vui lòng nhập mã trước khi tìm kiếm");
       return;
@@ -140,7 +140,6 @@ const UploadImage = () => {
       }  
       const result = await response.json();
       setResult(result);
-      setText("")
     }
     catch(e){
       console.log(e)
@@ -162,6 +161,9 @@ const UploadImage = () => {
         console.log("Không tìm thấy phiếu mượn nào")
         setLoading(false);       
         return;
+      }
+      if(response.json.length === 0){
+        setBorrowCard([])
       }
       const res = await response.json();
       setBorrowCard(res)
@@ -228,7 +230,6 @@ const UploadImage = () => {
   const handleGoBack = () =>{
     setResult(null)
     setSelectedFile(null)
-    setText("")
     setLoading(false)
     setBorrowCard(null)
   }
@@ -417,14 +418,12 @@ const UploadImage = () => {
     if (confirm(`Lập phiếu phạt Mất sách cho ${lostNumber} quyển sách chưa quét?`)) {
       setLoadingLoad(true);
       try {
-        for (const book of lostBooks) {
-          const money = prompt(`Nhập số giá cuốn sách: ${book?.tenSach}`);
-          if (money !== null && !isNaN(money)) {
+        for (const book of lostBooks) {          
             // Gọi API cho từng cuốn sách
             const data = {
               userId: result?.id,
               noiDung: "Làm mất sách",
-              soTien: money,
+              soTien: 0,
               cardId: book?.childId
             }
             const response = await fetch('http://localhost:8081/addFine',{
@@ -440,7 +439,6 @@ const UploadImage = () => {
                 b.id === book.id ? { ...b, checked: true } : b
               )
             );
-          }
         }
       } catch (error) {
         console.error("Lỗi khi xử lý phiếu phạt:", error);
@@ -456,16 +454,17 @@ const UploadImage = () => {
   };
   // Các phương thức lấy mã người dùng (quét, tải, chụp)
   const ScanUser = () =>{
+    const [text, setText] = useState("")  // tránh re-render
     return(
       <div className="flex flex-col w-full items-center mb-10 gap-5 px-10 py-6">
           <img width={200} height={200} className="rounded-4xl" src="/images/logo.jpg"/>
-          <p className="text-3xl font-semibold text-#062D76">Ja97 Library Web</p>
+          <p className="text-3xl font-semibold text-#062D76">ReadHub</p>
           <p className="text-xl font-semibold ">Vui lòng nhập mã người dùng của bạn</p>
           <div className="flex flex-col w-full items-center justify-center gap-1">
             <input type="text" value={text} onChange={(e)=>setText(e.target.value)} 
             placeholder="Nhập user ID của bạn"
             className="bg-white rounded w-80 h-10"
-            onKeyDown={(e) => e.key === "Enter" && handleEnter()}
+            onKeyDown={(e) => e.key === "Enter" && handleEnter(text)}
             />
             <p className="text-sm italic text-[#062D76]">Nhập Enter để tiến hành tìm kiếm</p>
           </div>
@@ -560,36 +559,72 @@ const UploadImage = () => {
           {/*Thông tin người dùng*/}
           <ResultCard />
           {/*Danh sách phiếu mượn của người dùng*/}
-          <div className="w-full px-10 md:px-40">
-            {!borrowCard?(
-              <p className="text-xl font-semibold ">Không có lịch sử phiếu mượn nào</p>
-            ):
-            (
-              <div className="w-full grid grid-cols-1 lg:grid-cols-2">
-                <div>
-                  <div className="flex bg-white text-[#062D76] rounded p-5 justify-center items-center gap-5">
+          <div className="w-full px-10 md:px-40 z-10">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2">
+              <div>
+                <div className="flex bg-white text-[#062D76] rounded p-5 justify-center items-center gap-5">
                   <Book width={24} height={24} />
-                  <p className="text-lg font-semibold"> Phiếu mượn đang yêu cầu</p>
+                  <p className="text-lg font-semibold">Phiếu mượn đang yêu cầu</p>
                 </div>
-                <div className="flex flex-col items-center">
-                  {borrowCard?.filter((c)=>c.status == "Đang yêu cầu" && new Date(c.getBookDate) > new Date()).map((card, index)=>{return(
-                  <BorrowCard key={index} card={card}/>
-                  )})}
-                </div>
-                </div>
-                <div>
-                  <div className="flex bg-white text-[#062D76] rounded p-5 justify-center items-center gap-5">
-                  <CalendarClock width={24} height={24} />
-                  <p className="text-lg font-semibold">Phiếu mượn đang mượn</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                  {borrowCard?.filter((c)=>c.status == "Đang mượn").map((card, index)=>{return(
-                  <BorrowCard key={index} card={card}/>
-                  )})}
-                  </div>
+                <div className="flex flex-col items-center w-full">
+                  {(
+                    borrowCard?.filter(
+                      (c) =>
+                        c.status === "Đang yêu cầu" &&
+                        new Date(c.getBookDate) > new Date()
+                    ) || []
+                  ).length < 1 ? (
+                    <div className="w-4/5 h-[300px] flex flex-col justify-center items-center">
+                      <img
+                        src={"/images/not found.png"}
+                        width={300}
+                        height={300}
+                      />
+                      <p className="font-semibold text-gray-700 italic text-xl text-center">
+                        Bạn đang không có phiếu mượn đang yêu cầu nào vào lúc này.
+                      </p>
+                    </div>
+                  ) : (
+                    borrowCard
+                      ?.filter(
+                        (c) =>
+                          c.status === "Đang yêu cầu" &&
+                          new Date(c.getBookDate) > new Date()
+                      )
+                      .map((card, index) => (
+                        <BorrowCard key={index} card={card} />
+                      ))
+                  )}
                 </div>
               </div>
-            )}
+              <div>
+                <div className="flex bg-white text-[#062D76] rounded p-5 justify-center items-center gap-5">
+                  <CalendarClock width={24} height={24} />
+                  <p className="text-lg font-semibold">Phiếu mượn đang mượn</p>
+                </div>
+                <div className="flex flex-col items-center w-full">
+                  {borrowCard?.filter((c) => c.status === "Đang mượn").length <
+                  1 ? (
+                    <div className="w-4/5 h-[300px] flex flex-col justify-center items-center">
+                      <img
+                        src={"/images/not found.png"}
+                        width={300}
+                        height={300}
+                      />
+                      <p className="font-semibold text-gray-700 italic text-xl text-center">
+                        Bạn đang không có phiếu mượn đang mượn nào vào lúc này.
+                      </p>
+                    </div>
+                  ) : (
+                    borrowCard
+                      ?.filter((c) => c.status === "Đang mượn")
+                      .map((card, index) => {
+                        return <BorrowCard key={index} card={card} />;
+                      })
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

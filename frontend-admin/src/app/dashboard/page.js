@@ -9,8 +9,8 @@ const Dashboard = () => {
   return (
     <div className="flex flex-row w-full min-h-screen bg-[#F4F7FE]">
       <Sidebar />
-      <main className="self-stretch pr-[1.25rem] md:pl-52 ml-[1.25rem] my-auto w-full max-md:max-w-full py-[2rem]">
-        <div className="flex flex-col gap-2.5 self-start ">
+      <main className="self-stretch pr-[1.25rem] md:pl-52 ml-[1.25rem] my-auto w-full max-md:max-w-full pb-[2rem]">
+        <div className="flex flex-col gap-2.5 self-start pt-5">
           <h1 className="font-semibold text-[#062D67] text-[1.5rem]">
             Dashboard
           </h1>
@@ -63,16 +63,21 @@ const Dashboard = () => {
               <div className="flex bg-gray-200 rounded-full p-2">
                 <img src="/icon/calendar.svg" alt="Calendar Icon" />
               </div>
-              <h3 className="text-[1.125rem] font-semibold">Calendar</h3>
+              <h3 className="text-[1.125rem] font-semibold">Lịch cá nhân</h3>
             </div>
             <BookCalendar />
           </div>
         </section>
 
-        <div className="bg-white flex-col flex-1 p-6 rounded-[20px] border border-[#cdd5de] md:col-span-5">
-          {" "}
+        <div className="bg-white flex flex-col flex-1 p-6 rounded-[20px] border border-[#cdd5de] md:col-span-5">
           {/* col-span-5 để chiếm 5 cột */}
-          <h3 className="text-[1.125rem] font-semibold mb-3">Sách</h3>
+          <div className="flex items-center justify-start h-full mb-3 gap-2">
+            <div className="flex bg-gray-200 rounded-full p-2">
+              <img src="/icon/book.svg" alt="Book Icon" />
+            </div>
+            <h3 className="text-[1.125rem] font-semibold">Danh sách các sách</h3>
+          </div>
+
           <div className="w-full h-full">
             <BookTable />
           </div>

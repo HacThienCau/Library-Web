@@ -38,19 +38,20 @@ public class FineService {
     private NotificationService notificationService;
 
     public Fine addFine(Fine fine) {
-        fine.setTrangThai(Fine.TrangThai.CHUA_THANH_TOAN);
-        Fine savedFine = fineRepo.save(fine);
-        if (savedFine.getNoiDung().toString().equals("Làm mất sách")) {
-            ChildBook child = childBookRepo.findById(savedFine.getCardId())
+        fine.setTrangThai(Fine.TrangThai.CHUA_THANH_TOAN);        
+        if (fine.getNoiDung().toString().equals("Làm mất sách")) {
+            ChildBook child = childBookRepo.findById(fine.getCardId())
                     .orElseThrow(
-                            () -> new RuntimeException("Không tìm thấy sách con với id: " + savedFine.getCardId()));
+                            () -> new RuntimeException("Không tìm thấy sách con với id: " + fine.getCardId()));
             child.setTrangThai(ChildBook.TrangThai.DA_XOA);
             childBookRepo.save(child);
             Book book = bookRepo.findById(child.getIdParent())
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy sách với id: " + child.getIdParent()));
             book.setSoLuongXoa(book.getSoLuongXoa() + 1);
+            fine.setSoTien(book.getGia());            
             bookRepo.save(book);
         }
+        Fine savedFine = fineRepo.save(fine);
 
         mailService.mailFine(savedFine);
         String message = "Bạn đã bị phạt " + fine.getSoTien()

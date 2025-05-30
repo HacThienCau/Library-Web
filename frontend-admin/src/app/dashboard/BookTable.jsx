@@ -24,7 +24,7 @@ const StatusBadge = ({ trangThai }) => {
   return (
     <div className="flex basis-1/6 min-w-0 justify-center w-full items-center">
       <div
-        className={`self-center shrink w-fit max-w-full px-3 py-1 rounded-[99px] justify-center items-center inline-flex gap-2 ${
+        className={`self-center shrink w-[80%] max-w-full px-3 py-1 rounded-[99px] justify-center items-center inline-flex gap-2 ${
           isAvailable ? "bg-[#ECFDF3] text-[#037847] border-1 border-[#037847]" : "bg-[#FFEBEB] text-[#CF2E2E] border-1 border-[#CF2E2E]/50"
         }`}
       >
