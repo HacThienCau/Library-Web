@@ -151,21 +151,12 @@ export function HeroSection() {
   const [booksSuggest, setBooksSuggest] = useState([]); // mảng sách {title, ...}
   const [bookTitles, setBookTitles] = useState([]); // mảng tên sách dạng string
   const [bookAuthors, setBookAuthors] = useState([]); // mảng tên tác giả dạng string
-  const [suggestions, setSuggestions] = useState([]);
   const [newBooks, setNewBooks] = useState([]);
   const [popularBooks, setPopularBooks] = useState([]);
   const [literatureBooks, setLiteratureBooks] = useState([]);
   const [foreignBooks, setForeignBooks] = useState([]);
   const [economicsBooks, setEconomicsBooks] = useState([]);
 
-  const removeVietnameseTones = (str) => {
-    return str
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/đ/g, "d")
-      .replace(/Đ/g, "D")
-      .toLowerCase();
-  };
   useEffect(() => {
     // gọi API lấy toàn bộ sách
     const fetchBooks = async () => {
@@ -190,35 +181,6 @@ export function HeroSection() {
     };
 
     fetchBooks();
-
-    const fetchBooksSuggest = async () => {
-      try {
-        const userId = localStorage.getItem("id"); // thay bằng userId thật của bạn
-        const searchKeywords = localStorage.getItem("searchKeywords"); // mảng keyword ví dụ
-        const keywords = searchKeywords ? JSON.parse(searchKeywords) : [];
-
-        const response = await axios.post("http://localhost:8081/suggest", {
-          userId: userId,
-          keywords: keywords,
-        });
-        // console.log("Dữ liệu sách:", response.data);
-        const convertedBooks = response.data.map((book) => ({
-          id: book.id,
-          imageSrc: book.hinhAnh[0],
-          available: book.tongSoLuong - book.soLuongMuon - book.soLuongXoa > 0,
-          title: book.tenSach,
-          author: book.tenTacGia,
-          publisher: book.nxb,
-          borrowCount: book.soLuongMuon,
-        }));
-        setBooksSuggest(convertedBooks);
-      } catch (error) {
-        console.error("Lỗi khi fetch sách:", error);
-      }
-    };
-
-    fetchBooksSuggest();
-    console.log("Dữ liệu sách gợi ý:", booksSuggest);
 
     const fetchNewBooks = async () => {
       try {
@@ -283,118 +245,36 @@ export function HeroSection() {
       }
     };
     fetchEconomicsBooks();
+
+        const fetchBooksSuggest = async () => {
+      try {
+        const userId = localStorage.getItem("id"); // thay bằng userId thật của bạn
+        const searchKeywords = localStorage.getItem("searchKeywords"); // mảng keyword ví dụ
+        const keywords = searchKeywords ? JSON.parse(searchKeywords) : [];
+
+        const response = await axios.post("http://localhost:8081/suggest", {
+          userId: userId,
+          keywords: keywords,
+        });
+        // console.log("Dữ liệu sách:", response.data);
+        const convertedBooks = response.data.map((book) => ({
+          id: book.id,
+          imageSrc: book.hinhAnh[0],
+          available: book.tongSoLuong - book.soLuongMuon - book.soLuongXoa > 0,
+          title: book.tenSach,
+          author: book.tenTacGia,
+          publisher: book.nxb,
+          borrowCount: book.soLuongMuon,
+        }));
+        setBooksSuggest(convertedBooks);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách:", error);
+      }
+    };
+
+    fetchBooksSuggest();
   }, []);
 
-  useEffect(() => {
-    if (!searchTerm) {
-      setSuggestions([]);
-      return;
-    }
-
-    // Lọc sách tên chứa từ khóa (case-insensitive)
-    // let filtered = books.filter(
-    //   (book) =>
-    //     book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //     book.author.toLowerCase().includes(searchTerm.toLowerCase())
-    // );
-    const normalizedTerm = removeVietnameseTones(searchTerm);
-    let filtered = books.filter(
-      (book) =>
-        removeVietnameseTones(book.title).includes(normalizedTerm) ||
-        removeVietnameseTones(book.author).includes(normalizedTerm)
-    );
-
-    // Nếu không có kết quả thì sửa lỗi chính tả với didyoumean
-    // if (filtered.length === 0) {
-    //   const correction = didYouMean(searchTerm, bookTitles ) || didYouMean(searchTerm, bookAuthors);
-    //   if (correction) {
-    //     filtered = books.filter(book => book.title === correction) || books.filter(book => book.author === correction);
-    //   }
-    // }
-    if (filtered.length === 0) {
-      // const correctionTitle = didYouMean(searchTerm, bookTitles);
-      const correctionTitle = didYouMean(
-        normalizedTerm,
-        bookTitles.map(removeVietnameseTones)
-      );
-      // const correctionAuthor = didYouMean(searchTerm, bookAuthors);
-      const correctionAuthor = didYouMean(
-        normalizedTerm,
-        bookAuthors.map(removeVietnameseTones)
-      );
-
-      if (correctionTitle) {
-        filtered = books.filter((book) => book.title === correctionTitle);
-      } else if (correctionAuthor) {
-        filtered = books.filter((book) => book.author === correctionAuthor);
-      }
-    }
-
-    setSuggestions(filtered);
-  }, [searchTerm, books, bookTitles, bookAuthors]);
-
-  const MAX_KEYWORDS = 5;
-
-  const saveSearchTermToCache = (term) => {
-    if (!term.trim()) return;
-
-    // Lấy danh sách từ khóa hiện tại
-    const stored = JSON.parse(localStorage.getItem("searchKeywords") || "[]");
-
-    // Xóa nếu đã tồn tại
-    const updated = stored.filter((item) => item !== term);
-
-    // Thêm từ khóa mới vào đầu mảng
-    updated.unshift(term);
-
-    // Giới hạn số lượng từ khóa
-    const limited = updated.slice(0, MAX_KEYWORDS);
-
-    // Lưu lại vào localStorage
-    localStorage.setItem("searchKeywords", JSON.stringify(limited));
-  };
-
-  // 3. Khi chọn 1 sách trong gợi ý
-  const handleSelect = (title) => {
-    setSearchTerm(title);
-    setSuggestions([]);
-    console.log("Tìm kiếm:", title);
-    handleSearch();
-  };
-
-  const handleSearch = async () => {
-    try {
-      let res;
-
-      if (!searchTerm.trim()) {
-        res = await axios.get("http://localhost:8081/books");
-      } else {
-        res = await axios.get("http://localhost:8081/search", {
-          params: { query: searchTerm },
-        });
-      }
-      saveSearchTermToCache(searchTerm.trim());
-      const data = res?.data || [];
-
-      const convertedBooks = Array.isArray(data)
-        ? data.map((book) => ({
-            id: book.id,
-            imageSrc: book.hinhAnh[0],
-            available:
-              book.tongSoLuong - book.soLuongMuon - book.soLuongXoa > 0,
-            title: book.tenSach,
-            author: book.tenTacGia,
-            publisher: book.nxb,
-            borrowCount: book.soLuongMuon,
-          }))
-        : [];
-
-      setBooks(convertedBooks);
-    } catch (error) {
-      console.error("Lỗi khi tìm kiếm sách:", error);
-      setBooks([]); // Nếu có lỗi cũng để trống
-    }
-  };
   return (
     <>
       <main className="overflow-x-hidden">

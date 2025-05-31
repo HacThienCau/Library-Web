@@ -6,7 +6,7 @@ import { ShoppingCart } from "lucide-react"; // dùng icon từ lucide-react (ho
 
 export default function BookSection({ title, books, slug }) {
   const router = useRouter();
-  console.log("BookSection rendered with books:", books);
+  // console.log("BookSection rendered with books:", books);
 
   return (
     <section className="bg-white my-6 rounded-lg shadow p-6">

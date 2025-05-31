@@ -50,4 +50,6 @@ public interface BookRepo extends MongoRepository<Book, String> {
     List<Book> findTop3ByOrderBySoLuongMuonDesc();
     List<Book> findTop10ByTrangThaiOrderByNgayTaoDesc(Book.TrangThai trangThai);
     List<Book> findTop10ByTrangThaiOrderBySoLuongMuonDesc(Book.TrangThai trangThai);
+    List<Book> findAllByOrderByNgayTaoDesc();
+    List<Book> findAllByOrderBySoLuongMuonDesc();
 }
