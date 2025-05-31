@@ -54,7 +54,6 @@ public class DashBoardController {
         LocalDate startOfThisMonth = now.withDayOfMonth(1);
         LocalDateTime endTodayLDT = LocalDateTime.now();
 
-        // ✅ Chuyển toàn bộ sang java.util.Date
         Date start = java.sql.Timestamp.valueOf(firstDayLastMonth.atStartOfDay());
         Date end = java.sql.Timestamp.valueOf(lastDayLastMonth.atTime(23, 59, 59));
         Date startThisMonth = java.sql.Timestamp.valueOf(startOfThisMonth.atStartOfDay());
@@ -72,7 +71,7 @@ public class DashBoardController {
         long thisMonthBorrowCards = borrowCardRepo.countByBorrowDateBetween(startThisMonth, endToday);
         long thisMonthFineCards = fineRepo.countByNgayTaoBetween(startThisMonth, endToday);
 
-        // Put tất cả vào map
+        // Đưa vào map kết quả
         stats.put("totalUsers", totalUsers);
         stats.put("totalBooks", totalBooks);
         stats.put("totalBorrowCards", totalBorrowCards);
