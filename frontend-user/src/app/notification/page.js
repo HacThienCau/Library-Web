@@ -33,7 +33,7 @@ const NotiCard = ({ id, message, timestamp, read , refreshNoti}) => {
       onClick={handleMarkAsRead}>
       { !read ? (
     <>
-      <FaCircle className="text-red-500 text-xs mt-1" title="Chưa đọc" />
+      <FaCircle className="text-red-500 text-xs mt-1" title="Đánh dấu là đã đọc" />
       <div className="flex flex-col">
         <p className="text-[1.125rem] text-[#131313]/90" dangerouslySetInnerHTML={{ __html: formattedMessage }}></p>
         <span className="text-sm text-gray-500 mt-1">
@@ -43,7 +43,7 @@ const NotiCard = ({ id, message, timestamp, read , refreshNoti}) => {
     </>
   ) : (
     <div className="flex flex-col">
-      <p className="text-[1.125rem] text-[#131313]/50">{message}</p>
+      <p className="text-[1.125rem] text-[#131313]/50" dangerouslySetInnerHTML={{ __html: formattedMessage }}></p>
       <span className="text-sm text-gray-500 mt-1">
         {formattedDate} lúc {formattedTime}
       </span>
@@ -84,7 +84,7 @@ const page = () => {
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="pt-16 flex">
        
-        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
+        <section className="self-stretch pr-[1.25rem] ml-[1.25rem] my-auto w-full max-md:max-w-full mt-8 mb-2">
           <div className="flex flex-col p-5 w-full bg-white rounded-xl max-md:max-w-full">
             <div className="flex items-center justify-center gap-3">
               <h2 className="gap-2.5 self-center px-[1.25rem] py-[0.625rem] text-[1.5rem] text-[#062D76] font-semibold rounded-lg">

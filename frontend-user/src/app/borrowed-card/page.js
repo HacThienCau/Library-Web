@@ -61,9 +61,13 @@ const page = () => {
   return (
     <main className="flex flex-col min-h-screen text-foreground w-full">
       <div className="pt-16 flex">
-   
-        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
+        <section className="self-stretch pr-[1.25rem] ml-[1.25rem] my-auto w-full max-md:max-w-full mt-8 mb-2">
           <div className="mx-auto">
+            <div className="flex items-center justify-center gap-3">
+              <h2 className="gap-2.5 self-center px-[1.25rem] py-[0.625rem] text-[1.5rem] text-[#062D76] font-semibold rounded-lg">
+                Phiếu mượn sách
+              </h2>
+            </div>
             <header className="flex justify-between gap-8 max-lg:gap-3 max-sm:flex-col bg-white p-3 rounded-xl">
               {/* Current Borrowings Status */}
               <Button
