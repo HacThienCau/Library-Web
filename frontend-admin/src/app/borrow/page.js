@@ -141,7 +141,7 @@ const page = () => {
     <main className="flex flex-col min-h-screen w-full bg-[#EFF3FB]">
       <div className="flex">
         <Sidebar />
-        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
+        <section className="self-stretch pr-[1.25rem] ml-[1.25rem] my-auto w-full max-md:max-w-full mt-8 mb-2">
           <div className="mx-auto">
             <header className="flex justify-between gap-8 max-lg:gap-3 max-sm:flex-col p-3 rounded-xl">
               {/* Current Borrowings Status */}

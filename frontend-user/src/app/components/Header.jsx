@@ -5,9 +5,10 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Bell, Menu, Search,  ShoppingBag,  X } from "lucide-react";
+import { Bell, Menu, Search, ShoppingBag, X } from "lucide-react";
 import { motion, useScroll } from "framer-motion";
 import Image from "next/image";
+import axios from "axios";
 import {
   FaFacebookF,
   FaInstagram,
@@ -26,7 +27,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-
 const menuItems = [
   { name: "Trang chủ", href: "/" },
   { name: "Danh mục", href: "/Categories" },
@@ -39,8 +39,23 @@ export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const { scrollYProgress } = useScroll();
   const pathname = usePathname();
-
+  const [userInfo, setUserInfo] = useState(null);
   const router = useRouter();
+ const userId = localStorage.getItem("id");
+  useEffect(() => {
+    if (userId) {
+      fetchUserInfo(userId);
+    }
+  }, [userId]);
+
+  const fetchUserInfo = async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:8081/user/${id}`);
+      setUserInfo(response.data);
+    } catch (error) {
+      console.error("Lỗi khi lấy thông tin người dùng:", error);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.on("change", (latest) => {
@@ -51,7 +66,7 @@ export const Header = () => {
 
   const isActive = (href) => pathname === href;
 
-   const handleLogout = () => {
+  const handleLogout = () => {
     localStorage.removeItem("jwt");
     router.push("/user-login");
   };
@@ -61,22 +76,22 @@ export const Header = () => {
       {/* Topbar */}
       <div className="bg-sky-600 text-white text-sm px-4 py-1 flex justify-between items-center w-full overflow-hidden lg:px-14">
         {/* Left - Socials + Marquee */}
-          <div className="flex gap-4 text-lg">
-            <FaFacebookF />
-            <FaInstagram />
-            <FaYoutube />
-            <FaRss />
-          </div>
+        <div className="flex gap-4 text-lg">
+          <FaFacebookF />
+          <FaInstagram />
+          <FaYoutube />
+          <FaRss />
+        </div>
 
-         {/* Marquee / text scroll */}
-          <div className="whitespace-nowrap overflow-hidden relative w-[250px] sm:w-[400px] md:w-[600px]">
-            <div className="animate-marquee inline-block">
-              <span>
-                Chào mừng bạn đến với ReadHub. Nếu bạn cần giúp đỡ, hãy liên hệ
-                chúng tôi!
-              </span>
-            </div>
+        {/* Marquee / text scroll */}
+        <div className="whitespace-nowrap overflow-hidden relative w-[250px] sm:w-[400px] md:w-[600px]">
+          <div className="animate-marquee inline-block">
+            <span>
+              Chào mừng bạn đến với ReadHub. Nếu bạn cần giúp đỡ, hãy liên hệ
+              chúng tôi!
+            </span>
           </div>
+        </div>
 
         {/* Right - Contact Info */}
         <div className="hidden sm:flex gap-4 items-center text-white text-sm">
@@ -154,14 +169,14 @@ export const Header = () => {
             </div>
 
             {/* Search bar */}
-              <div className="hidden md:flex max-w-xs mx-8 items-center gap-2 ">
-                <input
-                  type="text"
-                  placeholder="Tìm sách ..."
-                  className="w-full border border-gray-300 rounded-full px-4 py-1 focus:outline-none"
-                />
-            <Search color="gray" className="cursor-pointer"/>
-              </div>
+            <div className="hidden md:flex max-w-xs mx-8 items-center gap-2 ">
+              <input
+                type="text"
+                placeholder="Tìm sách ..."
+                className="w-full border border-gray-300 rounded-full px-4 py-1 focus:outline-none"
+              />
+              <Search color="gray" className="cursor-pointer" />
+            </div>
 
             <div className="group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
               <div className="lg:hidden">
@@ -183,104 +198,103 @@ export const Header = () => {
                   ))}
                 </ul>
               </div>
-              
 
-<div className="flex flex-grow items-center gap-6">
+              <div className="flex flex-grow items-center gap-6">
+                <Link href="/cart">
+                <ShoppingBag color="gray" className="cursor-pointer" />
+                </Link>
+                <Link href="/notification">
+                <Bell color="gray" className="cursor-pointer" />
+                </Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 rounded-full border"
+                    >
+                      <Avatar className="h-9 w-9">
+                        <AvatarImage src={userInfo?.avatarUrl} alt="avatar" />
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-44">
+                    <DropdownMenuItem
+                      onClick={() => router.push(`/user-profile`)}
+                    >
+                      <img
+                        src="/images/profile.png"
+                        alt="setting"
+                        className="mr-0 h-5"
+                      />
+                      <span className="ml-2 font-semibold">Hồ sơ</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push(`/settings`)}>
+                      <img
+                        src="/images/setting.png"
+                        alt="setting"
+                        className="mr-0 h-5"
+                      />
+                      <span className="ml-2 font-semibold">Cài đặt</span>
+                    </DropdownMenuItem>
 
-<ShoppingBag color="gray" className="cursor-pointer" />
-<Bell color="gray" className="cursor-pointer" />
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="h-8 w-8 p-0 rounded-full border"
-      >
-        <Avatar className="h-9 w-9">
-      
-            <AvatarImage src="/images/td.jpg" alt="avatar" />
-      
-        </Avatar>
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end" className="w-44">
-      <DropdownMenuItem
-        onClick={() => router.push(`/user-profile`)}
-      >
-         <img
-                      src="/images/profile.png"
-                      alt="setting"
-                      className="mr-0 h-5"
-                    />
-                    <span className="ml-2 font-semibold">Hồ sơ</span>
-      </DropdownMenuItem>
-      <DropdownMenuItem onClick={() => router.push(`/settings`)}>
-        <img
-                      src="/images/setting.png"
-                      alt="setting"
-                      className="mr-0 h-5"
-                    />
-                    <span className="ml-2 font-semibold">Cài đặt</span>
-      </DropdownMenuItem>
+                    {/* Phiếu giao dịch có submenu */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <DropdownMenuItem className="justify-between">
+                          <div className="flex items-center">
+                            <img
+                              src="/images/mail.png"
+                              alt="mail"
+                              className="ml-0.5 h-3.5"
+                            />
+                            <span className="ml-4 font-semibold">Quản lý</span>
+                          </div>
+                          <svg
+                            className="ml-2 h-4 w-4"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
+                          </svg>
+                        </DropdownMenuItem>
+                      </DropdownMenuTrigger>
 
-       {/* Phiếu giao dịch có submenu */}
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <DropdownMenuItem className="justify-between">
-          <div className="flex items-center">
-          <img
-                      src="/images/mail.png"
-                      alt="mail"
-                      className="ml-0.5 h-3.5"
-                    />
-          <span className="ml-4 font-semibold">Quản lý</span>
-          </div>
-          <svg
-            className="ml-2 h-4 w-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </DropdownMenuItem>
-      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-40 left-full top-0 mt-[-4px]">
+                        <DropdownMenuItem
+                          onClick={() => router.push(`/borrowed-card`)}
+                        >
+                          Phiếu mượn
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => router.push(`/fine`)}>
+                          Phiếu phạt
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
 
-      <DropdownMenuContent className="w-40 left-full top-0 mt-[-4px]">
-        <DropdownMenuItem onClick={() => router.push(`/borrowed-card`)}>
-          Phiếu mượn
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push(`/fine`)}>
-          Phiếu phạt
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-
-
-      <DropdownMenuSeparator />
-      <DropdownMenuItem
-       onClick={handleLogout}
-       >
-        <img
-                      src="/images/logout.png"
-                      alt="logout"
-                      className="mr-0 h-5"
-                    />
-                    <span className="ml-2 font-semibold">Đăng xuất</span>
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-     </div>
-            
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <img
+                        src="/images/logout.png"
+                        alt="logout"
+                        className="mr-0 h-5"
+                      />
+                      <span className="ml-2 font-semibold">Đăng xuất</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </motion.div>
         </div>
-        
-
       </nav>
-
- 
     </header>
   );
 };

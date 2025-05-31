@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,17 +45,20 @@ public class DashBoardController {
         long totalBorrowCards = borrowCardRepo.count();
         long totalFineCards = fineRepo.count();
 
-        // Tính ngày đầu và cuối của tháng trước
+        // Tính ngày đầu và cuối tháng trước
         LocalDate now = LocalDate.now();
         LocalDate firstDayLastMonth = now.minusMonths(1).withDayOfMonth(1);
         LocalDate lastDayLastMonth = now.withDayOfMonth(1).minusDays(1);
 
-        Date start = java.sql.Date.valueOf(firstDayLastMonth);
-        Date end = java.sql.Date.valueOf(lastDayLastMonth);
-
+        // Tính đầu tháng này và thời điểm hiện tại
         LocalDate startOfThisMonth = now.withDayOfMonth(1);
-        Date startThisMonth = java.sql.Date.valueOf(startOfThisMonth);
-        Date endToday = java.sql.Date.valueOf(now); // hoặc LocalDateTime.now()
+        LocalDateTime endTodayLDT = LocalDateTime.now();
+
+        // ✅ Chuyển toàn bộ sang java.util.Date
+        Date start = java.sql.Timestamp.valueOf(firstDayLastMonth.atStartOfDay());
+        Date end = java.sql.Timestamp.valueOf(lastDayLastMonth.atTime(23, 59, 59));
+        Date startThisMonth = java.sql.Timestamp.valueOf(startOfThisMonth.atStartOfDay());
+        Date endToday = java.sql.Timestamp.valueOf(endTodayLDT);
 
         // Tổng tháng trước
         long lastMonthUsers = userRepo.countByNgayTaoBetween(start, end);

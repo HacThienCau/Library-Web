@@ -97,7 +97,7 @@ function page() {
     <main className="flex flex-col min-h-screen text-foreground">
       <div className="pt-16 flex">
     
-        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
+        <section className="self-stretch pr-[1.25rem] ml-[1.25rem] my-auto w-full max-md:max-w-full mt-8 mb-2">
           {/*Nút Back - Floating Button*/}
           {/*Nút Back*/}
           <div className="mb-2 fixed z-50 flex justify-between items-center">
