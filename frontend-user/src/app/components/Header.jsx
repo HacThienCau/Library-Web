@@ -185,6 +185,7 @@ export const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("jwt");
+    localStorage.removeItem("id");
     router.push("/user-login");
   };
 

@@ -245,6 +245,34 @@ export function HeroSection() {
       }
     };
     fetchEconomicsBooks();
+
+        const fetchBooksSuggest = async () => {
+      try {
+        const userId = localStorage.getItem("id"); // thay bằng userId thật của bạn
+        const searchKeywords = localStorage.getItem("searchKeywords"); // mảng keyword ví dụ
+        const keywords = searchKeywords ? JSON.parse(searchKeywords) : [];
+
+        const response = await axios.post("http://localhost:8081/suggest", {
+          userId: userId,
+          keywords: keywords,
+        });
+        // console.log("Dữ liệu sách:", response.data);
+        const convertedBooks = response.data.map((book) => ({
+          id: book.id,
+          imageSrc: book.hinhAnh[0],
+          available: book.tongSoLuong - book.soLuongMuon - book.soLuongXoa > 0,
+          title: book.tenSach,
+          author: book.tenTacGia,
+          publisher: book.nxb,
+          borrowCount: book.soLuongMuon,
+        }));
+        setBooksSuggest(convertedBooks);
+      } catch (error) {
+        console.error("Lỗi khi fetch sách:", error);
+      }
+    };
+
+    fetchBooksSuggest();
   }, []);
 
   return (
