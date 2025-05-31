@@ -48,18 +48,24 @@ public class BookController {
 
     @PostMapping("/suggest")
     public List<Book> suggestBooks(@RequestBody Map<String, Object> requestBody) {
-        String userId = (requestBody.get("userId").toString());
-
-        // Ép kiểu cho danh sách từ khóa
         List<String> keywords = (List<String>) requestBody.get("keywords");
 
-        return bookService.getSuggestions(userId, keywords);
+        // Nếu có userId và không rỗng thì gợi ý cá nhân hóa
+        Object userIdObj = requestBody.get("userId");
+
+        if (userIdObj != null && userIdObj instanceof String userId && !userId.trim().isEmpty()) {
+            return bookService.getPersonalizedSuggestions(userId, keywords);
+        }
+
+        // Nếu không có userId thì gợi ý bình thường
+        return bookService.getGeneralSuggestions(keywords);
     }
 
     @GetMapping("/books/top5")
     public List<Map<String, Object>> getTop5Books() {
         return bookService.layTop5Book();
     }
+
     @GetMapping("/books/newest")
     public List<Book> getNewestBooks() {
         return bookService.getNewestBooks();
