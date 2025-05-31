@@ -157,7 +157,7 @@ function page() {
           <Button
             title={"Thanh Toán"}
             disabled={fine?.trangThai==="CHUA_THANH_TOAN"?false:true}
-            className={`rounded-3xl w-40 h-12 ${fine?.trangThai==="CHUA_THANH_TOAN"?"bg-[#062D76]":"bg-[#b6cefa]"}`}
+            className={`rounded-3xl cursor-pointer w-40 h-12 ${fine?.trangThai==="CHUA_THANH_TOAN"?"bg-[#062D76]":"bg-[#b6cefa]"}`}
             onClick={() => {
               handleThanhToan()
             }}
