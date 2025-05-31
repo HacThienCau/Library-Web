@@ -134,7 +134,7 @@ const page = () => {
             <Input
               type="text"
               placeholder="Tìm kiếm người dùng"
-              className="flex flex-1 h-10 font-thin italic text-black text-[1.5rem] self-center bg-white rounded-[10px] placeholder:text-[1rem]"
+              className="flex flex-1 h-10 font-thin text-black text-[1.5rem] self-center bg-white rounded-[10px] placeholder:text-[1rem]"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {

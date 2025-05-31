@@ -4,7 +4,7 @@ import Sidebar from "../components/sidebar/Sidebar";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { useRouter } from "next/navigation";
-import { Plus, Search, ReceiptText, Timer, DollarSign } from "lucide-react";
+import { List, Plus, Search, ReceiptText, Timer, DollarSign } from "lucide-react";
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
 
@@ -93,12 +93,12 @@ const page = () => {
         <div className="w-full flex justify-end mr-10">
           <Button
             title={"Xem Chi Tiết"}
-            className="w-15 md:w-60 h-10 bg-[#062D76] hover:bg-gray-700 cursor-pointer"
+            className="w-15 md:w-60 h-10 rounded-xl bg-[#062D76] hover:bg-gray-700 cursor-pointer"
             onClick={() => {
               handleDetail(fine.id);
             }}
           >
-            <ReceiptText className="w-5 h-5" color="white" />
+            <List className="w-5 h-5" color="white" />
             <p className="hidden md:block">Xem chi tiết</p>
           </Button>
         </div>
@@ -147,13 +147,13 @@ const page = () => {
               Đã Thanh Toán
             </Button>
           </div>
-          <div className="flex gap-5">
+          <div className="flex flex-1 gap-5">
             {" "}
             {/*Bên Phải*/}
             <Input
               type="text"
               placeholder="Tìm kiếm"
-              className="w-xs md:w-2xl h-10 font-thin italic text-black text-2xl bg-white rounded-[10px]"
+              className="flex flex-1 h-10 font-thin text-black text-2xl bg-white rounded-[10px]"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}

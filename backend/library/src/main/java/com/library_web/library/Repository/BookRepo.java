@@ -7,12 +7,16 @@ import java.util.Map;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.repository.Aggregation;
+import org.springframework.data.domain.Pageable;
 
 @Repository
 public interface BookRepo extends MongoRepository<Book, String> {
     List<Book> findByTrangThai(Book.TrangThai status);
 
+    Page<Book> findAll(Pageable pageable);
+    
     List<Book> findByTenSachContainingIgnoreCase(String tenSach);
 
     List<Book> findByTenTacGiaContainingIgnoreCase(String tenTacGia);

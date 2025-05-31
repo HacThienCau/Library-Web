@@ -10,8 +10,9 @@ import com.library_web.library.Repository.CategoryRepo;
 import com.library_web.library.Repository.ChildBookRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Pageable;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -96,6 +97,44 @@ public class BookService {
 
         return resultList;
     }
+
+    public List<Map<String, Object>> layTop5Book() {
+    Pageable pageable = PageRequest.of(0, 5); // trang 0, lấy 5 sách
+    List<Book> books = bookRepo.findAll(pageable).getContent();
+
+    List<Map<String, Object>> resultList = new ArrayList<>();
+    for (Book book : books) {
+        Category cate = categoryRepo.findById(book.getTheLoai()).orElse(null);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("id", book.getId());
+        resultMap.put("tenSach", book.getTenSach());
+        resultMap.put("moTa", book.getMoTa());
+        resultMap.put("hinhAnh", book.getHinhAnh());
+        resultMap.put("theLoai", book.getTheLoai());
+        resultMap.put("tenTacGia", book.getTenTacGia());
+        resultMap.put("nxb", book.getNxb());
+        resultMap.put("nam", book.getNam());
+        resultMap.put("tongSoLuong", book.getTongSoLuong());
+        resultMap.put("soLuongMuon", book.getSoLuongMuon());
+        resultMap.put("soLuongXoa", book.getSoLuongXoa());
+        resultMap.put("trangThai", book.getTrangThai());
+
+        if (cate != null) {
+            resultMap.put("tenTheLoaiCha", cate.getTenTheLoaiCha());
+            resultMap.put("tenTheLoaiCon", cate.getTenTheLoaiCon());
+            resultMap.put("viTri", cate.getViTri());
+        } else {
+            resultMap.put("tenTheLoaiCha", null);
+            resultMap.put("tenTheLoaiCon", null);
+            resultMap.put("viTri", null);
+        }
+
+        resultList.add(resultMap);
+    }
+
+    return resultList;
+}
 
     public Map<String, Object> layBookTheoId(String id) {
         Book book = bookRepo.findById(id).orElse(null);
