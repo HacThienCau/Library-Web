@@ -6,10 +6,15 @@ import { format } from "date-fns";
 
 const fakeEvents = {
   "2025-05-29": [
-    { type: "borrow", title: "Mượn: Harry Potter" },
-    { type: "return", title: "Trả: Lập trình Java" },
+    { type: "borrow", title: "Mượn: Chí Phèo" },
+    { type: "return", title: "Trả: Đôi Mắt Của Mona" },
   ],
-  "2025-05-23": [{ type: "borrow", title: "Mượn: UX Design for Beginners" }],
+  "2025-05-23": [{ type: "borrow", title: "Mượn: Tiếng Việt Lớp 1 - Tập 2" }],
+  "2025-05-14": [
+    { type: "borrow", title: "Mượn: Mê Cung Của Linh Hồn" },
+    { type: "return", title: "Trả: Bồi Dưỡng Học Sinh Giỏi Toán 8 - Tập 2" },
+    { type: "return", title: "Trả: Lão Hạc" },
+  ],
 };
 
 export default function Calendar() {
@@ -36,6 +41,9 @@ export default function Calendar() {
       <style>
         {`
             .rdp-month {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
             border: 1px solid #D1D5DB;   /* viền xám nhẹ */
             border-radius: 10px;        /* bo góc viền */
             padding-bottom: 0.5rem;            /* padding xung quanh */
@@ -120,7 +128,7 @@ export default function Calendar() {
       />
 
       {showPopup && (
-        <div className="absolute top-[40%] left-1/2 -translate-x-1/2 mt-2 bg-white border rounded shadow-md p-4 z-50 w-64">
+        <div className="absolute top-[50%] left-[84%] -translate-x-1/2 mt-2 bg-white border rounded shadow-md p-4 z-50 w-64">
           <div className="flex justify-between items-center mb-2">
             <h2 className="font-bold text-[#062D76]">
               Sự kiện ngày {format(selected, "dd/MM/yyyy")}
