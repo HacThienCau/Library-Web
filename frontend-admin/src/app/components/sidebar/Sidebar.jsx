@@ -68,8 +68,8 @@ const Sidebar = () => {
           <Image
             src="/images/logo.png"
             alt="Logo"
-            width={45}
-            height={45}
+            width={35}
+            height={35}
             className="w-auto justify-start bg-transparent object-cover border-2 mr-1 rounded-full"
           />
           <div className="text-xl font-bold bg-gradient-to-r from-blue-400 to-blue-700 bg-clip-text text-transparent">

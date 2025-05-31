@@ -2,6 +2,7 @@ package com.library_web.library.Repository;
 
 import com.library_web.library.Model.Book;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,12 +39,13 @@ public interface BookRepo extends MongoRepository<Book, String> {
     // List<Book> findByTheLoaiOrderByDanhGiaTrungBinhDesc(String theLoai);
     @Aggregation(pipeline = {
         "{ '$group': { " +
-            " '_id': { $dateToString: { format: '%Y-%m', date: '$timestamp' } }, " + 
+            " '_id': { $dateToString: { format: '%Y-%m', date: '$ngayTao' } }, " + 
             " 'count': { $sum: 1 } " +
         "} }",
         "{ '$sort': { '_id': 1 } }"
     })
     List<Map<String, Object>> getBooksImportStatsByMonth();
+    long countByNgayTaoBetween(Date start, Date end);
 
     List<Book> findTop3ByOrderBySoLuongMuonDesc();
     List<Book> findTop10ByTrangThaiOrderByNgayTaoDesc(Book.TrangThai trangThai);

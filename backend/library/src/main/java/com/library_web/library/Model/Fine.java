@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -23,9 +24,13 @@ public class Fine {
     private String orderId;
     private TrangThai trangThai;
     private LocalDateTime ngayThanhToan;
+    @CreatedDate
+    private LocalDateTime ngayTao;
+
     public enum TrangThai {
         CHUA_THANH_TOAN("Chưa Thanh Toán"),
         DA_THANH_TOAN("Đã Thanh Toán");
+
         private final String moTa;
 
         TrangThai(String moTa) {
