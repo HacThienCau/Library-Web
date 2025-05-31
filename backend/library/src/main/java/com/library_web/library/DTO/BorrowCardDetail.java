@@ -17,8 +17,9 @@ public class BorrowCardDetail {
     private LocalDateTime borrowDate;
     private LocalDateTime getBookDate; // Ngày lấy sách (hạn lấy sách)
     private LocalDateTime dueDate;
-    private int totalBooks;  // Số lượng sách mượn
-    private List<BookInfo> books;  // Danh sách sách mượn kèm thông tin
+    private int totalBooks; // Số lượng sách mượn
+    private List<BookInfo> books; // Danh sách sách mượn kèm thông tin
+    private List<String> childBookIds;
 
     @Data
     @NoArgsConstructor

@@ -189,7 +189,7 @@ function page() {
               )}
             </div>
           )}
-          <div className="fixed bottom-0 self-stretch mr-[1.25rem] md:left-60 ml-[1.25rem] right-0 bg-[#E6EAF1] shadow-lg p-3 flex justify-between">
+          <div className="fixed bottom-0 self-stretch left-0 right-0 bg-[#E6EAF1] shadow-lg p-3 flex justify-between">
             {/*Control Bar*/}
             <div></div>
             <Button
