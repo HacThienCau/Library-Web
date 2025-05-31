@@ -40,7 +40,7 @@ export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const { scrollYProgress } = useScroll();
   const pathname = usePathname();
-
+  const [userInfo, setUserInfo] = useState(null);
   const router = useRouter();
   const [books, setBooks] = useState([]);
   const [bookTitles, setBookTitles] = useState([]);
@@ -166,6 +166,20 @@ export const Header = () => {
     } catch (error) {
       console.error("Lỗi khi tìm kiếm sách:", error);
       setBooks([]); // Nếu có lỗi cũng để trống
+ const userId = localStorage.getItem("id");
+  useEffect(() => {
+    if (userId) {
+      fetchUserInfo(userId);
+    }
+  }, [userId]);
+
+  const fetchUserInfo = async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:8081/user/${id}`);
+      setUserInfo(response.data);
+    } catch (error) {
+      console.error("Lỗi khi lấy thông tin người dùng:", error);
+
     }
   };
 
@@ -358,8 +372,12 @@ export const Header = () => {
               </div>
 
               <div className="flex flex-grow items-center gap-6">
+                <Link href="/cart">
                 <ShoppingBag color="gray" className="cursor-pointer" />
+                </Link>
+                <Link href="/notification">
                 <Bell color="gray" className="cursor-pointer" />
+                </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -368,7 +386,7 @@ export const Header = () => {
                       className="h-8 w-8 p-0 rounded-full border"
                     >
                       <Avatar className="h-9 w-9">
-                        <AvatarImage src="/images/td.jpg" alt="avatar" />
+                        <AvatarImage src={userInfo?.avatarUrl} alt="avatar" />
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>

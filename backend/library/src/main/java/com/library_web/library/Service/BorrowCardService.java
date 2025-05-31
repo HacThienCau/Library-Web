@@ -216,7 +216,8 @@ public class BorrowCardService {
                 borrowCard.getGetBookDate(),
                 borrowCard.getDueDate(),
                 bookInfos.size(),
-                bookInfos);
+                bookInfos,
+                borrowCard.getChildBookIds());
     }
 
     // Xóa phiếu mượn theo ID

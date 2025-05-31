@@ -52,14 +52,14 @@ const page = () => {
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="pt-16 flex">
        
-        <section className="self-stretch pr-[1.25rem] md:pl-60   my-auto w-full max-md:max-w-full mt-2 mb-2">
+        <section className="self-stretch px-[1.25rem] my-auto w-full max-md:max-w-full mt-8 mb-2">
           <div className="flex flex-col p-5 w-full bg-white rounded-xl max-md:max-w-full">
             <div className="flex gap-5 justify-between items-start max-sm:flex-col">
               <div className="flex gap-3 items-center">
                 <img
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/fb9987cd966719f0a79fed4d14e27ca697da1ec1?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816"
+                  src={userInfo?.avatarUrl}
                   alt="User avatar"
-                  className="object-contain shrink-0 self-stretch my-auto aspect-square w-[5rem]"
+                  className="object-cover shrink-0 self-stretch my-auto rounded-full aspect-square w-[5rem]"
                 />
                 <div className="flex flex-col gap-2.5">
                   <h2 className="text-[1.25rem] font-bold text-neutral-900">
