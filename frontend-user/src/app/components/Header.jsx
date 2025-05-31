@@ -166,7 +166,9 @@ export const Header = () => {
     } catch (error) {
       console.error("Lỗi khi tìm kiếm sách:", error);
       setBooks([]); // Nếu có lỗi cũng để trống
- const userId = localStorage.getItem("id");
+    }
+  }
+  const userId = localStorage.getItem("id");
   useEffect(() => {
     if (userId) {
       fetchUserInfo(userId);
@@ -193,7 +195,7 @@ export const Header = () => {
   useEffect(() => {
   setSearchTerm("");
   setSuggestions([]);
-}, [pathname]);
+  }, [pathname]);
 
   const isActive = (href) => pathname === href;
 
