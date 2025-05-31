@@ -149,9 +149,9 @@ const Dashboard = () => {
     <div className="flex flex-row w-full min-h-screen bg-[#F4F7FE]">
       <Sidebar />
       <main className="self-stretch pr-[1.25rem] md:pl-52 ml-[1.25rem] my-auto w-full max-md:max-w-full pb-[2rem]">
-        <div className="flex flex-col gap-2.5 self-start pt-5">
-          <h1 className="font-semibold text-[#1A2656] text-[1.5rem]">
-            Dashboard
+        <div className="flex flex-col gap-3 self-start pt-5">
+          <h1 className="font-semibold text-[#1A2656] text-[1.25rem]">
+            Thống kê tổng quan
           </h1>
           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 self-stretch shrink gap-4 justify-between items-center w-full leading-none text-white h-full max-md:max-w-full">
             <StatisticsCard
