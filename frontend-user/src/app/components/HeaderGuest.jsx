@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Menu, Search, X } from "lucide-react";
@@ -18,6 +17,7 @@ import {
   FaPhone,
   FaEnvelope,
 } from "react-icons/fa";
+import { usePathname, useRouter } from "next/navigation";
 
 const menuItems = [
   { name: "Trang chủ", href: "/" },
@@ -31,11 +31,11 @@ export const HeaderGuest = () => {
   const [scrolled, setScrolled] = useState(false);
   const { scrollYProgress } = useScroll();
   const pathname = usePathname();
+  const router = useRouter();
+  const [bookTitles, setBookTitles] = useState([]);
+  const [bookAuthors, setBookAuthors] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [books, setBooks] = useState([]);
-  const [booksSuggest, setBooksSuggest] = useState([]); // mảng sách {title, ...}
-  const [bookTitles, setBookTitles] = useState([]); // mảng tên sách dạng string
-  const [bookAuthors, setBookAuthors] = useState([]); // mảng tên tác giả dạng string
   const [suggestions, setSuggestions] = useState([]);
 
   const removeVietnameseTones = (str) => {
@@ -46,36 +46,6 @@ export const HeaderGuest = () => {
       .replace(/Đ/g, "D")
       .toLowerCase();
   };
-
-  useEffect(() => {
-    const fetchBooksSuggest = async () => {
-      try {
-        // const userId = localStorage.getItem("id"); // thay bằng userId thật của bạn
-        const searchKeywords = localStorage.getItem("searchKeywords"); // mảng keyword ví dụ
-        const keywords = searchKeywords ? JSON.parse(searchKeywords) : [];
-
-        const response = await axios.post("http://localhost:8081/suggest", {
-          // userId: userId,
-          keywords: keywords,
-        });
-        // console.log("Dữ liệu sách:", response.data);
-        const convertedBooks = response.data.map((book) => ({
-          id: book.id,
-          imageSrc: book.hinhAnh[0],
-          available: book.tongSoLuong - book.soLuongMuon - book.soLuongXoa > 0,
-          title: book.tenSach,
-          author: book.tenTacGia,
-          publisher: book.nxb,
-          borrowCount: book.soLuongMuon,
-        }));
-        setBooksSuggest(convertedBooks);
-      } catch (error) {
-        console.error("Lỗi khi fetch sách:", error);
-      }
-    };
-
-    fetchBooksSuggest();
-  }, []);
 
   useEffect(() => {
     if (!searchTerm) {
@@ -147,11 +117,13 @@ export const HeaderGuest = () => {
   };
 
   // 3. Khi chọn 1 sách trong gợi ý
-  const handleSelect = (title) => {
-    setSearchTerm(title);
+  // 3. Khi chọn 1 sách trong gợi ý
+  const handleSelect = (book) => {
+    setSearchTerm(book.title);
     setSuggestions([]);
-    console.log("Tìm kiếm:", title);
-    handleSearch();
+    // console.log("Tìm kiếm:", id);
+    // handleSearch();
+    router.push(`/book-detail/${book.id}`); // Chuyển hướng đến trang sách
   };
 
   const handleSearch = async () => {
@@ -196,6 +168,11 @@ export const HeaderGuest = () => {
   }, [scrollYProgress]);
 
   const isActive = (href) => pathname === href;
+
+  useEffect(() => {
+    setSearchTerm("");
+    setSuggestions([]);
+  }, [pathname]);
 
   return (
     <header>
@@ -343,7 +320,6 @@ export const HeaderGuest = () => {
                       }
                     }}
                   />
-                  
                 </div>
 
                 {suggestions.length > 0 && (
@@ -351,7 +327,7 @@ export const HeaderGuest = () => {
                     {suggestions.map((book, idx) => (
                       <li
                         key={idx}
-                        onClick={() => handleSelect(book.title)}
+                        onClick={() => handleSelect(book)}
                         onMouseDown={(e) => e.preventDefault()}
                         className="px-4 py-2 cursor-pointer hover:bg-[#f2f2f2] transition-colors"
                       >
