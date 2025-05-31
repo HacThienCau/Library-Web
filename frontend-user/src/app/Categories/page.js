@@ -85,7 +85,7 @@ const BookSortFilters = ({ onSelectSort, selectedSort }) => {
 
 const Page = () => {
   const [groupedCategories, setGroupedCategories] = useState([]);
-  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState("all");
   const [selectedSort, setSelectedSort] = useState("all");
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -117,15 +117,17 @@ const Page = () => {
     try {
       let url = "http://localhost:8081/books";
 
-      if (subcategory) {
+      if (subcategory !== "all") {
         url = `http://localhost:8081/books/categories/id/${subcategory.id}`;
+      } else {
+        url = `http://localhost:8081/books/filter`;
       }
 
       if (sortKey) {
         // Ví dụ: thêm query param ?sort=borrowed hoặc ?sort=latest
         url += `?sort=${sortKey}`;
       }
-      console.log("Fetching books from URL:", url);
+      // console.log("Fetching books from URL:", url);
       const res = await fetch(url);
       const data = await res.json();
       setBooks(data);
@@ -136,6 +138,7 @@ const Page = () => {
   };
 
   const handleSubcategorySelect = (sub) => {
+    console.log("Selected subcategory:", sub);
     setSelectedSubcategory(sub);
     fetchBooks(sub, selectedSort);
   };

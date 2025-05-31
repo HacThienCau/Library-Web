@@ -176,6 +176,33 @@ public ResponseEntity<?> getBooksByParentCategory(
     }
   }
 
+  @GetMapping("/books/filter")
+public ResponseEntity<?> filterBooks(
+    @RequestParam(required = false, defaultValue = "all") String sort) {
+  try {
+    List<Book> books;
+
+    switch (sort) {
+      case "newest":
+        books = BookRepo.findAllByOrderByNgayTaoDesc(); // 👉 dùng ngày tạo
+        break;
+      case "mostBorrowed":
+        books = BookRepo.findAllByOrderBySoLuongMuonDesc();
+        break;
+      // case "topRated":
+      //   books = BookRepo.findAllOrderByDanhGiaTrungBinhDesc();
+      //   break;
+      default: // "all"
+        books = BookRepo.findAll();
+        break;
+    }
+
+    return ResponseEntity.ok(books);
+  } catch (Exception e) {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("⚠️ Lỗi khi lọc sách: " + e.getMessage());
+  }
+}
   // // Chỉ cập nhật nếu giá trị mới khác null
   // if (BookMoi.getTenSach() != null)
   // BookCu.setTenSach(BookMoi.getTenSach());
