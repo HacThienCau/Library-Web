@@ -225,7 +225,7 @@ const page = () => {
             })
           )}
         </section>
-        <ChatBotButton />
+        {/* <ChatBotButton /> */}
       </div>
     </main>
   );

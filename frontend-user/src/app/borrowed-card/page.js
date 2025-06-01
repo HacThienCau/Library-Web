@@ -229,7 +229,7 @@ const page = () => {
             </section>
           </div>
         </section>
-        <ChatBotButton />
+        {/* <ChatBotButton /> */}
       </div>
     </main>
   );

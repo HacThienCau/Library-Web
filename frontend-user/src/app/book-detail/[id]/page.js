@@ -250,7 +250,7 @@ function page() {
 
           <BookReview />
         </section>
-        <ChatBotButton />
+        {/* <ChatBotButton /> */}
       </main>
 }
     </div>

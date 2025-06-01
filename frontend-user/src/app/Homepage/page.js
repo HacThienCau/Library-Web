@@ -405,7 +405,7 @@ const HomePage = () => {
             </div>
           </section>
         </section>
-        <ChatBotButton />
+        {/* <ChatBotButton /> */}
       </main>
     </div>
   );

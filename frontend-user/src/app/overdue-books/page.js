@@ -90,7 +90,7 @@ const page = () => {
             </div>
           </div>
         </section>
-        <ChatBotButton />
+        {/* <ChatBotButton /> */}
       </main>
     </div>
   );

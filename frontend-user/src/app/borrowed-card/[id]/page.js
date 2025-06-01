@@ -289,7 +289,7 @@ const ChiTietPhieuMuon = () => {
             </section>
           </div>
         </section>
-        <ChatBotButton />
+        {/* <ChatBotButton /> */}
         {popUpOpen && (
           <div className="fixed inset-0 items-center justify-center z-100 flex">
             <div className="w-full h-full bg-black opacity-[80%] absolute top-0 left-0"></div>

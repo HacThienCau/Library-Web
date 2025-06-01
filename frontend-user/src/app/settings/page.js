@@ -223,7 +223,7 @@ const userId = localStorage.getItem("id");
             </div>
           </div>
         </section>
-        <ChatBotButton />
+        {/* <ChatBotButton /> */}
       </main>
     </div>
   );

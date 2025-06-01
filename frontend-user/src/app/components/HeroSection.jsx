@@ -11,6 +11,8 @@ import BookSection from "./BookSection";
 import ImageCarousel from "./ImageCarousel";
 import BookCard from "./BookCard";
 
+import Chat from "./Chat";
+
 const bookData = [
   {
     title: "Sách mới",
@@ -380,7 +382,7 @@ export function HeroSection() {
                       <img
                         src={book.imageSrc}
                         alt={book.title}
-                        className="w-full h-auto rounded-lg"
+                        className="h-[280px] w-[200px] rounded-lg object-cover"
                         onClick={() =>
                           (window.location.href = `/book-detail/${book.id}`)
                         }
@@ -458,8 +460,8 @@ export function HeroSection() {
         <section className="flex flex-col lg:flex-row items-center gap-8 px-6 py-12 max-w-7xl mx-auto">
           {/* Text Content */}
           <div className="flex-1 text-left">
-            <h2 className="text-3xl font-bold text-sky-600">ReadHub</h2>
-            <p className="italic text-sky-700 mt-1">
+            <h2 className="text-3xl font-bold text-[#062D76]">ReadHub</h2>
+            <p className="italic text-sky-900 mt-1">
               Thư viện thông minh cho thế hệ mới
             </p>
             <p className="mt-4 text-gray-700 leading-relaxed text-justify">
@@ -469,7 +471,7 @@ export function HeroSection() {
               người bạn đồng hành đáng tin cậy trên hành trình chinh phục tri
               thức trong kỷ nguyên số.
             </p>
-            <button className="mt-6 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-5 rounded shadow">
+            <button className="mt-6 bg-[#062D76] hover:bg-sky-700 text-white font-semibold py-2 px-5 rounded shadow">
               Xem thêm
             </button>
           </div>
@@ -558,6 +560,7 @@ export function HeroSection() {
             </div>
           </div>
         </section>
+        <Chat />
       </main>
     </>
   );
