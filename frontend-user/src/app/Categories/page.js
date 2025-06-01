@@ -152,14 +152,12 @@ const Page = () => {
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="pt-16 flex gap-4 px-4">
         {/* Nếu vẫn giữ CategorySidebar bên ngoài khung trắng, để ngoài hoặc bỏ hẳn */}
-        <aside className="w-64 shrink-0">
         
-        </aside>
 
         {/* Khung trắng chung chứa LeftSideBar2 + khu vực chính */}
         <section className="flex-1 bg-white rounded-xl p-5 flex gap-6 max-md:flex-col max-md:p-4 border border-gray-200 shadow-md">
           {/* LeftSideBar2 - chiều rộng cố định */}
-          <div className="w-64 shrink-0">
+          <div className=" shrink-0">
             <LeftSideBar2
               groupedCategories={groupedCategories}
               selectedSubcategory={selectedSubcategory}
@@ -216,7 +214,7 @@ const Page = () => {
           </div>
         </section>
 
-        <ChatBotButton />
+        {/* <ChatBotButton /> */}
       </main>
     </div>
   );

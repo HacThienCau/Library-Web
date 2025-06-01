@@ -208,7 +208,7 @@ export const Header = () => {
   return (
     <header>
       {/* Topbar */}
-      <div className="bg-sky-600 text-white text-sm px-4 py-1 flex justify-between items-center w-full overflow-hidden lg:px-14">
+      <div className="bg-[#062D76] text-white text-sm px-4 py-1 flex justify-between items-center w-full overflow-hidden lg:px-14">
         {/* Left - Socials + Marquee */}
         <div className="flex gap-4 text-lg">
           <FaFacebookF />
@@ -290,8 +290,8 @@ export const Header = () => {
                         className={cn(
                           "block duration-150 px-3 py-1 rounded-md",
                           isActive(item.href)
-                            ? "text-sky-600 border border-sky-700 font-semibold"
-                            : "text-muted-foreground hover:text-sky-500"
+                            ? " font-semibold bg-[#062D76] text-white"
+                            : "text-muted-foreground hover:text-sky-900"
                         )}
                       >
                         {item.name}

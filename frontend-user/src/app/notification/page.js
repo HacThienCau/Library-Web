@@ -121,7 +121,7 @@ const page = () => {
             )}
           </div>
         </section>
-        <ChatBotButton />
+        {/* <ChatBotButton /> */}
       </main>
     </div>
   );
