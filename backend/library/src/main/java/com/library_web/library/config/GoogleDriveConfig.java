@@ -4,9 +4,13 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.util.ExponentialBackOff;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -36,8 +40,20 @@ public class GoogleDriveConfig {
         ServiceAccountCredentials.fromStream(new ClassPathResource(serviceAccountKeyPath).getInputStream())
         .createScoped(Collections.singleton(DriveScopes.DRIVE));
 
-        return new Drive.Builder(httpTransport, JSON_FACTORY, new HttpCredentialsAdapter(credentials))
+        // Tạo HttpRequestInitializer có timeout
+        HttpRequestInitializer httpRequestInitializer = new HttpCredentialsAdapter(credentials) {
+            @Override
+            public void initialize(HttpRequest request) throws IOException {
+                super.initialize(request);
+                request.setConnectTimeout(3 * 60000); // 3 phút
+                request.setReadTimeout(3 * 60000);    // 3 phút
+                request.setUnsuccessfulResponseHandler(
+                    new HttpBackOffUnsuccessfulResponseHandler(new ExponentialBackOff()));
+            }
+        };
+
+        return new Drive.Builder(httpTransport, JSON_FACTORY, httpRequestInitializer)
                 .setApplicationName(applicationName)
                 .build();
-    }
+}
 }

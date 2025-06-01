@@ -27,9 +27,9 @@ public class BookService {
     @Autowired
     private CategoryRepo categoryRepo;
     @Autowired
-
     private BorrowCardRepo borrowCardRepo;
 
+    @Autowired
     private UploadService uploadService;
 
     public Book themBook(Book book) {
@@ -50,8 +50,8 @@ public class BookService {
             childIdList.add(childId);
             try {
                 BufferedImage barcodeImage = uploadService.generateBarcodeImage(childId);
-                com.google.api.services.drive.model.File uploadedFile = uploadService.uploadBarcodeToDrive(barcodeImage,
-                        tenSach + "_" + childId);
+                com.google.api.services.drive.model.File uploadedFile = uploadService.uploadBarcodeToDrive(barcodeImage, tenSach + "_" + childId);
+                System.out.println("Upload successful: " + uploadedFile.getId());
                 barcodeLinks.add(uploadedFile.getWebViewLink());
             } catch (Exception e) {
                 e.printStackTrace();
