@@ -6,8 +6,8 @@ import { createChat } from '@n8n/chat';
 export default function Chatbox() {
     useEffect(() => {
 		createChat({
-			
-            webhookUrl: 'https://wynly.app.n8n.cloud/webhook/85e2be91-db1e-4aa1-bcc6-75152219bda5/chat',
+			 webhookUrl: 'https://librarychat.app.n8n.cloud/webhook/681dcab2-8547-46a7-8053-7e5d09df9a1b/chat',
+           
             initialMessages: [
                 'Xin chào! 👋',
                 'Tôi là trợ lý ảo. Tôi có thể giúp gì cho bạn hôm nay?'
