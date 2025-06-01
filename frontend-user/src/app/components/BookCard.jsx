@@ -50,7 +50,7 @@ const BookCard = ({
       <img
         src={imageSrc}
         alt={title}
-        className="object-cover shrink rounded-sm aspect-[0.67] w-[100px]"
+        className="object-cover  rounded-sm aspect-[0.67] w-[100px] "
       />
       <div className="flex flex-col flex-1 shrink self-end basis-0">
         <StatusIndicator available={available} />

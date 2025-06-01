@@ -12,28 +12,36 @@ const BookCard = ({
   title,
   category,
   author,
-  publisher,
   location,
+  childBookId,
+  parentBookId
 }) => {
   return (
     <article className="flex grow shrink gap-3 min-w-60 cursor-pointer bg-white rounded-xl shadow-[0px_2px_2px_rgba(0,0,0,0.25)] p-5">
       <img
         src={imageSrc}
         alt={title}
-        className="object-cover shrink rounded-sm aspect-[0.67] w-[100px]"
+        className="object-cover shrink rounded-sm w-[100px]"
       />
       <div className="flex flex-col flex-1 shrink self-end basis-0">
         <h3 className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-[1.125rem] font-medium text-black basis-0">
           {title}
         </h3>
+        {childBookId ?  (
+          <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
+          ID sách con: {childBookId}
+        </p>
+        ) : (
+          <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
+          ID sách cha: {parentBookId}
+        </p>
+          )}
+        
         <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
           Tác giả: {author}
         </p>
         <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
           Thể loại: {category}
-        </p>
-        <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
-          NXB: {publisher}
         </p>
         <p className="flex-1 shrink gap-2.5 self-stretch mt-2 w-full text-base text-black basis-0">
           Vị trí tủ: {location}
@@ -167,12 +175,12 @@ const ChiTietPhieuMuon = () => {
     <main className="flex flex-col min-h-screen text-foreground bg-[#EFF3FB]">
       <div className="flex">
         <Sidebar/>
-        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
+        <section className="self-stretch pr-[1.25rem] md:ml-52 ml-[1.25rem] py-6 gap-2 items-center px-10 w-full max-md:max-w-full mb-2">
           {/*Nút Back*/}
-          <div className="absolute top-5 left-5 md:left-57 fixed">
+          <div className="top-5 left-5 md:left-57 fixed">
             <Button
               title={"Quay Lại"}
-              className="bg-[#062D76] rounded-3xl w-10 h-10"
+              className="bg-[#062D76] rounded-3xl w-10 h-10 cursor-pointer"
               onClick={() => {
                 handleGoBack();
               }}
@@ -202,8 +210,9 @@ const ChiTietPhieuMuon = () => {
                   title={book.name}
                   author={book.author}
                   category={book.category}
-                  publisher={book.publisher}
                   location={book.viTri}
+                  childBookId={borrowDetail.childBookIds?.[index]}
+                  parentBookId={book.id}
                 />
               ))}
             </section>

@@ -243,7 +243,7 @@ const ChiTietPhieuMuon = () => {
     <main className="flex flex-col min-h-screen text-foreground">
       <div className="pt-16 flex">
     
-        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
+        <section className="self-stretch pr-[1.25rem] ml-[1.25rem] my-auto w-full max-md:max-w-full mt-8 mb-2">
           <div className="flex flex-col w-full max-md:max-w-full">
             {/*Nút Back*/}
             <div className="mb-2 fixed z-50 justify-between items-center">
@@ -289,7 +289,7 @@ const ChiTietPhieuMuon = () => {
             </section>
           </div>
         </section>
-        <ChatBotButton />
+        {/* <ChatBotButton /> */}
         {popUpOpen && (
           <div className="fixed inset-0 items-center justify-center z-100 flex">
             <div className="w-full h-full bg-black opacity-[80%] absolute top-0 left-0"></div>

@@ -46,7 +46,7 @@ export default function CategoryPage() {
       <div className="top-5 left-5 md:left-57 fixed">
           <Button
             title={"Quay Lại"}
-            className="bg-[#062D76] rounded-3xl w-10 h-10"
+            className="bg-[#062D76] rounded-3xl w-10 h-10 cursor-pointer"
             onClick={() => {
               handleGoBack();
             }}

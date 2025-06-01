@@ -4,7 +4,14 @@ import Sidebar from "../components/sidebar/Sidebar";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { useRouter } from "next/navigation";
-import { Plus, Search, ReceiptText, Timer, DollarSign } from "lucide-react";
+import {
+  List,
+  Plus,
+  Search,
+  ReceiptText,
+  Timer,
+  DollarSign,
+} from "lucide-react";
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
 
@@ -34,8 +41,7 @@ const page = () => {
   };
 
   const filteredCards = allFines?.filter((card) => {
-    if (mode === 0)
-      return card.trangThai === "CHUA_THANH_TOAN";
+    if (mode === 0) return card.trangThai === "CHUA_THANH_TOAN";
     if (mode === 1) return card.trangThai === "DA_THANH_TOAN";
     return false;
   });
@@ -54,22 +60,19 @@ const page = () => {
     //Hàm lấy ds phiếu phạt, sau đó chia theo trangThai
     setLoading(true);
     try {
-      const response = await fetch(
-        `http://localhost:8081/fines`,
-        {
-          method: "GET",
-        }
-      );
-      if(!response.ok){
-        console.log("Không tìm thấy phiếu phạt nào")
-        setLoading(false);       
+      const response = await fetch(`http://localhost:8081/fines`, {
+        method: "GET",
+      });
+      if (!response.ok) {
+        console.log("Không tìm thấy phiếu phạt nào");
+        setLoading(false);
         return;
       }
       const res = await response.json();
-      setAllFines(res)
+      setAllFines(res);
     } catch (error) {
-      console.log(error)
-    }    
+      console.log(error);
+    }
     setLoading(false);
   };
 
@@ -85,20 +88,33 @@ const page = () => {
     return (
       <div className="flex bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 gap-[20px] md:gap-[50px] items-center">
         <div className="flex flex-col gap-[10px] relative w-full">
-          <p className="font-bold">ID:&nbsp;{fine.id}</p>
-          <p className="">User ID:&nbsp;{fine.userId}</p>
-          <p className="font-bold">Số Tiền:&nbsp;{fine.soTien}&nbsp;đồng</p>
-          <p className="">Nội Dung:&nbsp;{fine.noiDung}</p>
+          <p className="text-[1rem] font-semibold text-[#131313]/50">
+            ID: <span className="text-[#131313] ">{fine.id}</span>
+          </p>
+          <p className="text-[1rem] font-semibold text-[#131313]/50">
+            User ID:{" "}
+            <span className="text-[#131313] font-medium ">{fine.userId}</span>
+          </p>
+          <p className="text-[1rem] font-semibold text-[#131313]/50">
+            Số Tiền:{" "}
+            <span className="text-red-600 font-medium ">
+              {fine.soTien}&nbsp;đồng
+            </span>
+          </p>
+          <p className="text-[1rem] font-semibold text-[#131313]/50">
+            Nội Dung:{" "}
+            <span className="text-[#131313] font-medium ">{fine.noiDung}</span>
+          </p>
         </div>
         <div className="w-full flex justify-end mr-10">
           <Button
             title={"Xem Chi Tiết"}
-            className="w-15 md:w-60 h-10 bg-[#062D76] hover:bg-gray-700 cursor-pointer"
+            className="w-15 md:w-60 h-10 rounded-xl bg-[#062D76] hover:bg-gray-700 cursor-pointer"
             onClick={() => {
               handleDetail(fine.id);
             }}
           >
-            <ReceiptText className="w-5 h-5" color="white" />
+            <List className="w-5 h-5" color="white" />
             <p className="hidden md:block">Xem chi tiết</p>
           </Button>
         </div>
@@ -147,13 +163,13 @@ const page = () => {
               Đã Thanh Toán
             </Button>
           </div>
-          <div className="flex gap-5">
+          <div className="flex flex-1 gap-5">
             {" "}
             {/*Bên Phải*/}
             <Input
               type="text"
               placeholder="Tìm kiếm"
-              className="w-xs md:w-2xl h-10 font-thin italic text-black text-2xl bg-white rounded-[10px]"
+              className="flex flex-1 h-10 font-thin text-black text-2xl bg-white rounded-[10px]"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -180,12 +196,16 @@ const page = () => {
             />
           </div>
         ) : (
-          (filterFines?.length>0?filterFines:filteredCards)?.map((fine) => {
-            return <FineCard key={fine?.id} fine={fine} />;
-          })
+          (filterFines?.length > 0 ? filterFines : filteredCards)?.map(
+            (fine) => {
+              return <FineCard key={fine?.id} fine={fine} />;
+            }
+          )
         )}
         {/*Nút Thêm - Floating Button*/}
-        <div className={`fixed bottom-10 right-10 ${mode===0?"":"hidden"}`}>
+        <div
+          className={`fixed bottom-10 right-10 ${mode === 0 ? "" : "hidden"}`}
+        >
           <Button
             title={"Thêm Phiếu Phạt"}
             className="bg-[#062D76] rounded-3xl w-12 h-12"

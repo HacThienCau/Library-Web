@@ -2,12 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Menu, Search,  X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
+import didYouMean from "didyoumean";
 import { useScroll, motion } from "framer-motion";
 import Image from "next/image";
+import axios from "axios";
 import {
   FaFacebookF,
   FaInstagram,
@@ -16,6 +17,7 @@ import {
   FaPhone,
   FaEnvelope,
 } from "react-icons/fa";
+import { usePathname, useRouter } from "next/navigation";
 
 const menuItems = [
   { name: "Trang chủ", href: "/" },
@@ -29,6 +31,134 @@ export const HeaderGuest = () => {
   const [scrolled, setScrolled] = useState(false);
   const { scrollYProgress } = useScroll();
   const pathname = usePathname();
+  const router = useRouter();
+  const [bookTitles, setBookTitles] = useState([]);
+  const [bookAuthors, setBookAuthors] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [books, setBooks] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+
+  const removeVietnameseTones = (str) => {
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .replace(/Đ/g, "D")
+      .toLowerCase();
+  };
+
+  useEffect(() => {
+    if (!searchTerm) {
+      setSuggestions([]);
+      return;
+    }
+
+    // Lọc sách tên chứa từ khóa (case-insensitive)
+    // let filtered = books.filter(
+    //   (book) =>
+    //     book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //     book.author.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
+    const normalizedTerm = removeVietnameseTones(searchTerm);
+    let filtered = books.filter(
+      (book) =>
+        removeVietnameseTones(book.title).includes(normalizedTerm) ||
+        removeVietnameseTones(book.author).includes(normalizedTerm)
+    );
+
+    // Nếu không có kết quả thì sửa lỗi chính tả với didyoumean
+    // if (filtered.length === 0) {
+    //   const correction = didYouMean(searchTerm, bookTitles ) || didYouMean(searchTerm, bookAuthors);
+    //   if (correction) {
+    //     filtered = books.filter(book => book.title === correction) || books.filter(book => book.author === correction);
+    //   }
+    // }
+    if (filtered.length === 0) {
+      // const correctionTitle = didYouMean(searchTerm, bookTitles);
+      const correctionTitle = didYouMean(
+        normalizedTerm,
+        bookTitles.map(removeVietnameseTones)
+      );
+      // const correctionAuthor = didYouMean(searchTerm, bookAuthors);
+      const correctionAuthor = didYouMean(
+        normalizedTerm,
+        bookAuthors.map(removeVietnameseTones)
+      );
+
+      if (correctionTitle) {
+        filtered = books.filter((book) => book.title === correctionTitle);
+      } else if (correctionAuthor) {
+        filtered = books.filter((book) => book.author === correctionAuthor);
+      }
+    }
+
+    setSuggestions(filtered);
+  }, [searchTerm, books, bookTitles, bookAuthors]);
+
+  const MAX_KEYWORDS = 5;
+
+  const saveSearchTermToCache = (term) => {
+    if (!term.trim()) return;
+
+    // Lấy danh sách từ khóa hiện tại
+    const stored = JSON.parse(localStorage.getItem("searchKeywords") || "[]");
+
+    // Xóa nếu đã tồn tại
+    const updated = stored.filter((item) => item !== term);
+
+    // Thêm từ khóa mới vào đầu mảng
+    updated.unshift(term);
+
+    // Giới hạn số lượng từ khóa
+    const limited = updated.slice(0, MAX_KEYWORDS);
+
+    // Lưu lại vào localStorage
+    localStorage.setItem("searchKeywords", JSON.stringify(limited));
+  };
+
+  // 3. Khi chọn 1 sách trong gợi ý
+  // 3. Khi chọn 1 sách trong gợi ý
+  const handleSelect = (book) => {
+    setSearchTerm(book.title);
+    setSuggestions([]);
+    // console.log("Tìm kiếm:", id);
+    // handleSearch();
+    router.push(`/book-detail/${book.id}`); // Chuyển hướng đến trang sách
+  };
+
+  const handleSearch = async () => {
+    try {
+      let res;
+
+      if (!searchTerm.trim()) {
+        res = await axios.get("http://localhost:8081/books");
+      } else {
+        res = await axios.get("http://localhost:8081/search", {
+          params: { query: searchTerm },
+        });
+      }
+      saveSearchTermToCache(searchTerm.trim());
+      const data = res?.data || [];
+
+      const convertedBooks = Array.isArray(data)
+        ? data.map((book) => ({
+            id: book.id,
+            imageSrc: book.hinhAnh[0],
+            available:
+              book.tongSoLuong - book.soLuongMuon - book.soLuongXoa > 0,
+            title: book.tenSach,
+            author: book.tenTacGia,
+            publisher: book.nxb,
+            borrowCount: book.soLuongMuon,
+          }))
+        : [];
+
+      setBooks(convertedBooks);
+    } catch (error) {
+      console.error("Lỗi khi tìm kiếm sách:", error);
+      setBooks([]); // Nếu có lỗi cũng để trống
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.on("change", (latest) => {
@@ -39,27 +169,32 @@ export const HeaderGuest = () => {
 
   const isActive = (href) => pathname === href;
 
+  useEffect(() => {
+    setSearchTerm("");
+    setSuggestions([]);
+  }, [pathname]);
+
   return (
     <header>
       {/* Topbar */}
-      <div className="bg-sky-600 text-white text-sm px-4 py-1 flex justify-between items-center w-full overflow-hidden lg:px-14">
+      <div className="bg-[#062D76] text-white text-sm px-4 py-1 flex justify-between items-center w-full overflow-hidden lg:px-14">
         {/* Left - Socials + Marquee */}
-          <div className="flex gap-4 text-lg">
-            <FaFacebookF />
-            <FaInstagram />
-            <FaYoutube />
-            <FaRss />
-          </div>
+        <div className="flex gap-4 text-lg">
+          <FaFacebookF />
+          <FaInstagram />
+          <FaYoutube />
+          <FaRss />
+        </div>
 
-         {/* Marquee / text scroll */}
-          <div className="whitespace-nowrap overflow-hidden relative w-[250px] sm:w-[400px] md:w-[600px]">
-            <div className="animate-marquee inline-block">
-              <span>
-                Chào mừng bạn đến với ReadHub. Nếu bạn cần giúp đỡ, hãy liên hệ
-                chúng tôi!
-              </span>
-            </div>
+        {/* Marquee / text scroll */}
+        <div className="whitespace-nowrap overflow-hidden relative w-[250px] sm:w-[400px] md:w-[600px]">
+          <div className="animate-marquee inline-block">
+            <span>
+              Chào mừng bạn đến với ReadHub. Nếu bạn cần giúp đỡ, hãy liên hệ
+              chúng tôi!
+            </span>
           </div>
+        </div>
 
         {/* Right - Contact Info */}
         <div className="hidden sm:flex gap-4 items-center text-white text-sm">
@@ -124,8 +259,8 @@ export const HeaderGuest = () => {
                         className={cn(
                           "block duration-150 px-3 py-1 rounded-md",
                           isActive(item.href)
-                            ? "text-sky-600 border border-sky-700 font-semibold"
-                            : "text-muted-foreground hover:text-sky-500"
+                            ? "font-semibold bg-[#062D76] text-white"
+                            : "text-muted-foreground hover:text-sky-900"
                         )}
                       >
                         {item.name}
@@ -146,8 +281,8 @@ export const HeaderGuest = () => {
                         className={cn(
                           "block duration-150 px-3 py-1 rounded-md",
                           isActive(item.href)
-                            ? "text-sky-600 border border-sky-700 font-semibold"
-                            : "text-muted-foreground hover:text-accent-foreground"
+                            ? "font-semibold bg-[#062D76] text-white"
+                            : "text-muted-foreground hover:text-sky-900"
                         )}
                       >
                         {item.name}
@@ -157,22 +292,59 @@ export const HeaderGuest = () => {
                 </ul>
               </div>
               {/* Search bar */}
-              <div className="hidden md:flex flex-grow max-w-md mx-8 items-center gap-2">
+              {/* <div className="hidden md:flex flex-grow max-w-md mx-8 items-center gap-2">
                 <input
                   type="text"
                   placeholder="Tìm sách ..."
                   className="w-full border border-gray-300 rounded-full px-4 py-1 focus:outline-none"
                 />
-                <Search color="gray" className="cursor-pointer"/>
+                <Search color="gray" className="cursor-pointer" />
+              </div> */}
+              <div className="relative w-full max-md:max-w-full">
+                <div className="flex flex-wrap gap-3 items-center px-3 py-2.5 w-full text-[1.25rem] leading-none text-[#062D76] bg-white backdrop-blur-[100px] min-h-[50px] rounded-[100px]">
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/669888cc237b300e928dbfd847b76e4236ef4b5a?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816"
+                    alt="Search icon"
+                    className="object-contain shrink-0 self-stretch my-auto aspect-square w-[30px]"
+                  />
+                  <input
+                    type="search"
+                    id="search-input"
+                    placeholder="Tìm kiếm sách"
+                    className="flex-1 md:text-[1.25rem] bg-transparent border-none outline-none placeholder-[#062D76] text-[#062D76] focus:ring-2 focus:ring-red-dark focus:ring-opacity-50"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSearch();
+                      }
+                    }}
+                  />
+                </div>
+
+                {suggestions.length > 0 && (
+                  <ul className="absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-[250px] overflow-y-auto">
+                    {suggestions.map((book, idx) => (
+                      <li
+                        key={idx}
+                        onClick={() => handleSelect(book)}
+                        onMouseDown={(e) => e.preventDefault()}
+                        className="px-4 py-2 cursor-pointer hover:bg-[#f2f2f2] transition-colors"
+                      >
+                        <strong>{book.title}</strong>
+                        {book.author && ` — ${book.author}`}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
               {/* Nút đăng nhập  */}
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <Button  asChild variant="outline" size="sm">
+                <Button asChild variant="outline" size="sm">
                   <Link href="/user-login">
                     <span>Đăng nhập</span>
                   </Link>
                 </Button>
-           
               </div>
             </div>
           </motion.div>

@@ -141,9 +141,9 @@ const page = () => {
     <main className="flex flex-col min-h-screen w-full bg-[#EFF3FB]">
       <div className="flex">
         <Sidebar />
-        <section className="self-stretch pr-[1.25rem] md:pl-60 ml-[1.25rem] my-auto w-full max-md:max-w-full mt-2 mb-2">
+        <section className="self-stretch pr-[1.25rem] md:ml-52 ml-[1.25rem] py-6 gap-2 items-center px-10 w-full max-md:max-w-full mb-2">
           <div className="mx-auto">
-            <header className="flex justify-between gap-8 max-lg:gap-3 max-sm:flex-col p-3 rounded-xl">
+            <header className="flex justify-between gap-8 max-lg:gap-3 max-sm:flex-col p-3 rounded-xl ">
               {/* Current Borrowings Status */}
               <div className="flex w-2/3 gap-5">
               <Button
@@ -197,7 +197,7 @@ const page = () => {
             <Input
               type="text"
               placeholder="Tìm kiếm"
-              className="w-full h-10 font-thin italic text-black text-2xl bg-white rounded-[10px]"
+              className="w-full h-10 font-thin text-black text-2xl bg-white rounded-[10px]"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -270,7 +270,7 @@ const page = () => {
                       </p>
                     </div>
                     <Button
-                      className="flex gap-2 justify-center items-center px-3 py-1 text-[1rem] font-normal self-center bg-[#062D76] text-white hover:bg-[#E6EAF1] hover:text-[#062D76] rounded-3xl cursor-pointer"
+                      className="flex gap-2 justify-center items-center px-3 py-1 text-[1rem] font-normal self-center bg-[#062D76] text-white hover:bg-[#E6EAF1] hover:text-[#062D76] rounded-xl cursor-pointer"
                       aria-label={`View details for borrowing ${borrowing.id}`}
                       onClick={() => {
                         handleDetails(borrowing.id);

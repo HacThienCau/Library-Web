@@ -85,7 +85,7 @@ const BookSortFilters = ({ onSelectSort, selectedSort }) => {
 
 const Page = () => {
   const [groupedCategories, setGroupedCategories] = useState([]);
-  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState("all");
   const [selectedSort, setSelectedSort] = useState("all");
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -117,15 +117,17 @@ const Page = () => {
     try {
       let url = "http://localhost:8081/books";
 
-      if (subcategory) {
+      if (subcategory !== "all") {
         url = `http://localhost:8081/books/categories/id/${subcategory.id}`;
+      } else {
+        url = `http://localhost:8081/books/filter`;
       }
 
       if (sortKey) {
         // Ví dụ: thêm query param ?sort=borrowed hoặc ?sort=latest
         url += `?sort=${sortKey}`;
       }
-      console.log("Fetching books from URL:", url);
+      // console.log("Fetching books from URL:", url);
       const res = await fetch(url);
       const data = await res.json();
       setBooks(data);
@@ -136,6 +138,7 @@ const Page = () => {
   };
 
   const handleSubcategorySelect = (sub) => {
+    console.log("Selected subcategory:", sub);
     setSelectedSubcategory(sub);
     fetchBooks(sub, selectedSort);
   };
@@ -149,14 +152,12 @@ const Page = () => {
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="pt-16 flex gap-4 px-4">
         {/* Nếu vẫn giữ CategorySidebar bên ngoài khung trắng, để ngoài hoặc bỏ hẳn */}
-        <aside className="w-64 shrink-0">
         
-        </aside>
 
         {/* Khung trắng chung chứa LeftSideBar2 + khu vực chính */}
         <section className="flex-1 bg-white rounded-xl p-5 flex gap-6 max-md:flex-col max-md:p-4 border border-gray-200 shadow-md">
           {/* LeftSideBar2 - chiều rộng cố định */}
-          <div className="w-64 shrink-0">
+          <div className=" shrink-0">
             <LeftSideBar2
               groupedCategories={groupedCategories}
               selectedSubcategory={selectedSubcategory}
@@ -213,7 +214,7 @@ const Page = () => {
           </div>
         </section>
 
-        <ChatBotButton />
+        {/* <ChatBotButton /> */}
       </main>
     </div>
   );

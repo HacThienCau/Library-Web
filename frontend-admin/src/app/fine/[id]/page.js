@@ -82,10 +82,10 @@ function page() {
       <div className="flex w-full flex-col py-6 md:ml-52 relative mt-10 gap-2 items-center px-10">
         {/*Main*/}
         {/*Nút Back - Floating Button*/}
-        <div className="absolute top-5 left-5 md:left-57 fixed">
+        <div className="top-5 left-5 md:left-57 fixed">
           <Button
             title={"Quay Lại"}
-            className="bg-[#062D76] rounded-3xl w-10 h-10"
+            className="bg-[#062D76] rounded-3xl w-10 h-10 cursor-pointer"
             onClick={() => {
               handleGoBack();
             }}
@@ -157,7 +157,7 @@ function page() {
           <Button
             title={"Thanh Toán"}
             disabled={fine?.trangThai==="CHUA_THANH_TOAN"?false:true}
-            className={`rounded-3xl w-40 h-12 ${fine?.trangThai==="CHUA_THANH_TOAN"?"bg-[#062D76]":"bg-[#b6cefa]"}`}
+            className={`rounded-3xl cursor-pointer w-40 h-12 ${fine?.trangThai==="CHUA_THANH_TOAN"?"bg-[#062D76]":"bg-[#b6cefa]"}`}
             onClick={() => {
               handleThanhToan()
             }}

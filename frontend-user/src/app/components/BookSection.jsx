@@ -3,9 +3,11 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ShoppingCart } from "lucide-react"; // dùng icon từ lucide-react (hoặc FontAwesome tuỳ bạn)
+import Link from "next/link";
 
 export default function BookSection({ title, books, slug }) {
   const router = useRouter();
+  // console.log("BookSection rendered with books:", books);
 
   return (
     <section className="bg-white my-6 rounded-lg shadow p-6">
@@ -16,22 +18,26 @@ export default function BookSection({ title, books, slug }) {
             key={idx}
             className="relative group  rounded-lg p-3 shadow hover:shadow-md transition"
           >
-            <div className="relative overflow-hidden rounded h-[180px] w-[150px] flex justify-center">
-              <Image
-                src={book.image}
-                alt={book.title}
-                width={120}
-                height={180}
-                className="rounded object-cover h-full transition-transform duration-300 group-hover:scale-115"
-              />
-              {/* Hover buttons */}
+           
+              <div className="relative overflow-hidden rounded h-[180px] w-[150px] flex justify-center">
+                {/* t đổi thẻ img này rồi nha */}
+                 <Link href={`/book-detail/${book.id}`}>
+                <img
+                  src={book.hinhAnh?.[0]}
+                  alt={book.title || book.tenSach}
+                  width={120}
+                  height={180}
+                  className="rounded object-cover h-full transition-transform duration-300 group-hover:scale-115"
+                />
+                </Link>
+                {/* Hover buttons */}
               <div className="absolute inset-0  opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center gap-2">
-                  <button className="bg-gray-100 px-2 py-2 rounded shadow hover:bg-sky-500 text-sky-500 hover:text-white transition">
+                  <button className="bg-gray-100 px-2 py-2 rounded shadow hover:bg-[#062D76] text-sky-900 hover:text-white transition">
                   <ShoppingCart size={18} />
                 </button>
 
                 <button
-                  className="bg-sky-500 text-white font-semibold px-3 py-2 text-sm rounded hover:bg-gray-100 hover:text-sky-500 transition"
+                  className="bg-[#062D76] text-white font-semibold px-3 py-2 text-sm rounded hover:bg-gray-100 hover:text-sky-900 transition"
                   onClick={() => alert("Mượn ngay")}
                 >
                   Mượn ngay
@@ -44,8 +50,9 @@ export default function BookSection({ title, books, slug }) {
               {"★".repeat(book.rating || 4)}
             </p>
             <p className="text-green-600 text-sm font-semibold">
-              ● {book.status}
+              ● {book.trangThai === "CON_SAN" ? "Còn sẵn" : "Đã hết"}
             </p>
+
           </div>
         ))}
       </div>

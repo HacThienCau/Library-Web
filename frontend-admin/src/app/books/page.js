@@ -107,7 +107,7 @@ const page = () => {
         <img src={`${book.hinhAnh[0]}`} className="w-[145px] h-[205px]" />
         <div className="flex flex-col gap-[10px] relative w-full">
           <p className="font-bold">{book.tenSach}</p>
-          <p className="italic">{book.tenTacGia}</p>
+          <p >Tác giả:&nbsp;{book.tenTacGia}</p>
           <p className="">Tổng số lượng:&nbsp;{book.tongSoLuong}</p>
           <p className="">Số lượng mượn:&nbsp;{book.soLuongMuon}</p>
           <p className="">Số lượng xóa:&nbsp;{book.soLuongXoa}</p>
@@ -169,7 +169,7 @@ const page = () => {
             <Input
               type="text"
               placeholder="Tìm kiếm"
-              className="flex flex-1 h-10 font-thin italic text-black text-[1.5rem] self-center bg-white rounded-[10px] placeholder:text-[1rem]"
+              className="flex flex-1 h-10 font-thin text-black text-[1.5rem] self-center bg-white rounded-[10px] placeholder:text-[1rem]"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -216,17 +216,17 @@ const page = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-120 fixed">
             <h2 className="text-lg font-bold mb-4">Xác nhận xóa</h2>
             <p>Bạn có chắc chắn muốn xóa sách này không?</p>
-            <div className="flex bg-white w-full rounded-lg mt-2 relative p-5 gap-[20px] md:gap-[50px] items-center">
+            <div className="flex bg-white w-full rounded-lg mt-2 relative p-5 gap-[1rem] md:gap-[1.5rem] items-center border-2 border-gray-300">
               <img
                 src={`${deleteOne.hinhAnh[0]}`}
                 className="w-[145px] h-[205px]"
               />
               <div className="flex flex-col gap-[10px] relative w-full">
                 <p className="">ID:&nbsp;{deleteOne.id}</p>
-                <p className="font-bold">{deleteOne.tenSach}</p>
-                <p className="italic">{deleteOne.tenTacGia}</p>
-                <p className="italic">Tổng số lượng:&nbsp;{deleteOne.tongSoLuong}</p>
-                <p className="italic">Số lượng mượn:&nbsp;{deleteOne.soLuongMuon}</p>
+                <p className="font-bold text-[1.125rem]">{deleteOne.tenSach}</p>
+                <p >Tác giả:&nbsp;{deleteOne.tenTacGia}</p>
+                <p >Tổng số lượng:&nbsp;{deleteOne.tongSoLuong}</p>
+                <p >Số lượng mượn:&nbsp;{deleteOne.soLuongMuon}</p>
               </div>
             </div>
             <div className="flex justify-end mt-4 gap-4">

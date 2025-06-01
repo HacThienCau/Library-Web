@@ -236,10 +236,10 @@ const UploadImage = () => {
   //Nút quay lại
   const BackButton = () =>{
     return(
-    <div className="absolute top-5 left-5 md:left-57 fixed">
+    <div className="top-5 left-5 md:left-57 fixed">
             <Button
               title={"Quay Lại"}
-              className="bg-[#062D76] rounded-3xl w-10 h-10"
+              className="bg-[#062D76] rounded-3xl w-10 h-10 cursor-pointer"
               onClick={() => {
                 handleGoBack();
               }}
@@ -551,9 +551,7 @@ const UploadImage = () => {
       ) : !result ? (
         <ScanPage />
       ) : (
-        <div className="flex flex-col w-full h-full min-h-screen items-center h-[10px] py-6 gap-5 bg-[#EFF3FB]">
-          {/*Background hoa lá cỏ :)))*/}
-          <ParticlesBackground/>
+        <div className="flex flex-col w-full h-full min-h-screen items-center py-6 gap-5 bg-[#EFF3FB]">
           {/*Nút Back*/}
           <BackButton />
           {/*Phiếu mượn đang chọn*/}

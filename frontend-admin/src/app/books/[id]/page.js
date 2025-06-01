@@ -254,7 +254,7 @@ function page() {
           <div className=" top-5 left-5 md:left-57 fixed">
             <Button
               title={"Quay Lại"}
-              className="bg-[#062D76] rounded-3xl w-10 h-10"
+              className="bg-[#062D76] rounded-3xl w-10 h-10 cursor-pointer"
               onClick={() => {
                 handleGoBack();
               }}
@@ -432,12 +432,12 @@ function page() {
                     alt={"Ảnh Bìa"}
                   />
                 ) : (
-                  <div className="w-[290px] h-[410px] bg-gray-300 rounded-lg flex justify-center items-center text-gray-700">
+                  <div className="flex h-[410px] bg-gray-300 rounded-lg justify-center items-center text-gray-700">
                     Không có hình ảnh
                   </div>
                 )}
                 <Button
-                  className="flex w-[290px] bg-[#062D76]"
+                  className="flex bg-[#062D76]"
                   onClick={() => {
                     fileInputRef.current.click();
                   }}
@@ -464,12 +464,12 @@ function page() {
                     alt={"Ảnh Xem Trước 1"}
                   />
                 ) : (
-                  <div className="w-[290px] h-[410px] bg-gray-300 rounded-lg flex justify-center items-center text-gray-700">
+                  <div className="flex h-[410px] bg-gray-300 rounded-lg justify-center items-center text-gray-700">
                     Không có hình ảnh
                   </div>
                 )}
                 <Button
-                  className="flex w-[290px] bg-[#062D76]"
+                  className="flex bg-[#062D76]"
                   onClick={() => {
                     fileInputRef1.current.click();
                   }}
@@ -496,12 +496,12 @@ function page() {
                     alt={"Ảnh Xem Trước 2"}
                   />
                 ) : (
-                  <div className="w-[290px] h-[410px] bg-gray-300 rounded-lg flex justify-center items-center text-gray-700">
+                  <div className="flex h-[410px] bg-gray-300 rounded-lg justify-center items-center text-gray-700">
                     Không có hình ảnh
                   </div>
                 )}
                 <Button
-                  className="flex w-[290px] bg-[#062D76]"
+                  className="flex bg-[#062D76]"
                   onClick={() => {
                     fileInputRef2.current.click();
                   }}
@@ -528,12 +528,12 @@ function page() {
                     alt={"Ảnh Xem Trước 3"}
                   />
                 ) : (
-                  <div className="w-[290px] h-[410px] bg-gray-300 rounded-lg flex justify-center items-center text-gray-700">
+                  <div className="flex h-[410px] bg-gray-300 rounded-lg justify-center items-center text-gray-700">
                     Không có hình ảnh
                   </div>
                 )}
                 <Button
-                  className="flex w-[290px] bg-[#062D76]"
+                  className="flex bg-[#062D76]"
                   onClick={() => {
                     fileInputRef3.current.click();
                   }}
