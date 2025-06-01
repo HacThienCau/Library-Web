@@ -27,6 +27,10 @@ public class UserService {
 
     public User signUp(User user) {
         user.setMatKhau(passwordEncoder.encode(user.getMatKhau())); // Mã hóa mật khẩu
+        // Gán avatar mặc định nếu chưa chọn
+        if (user.getAvatarUrl() == null || user.getAvatarUrl().isBlank()) {
+            user.setAvatarUrl("https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482760jWL/anh-mo-ta.png");
+        }
 
         User savedUser = userRepo.save(user);
         // Tạo giỏ hàng mới cho người dùng

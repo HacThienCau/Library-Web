@@ -13,8 +13,8 @@ import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,33 +45,35 @@ public class DashBoardController {
         long totalBorrowCards = borrowCardRepo.count();
         long totalFineCards = fineRepo.count();
 
-        // Tính ngày đầu và cuối tháng trước
-        LocalDate now = LocalDate.now();
-        LocalDate firstDayLastMonth = now.minusMonths(1).withDayOfMonth(1);
-        LocalDate lastDayLastMonth = now.withDayOfMonth(1).minusDays(1);
+        // Khai báo múi giờ VN
+        ZoneId zoneVN = ZoneId.of("Asia/Ho_Chi_Minh");
+        LocalDateTime now = LocalDateTime.now(zoneVN);
+        LocalDate today = now.toLocalDate();
 
-        // Tính đầu tháng này và thời điểm hiện tại
-        LocalDate startOfThisMonth = now.withDayOfMonth(1);
-        LocalDateTime endTodayLDT = LocalDateTime.now();
+        // Ngày đầu và cuối tháng trước
+        LocalDate firstDayLastMonth = today.minusMonths(1).withDayOfMonth(1);
+        LocalDate lastDayLastMonth = today.withDayOfMonth(1).minusDays(1);
 
-        Date start = java.sql.Timestamp.valueOf(firstDayLastMonth.atStartOfDay());
-        Date end = java.sql.Timestamp.valueOf(lastDayLastMonth.atTime(23, 59, 59));
-        Date startThisMonth = java.sql.Timestamp.valueOf(startOfThisMonth.atStartOfDay());
-        Date endToday = java.sql.Timestamp.valueOf(endTodayLDT);
+        LocalDateTime startLastMonth = firstDayLastMonth.atStartOfDay();
+        LocalDateTime endLastMonth = lastDayLastMonth.atTime(23, 59, 59);
 
-        // Tổng tháng trước
-        long lastMonthUsers = userRepo.countByNgayTaoBetween(start, end);
-        long lastMonthBooks = bookRepo.countByNgayTaoBetween(start, end);
-        long lastMonthBorrowCards = borrowCardRepo.countByBorrowDateBetween(start, end);
-        long lastMonthFineCards = fineRepo.countByNgayTaoBetween(start, end);
+        // Đầu tháng này và hiện tại
+        LocalDateTime startThisMonth = today.withDayOfMonth(1).atStartOfDay();
+        LocalDateTime endToday = now;
 
-        // Tổng tháng này (tính đến hôm nay)
+        // Thống kê tháng trước
+        long lastMonthUsers = userRepo.countByNgayTaoBetween(startLastMonth, endLastMonth);
+        long lastMonthBooks = bookRepo.countByNgayTaoBetween(startLastMonth, endLastMonth);
+        long lastMonthBorrowCards = borrowCardRepo.countByBorrowDateBetween(startLastMonth, endLastMonth);
+        long lastMonthFineCards = fineRepo.countByNgayTaoBetween(startLastMonth, endLastMonth);
+
+        // Thống kê tháng này đến hiện tại
         long thisMonthUsers = userRepo.countByNgayTaoBetween(startThisMonth, endToday);
         long thisMonthBooks = bookRepo.countByNgayTaoBetween(startThisMonth, endToday);
         long thisMonthBorrowCards = borrowCardRepo.countByBorrowDateBetween(startThisMonth, endToday);
         long thisMonthFineCards = fineRepo.countByNgayTaoBetween(startThisMonth, endToday);
 
-        // Đưa vào map kết quả
+        // Đưa vào map
         stats.put("totalUsers", totalUsers);
         stats.put("totalBooks", totalBooks);
         stats.put("totalBorrowCards", totalBorrowCards);
