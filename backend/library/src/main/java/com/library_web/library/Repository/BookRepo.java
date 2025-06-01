@@ -2,7 +2,7 @@ package com.library_web.library.Repository;
 
 import com.library_web.library.Model.Book;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +45,7 @@ public interface BookRepo extends MongoRepository<Book, String> {
         "{ '$sort': { '_id': 1 } }"
     })
     List<Map<String, Object>> getBooksImportStatsByMonth();
-    long countByNgayTaoBetween(Date start, Date end);
+    long countByNgayTaoBetween(LocalDateTime start, LocalDateTime end);
 
     List<Book> findTop3ByOrderBySoLuongMuonDesc();
     List<Book> findTop10ByTrangThaiOrderByNgayTaoDesc(Book.TrangThai trangThai);

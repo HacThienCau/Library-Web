@@ -9,7 +9,7 @@ import ChatBotButton from "../components/ChatBotButton";
 import axios from "axios";
 import didYouMean from "didyoumean";
 import Head from "next/head";
-import Header from "../components/Header";
+import { Header } from "@/app/components/Header";
 
 // const books = [
 //   {

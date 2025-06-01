@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Bell, Menu, Search, ShoppingBag, X } from "lucide-react";
+import { Bell, Menu, Search, ShoppingBag, X, ShoppingCart } from "lucide-react";
+// import { Menu as MenuIcon, X, Bell, ShoppingCart } from "lucide-react";
 import { motion, useScroll } from "framer-motion";
 import Image from "next/image";
 import didYouMean from "didyoumean";
@@ -199,6 +200,56 @@ export const Header = () => {
 
   const isActive = (href) => pathname === href;
 
+  const [cartCount, setCartCount] = useState(0); 
+  const [notiCount, setNotiCount] = useState(0);
+
+  const fetchCart = async () => {
+    try {
+      const response = await fetch(`http://localhost:8081/carts/user/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        const booksInCart = data.books || [];
+        setCartCount(booksInCart.length); 
+      } else {
+        console.error("Lỗi khi lấy giỏ hàng");
+      }
+    } catch (error) {
+      console.error("Có lỗi xảy ra:", error);
+    }
+  };
+
+  const fetchNotifications = async () => {
+  try {
+    const response = await fetch(`http://localhost:8081/notification/${userId}`);
+    if (response.ok) {
+      const notifications = await response.json();
+      const unread = notifications.filter(n => !n.read);
+      setNotiCount(unread.length);
+    } else {
+      console.error("Lỗi khi lấy thông báo");
+    }
+  } catch (error) {
+    console.error("Có lỗi xảy ra:", error);
+  }
+};
+
+  useEffect(() => {
+    fetchCart();
+    fetchNotifications();
+  }, [userId]);
+
+  const CartBadge = ({ count }) => {
+  return (
+    <div
+      className="absolute self-center items-center right-0.5 px-1 text-[0.65rem] font-medium text-center justify-center text-white bg-[#F7302E] rounded-full"
+      role="status"
+      aria-label={`${count} books`}
+    >
+      {count}
+    </div>
+  );
+};
+
   const handleLogout = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("id");
@@ -313,7 +364,7 @@ export const Header = () => {
               </div> */}
             <div className="group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
               <div className="relative w-full max-md:max-w-full">
-                <div className="flex flex-wrap gap-3 items-center px-3 py-2.5 w-full text-[1.25rem] leading-none text-[#062D76] bg-white backdrop-blur-[100px] min-h-[50px] rounded-[100px]">
+                <div className="flex flex-wrap gap-3 items-center px-3 py-2 w-full leading-none text-[#062D76] bg-transparent border-1 backdrop-blur-[100px] min-h-[50px] rounded-[100px]">
                   <img
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/669888cc237b300e928dbfd847b76e4236ef4b5a?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816"
                     alt="Search icon"
@@ -323,7 +374,7 @@ export const Header = () => {
                     type="search"
                     id="search-input"
                     placeholder="Tìm kiếm sách"
-                    className="flex-1 md:text-[1.25rem] bg-transparent border-none outline-none placeholder-[#062D76] text-[#062D76] focus:ring-2 focus:ring-red-dark focus:ring-opacity-50"
+                    className="flex-1 md:text-[1rem] bg-transparent border-none outline-none placeholder-[#062D76] text-[#062D76] focus:ring-2 focus:ring-red-dark focus:ring-opacity-50"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyDown={(e) => {
@@ -374,20 +425,61 @@ export const Header = () => {
               </div>
 
               <div className="flex flex-grow items-center gap-6">
-                <Link href="/cart">
+                {/* <Link href="/cart">
                 <ShoppingBag color="gray" className="cursor-pointer" />
-                </Link>
-                <Link href="/notification">
+                </Link> */}
+                 <button
+                  title="Giỏ hàng"
+                  className={`relative pr-2 pl-1.5 py-2 rounded-full cursor-pointer hover:bg-white hover:text-[#052259] ${
+                    pathname === "/cart"
+                      ? "bg-[#062D76] text-white"
+                      : "hover:bg-[#062D76] hover:text-gray-500 hover:shadow-lg"
+                  }`}
+                >
+                  <Link href="/cart">
+                    <CartBadge count={cartCount} />
+                    <ShoppingCart
+                      style={{
+                        width: "1.5rem",
+                        height: "1.5rem",
+                        strokeWidth: "1.5px",
+                      }}
+                      className="size-6"
+                    />
+                  </Link>
+                </button>
+
+                <button
+                  title="Thông báo"
+                  className={`relative p-2 rounded-full cursor-pointer hover:bg-white hover:text-[#052259] ${
+                    pathname === "/notification"
+                      ? "bg-[#062D76] text-white"
+                      : "hover:bg-[#062D76] hover:text-gray-500 hover:shadow-lg"
+                  }`}
+                >
+                  <Link href="/notification">
+                  <CartBadge count={notiCount} />
+                    <Bell
+                      style={{
+                        width: "1.5rem",
+                        height: "1.5rem",
+                        strokeWidth: "1.5px",
+                      }}
+                      className="size-6"
+                    />
+                  </Link>
+                </button>
+                {/* <Link href="/notification">
                 <Bell color="gray" className="cursor-pointer" />
-                </Link>
+                </Link> */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-8 w-8 p-0 rounded-full border"
+                      className="p-0 rounded-full border"
                     >
-                      <Avatar className="h-9 w-9">
+                      <Avatar className="h-10 w-10 cursor-pointer">
                         <AvatarImage src={userInfo?.avatarUrl} alt="avatar" />
                       </Avatar>
                     </Button>
@@ -395,6 +487,7 @@ export const Header = () => {
                   <DropdownMenuContent align="end" className="w-44">
                     <DropdownMenuItem
                       onClick={() => router.push(`/user-profile`)}
+                      className={"cursor-pointer"}
                     >
                       <img
                         src="/images/profile.png"
@@ -403,7 +496,7 @@ export const Header = () => {
                       />
                       <span className="ml-2 font-semibold">Hồ sơ</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push(`/settings`)}>
+                    <DropdownMenuItem onClick={() => router.push(`/settings`)} className={"cursor-pointer"}>
                       <img
                         src="/images/setting.png"
                         alt="setting"
@@ -415,7 +508,7 @@ export const Header = () => {
                     {/* Phiếu giao dịch có submenu */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <DropdownMenuItem className="justify-between">
+                        <DropdownMenuItem className="justify-between cursor-pointer">
                           <div className="flex items-center">
                             <img
                               src="/images/mail.png"
@@ -454,7 +547,7 @@ export const Header = () => {
                     </DropdownMenu>
 
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
+                    <DropdownMenuItem onClick={handleLogout} className={"cursor-pointer"}>
                       <img
                         src="/images/logout.png"
                         alt="logout"

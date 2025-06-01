@@ -155,7 +155,7 @@ const Page = () => {
         
 
         {/* Khung trắng chung chứa LeftSideBar2 + khu vực chính */}
-        <section className="flex-1 bg-white rounded-xl p-5 flex gap-6 max-md:flex-col max-md:p-4 border border-gray-200 shadow-md">
+        <section className="flex-1 bg-white rounded-xl p-5 flex gap-6 max-md:flex-col max-md:p-4 border border-gray-200 mt-5 shadow-md">
           {/* LeftSideBar2 - chiều rộng cố định */}
           <div className=" shrink-0">
             <LeftSideBar2

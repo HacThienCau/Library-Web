@@ -48,7 +48,7 @@ const newsItems = [
 
 export default function NewsPage() {
   return (
-    <div className="px-4 py-6 lg:px-24">
+    <div className="px-4 py-6 lg:px-24 mt-5">
       <div className="parallax h-[350px] relative">
                 <div className="absolute w-full h-full bg-black/50">
                     <div className="absolute px-[15%] mt-38 ">
