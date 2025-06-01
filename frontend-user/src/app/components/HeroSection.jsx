@@ -360,7 +360,7 @@ export function HeroSection() {
                   display: "flex",
                   gap: "1.5rem",
                   width: "max-content",
-                  animation: "scroll-left 30s linear infinite",
+                  animation: "scroll-left 60s linear infinite",
                 }}
               >
                 {(() => {
@@ -377,7 +377,7 @@ export function HeroSection() {
                   return tripledBooks.map((book, index) => (
                     <div
                       key={index}
-                      className="flex-shrink-0 w-[250px] flex flex-col items-center"
+                      className="flex-shrink-0 w-[250px] flex flex-col items-center cursor-pointer"
                     >
                       <img
                         src={book.imageSrc}

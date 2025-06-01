@@ -15,6 +15,14 @@ const fakeEvents = {
     { type: "return", title: "Trả: Bồi Dưỡng Học Sinh Giỏi Toán 8 - Tập 2" },
     { type: "return", title: "Trả: Lão Hạc" },
   ],
+  "2025-06-04": [
+    { type: "return", title: "Trả: Bồi Dưỡng Học Sinh Giỏi Toán 8 - Tập 2" },
+    { type: "return", title: "Trả: Lão Hạc" },
+  ],
+    "2025-06-10": [
+    { type: "return", title: "Trả: Đôi Mắt Của Mona" },
+    { type: "return", title: "Trả: Bản Sao" },
+  ],
 };
 
 export default function Calendar() {
@@ -78,6 +86,11 @@ export default function Calendar() {
             border-radius: 9999px;
             }
 
+          .rdp-day_button {
+            margin-left: 0.15rem;
+            margin-right: 0.15rem;
+          }
+
           .rdp-today .rdp-day_button{
             background-color: #062D76 !important;
             color: white !important;
@@ -108,9 +121,9 @@ export default function Calendar() {
             }
 
             /* Dot trắng cho ngày hôm nay có sự kiện */
-        .rdp-today.dot-blue .rdp-day_button::after {
-        background-color: white !important;
-        }
+          .rdp-today.dot-blue .rdp-day_button::after {
+          background-color: white !important;
+          }
 
           .rdp-outside .rdp-day_button  {
             color: #989898 !important;

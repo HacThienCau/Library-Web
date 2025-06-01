@@ -301,7 +301,7 @@ export const HeaderGuest = () => {
                 <Search color="gray" className="cursor-pointer" />
               </div> */}
               <div className="relative w-full max-md:max-w-full">
-                <div className="flex flex-wrap gap-3 items-center px-3 py-2.5 w-full text-[1.25rem] leading-none text-[#062D76] bg-white backdrop-blur-[100px] min-h-[50px] rounded-[100px]">
+                <div className="flex flex-wrap gap-3 items-center px-3 py-2.5 w-full leading-none text-[#062D76] bg-transparent border-1 backdrop-blur-[100px] rounded-[100px]">
                   <img
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/669888cc237b300e928dbfd847b76e4236ef4b5a?placeholderIfAbsent=true&apiKey=d911d70ad43c41e78d81b9650623c816"
                     alt="Search icon"
@@ -311,7 +311,7 @@ export const HeaderGuest = () => {
                     type="search"
                     id="search-input"
                     placeholder="Tìm kiếm sách"
-                    className="flex-1 md:text-[1.25rem] bg-transparent border-none outline-none placeholder-[#062D76] text-[#062D76] focus:ring-2 focus:ring-red-dark focus:ring-opacity-50"
+                    className="flex-1 md:text-[1rem] bg-transparent border-none outline-none placeholder-[#062D76] text-[#062D76] focus:ring-2 focus:ring-red-dark focus:ring-opacity-50"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyDown={(e) => {
