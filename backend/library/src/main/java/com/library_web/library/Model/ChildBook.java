@@ -16,6 +16,7 @@ public class ChildBook {
     private String id;
     private String idParent;
     private TrangThai trangThai;
+    private String link;
     public enum TrangThai {
         CON_SAN("Còn sẵn"),
         DANG_MUON("Đang mượn"),
