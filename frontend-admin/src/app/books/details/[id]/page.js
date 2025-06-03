@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { useParams, useRouter } from "next/navigation";
-import { CalendarClock, Check, Search, X, Undo2 } from "lucide-react";
+import { CalendarClock, Check, Search, X, Undo2, Barcode } from "lucide-react";
 import toast from "react-hot-toast";
 import { ThreeDot } from "react-loading-indicators";
 import Sidebar from "@/app/components/sidebar/Sidebar";
@@ -96,14 +96,19 @@ const page = () => {
     return (
       <div className="flex bg-white w-full rounded-lg shadow-lg justify-between">
         <div className="flex w-full p-3 gap-2">
-          <p className="">ID:&nbsp;{book.id}</p>
+          <p className="text-sm">{book.id}</p>
+          <Button variant="ghost" className="w-5 h-5 hover:cursor-pointer" title="Xem barcode" onClick={()=>{window.open(book?.link, '_blank').focus();}}>
+            <Barcode color="#062D76"/>  
+          </Button>
+          <Button variant="ghost" className="w-5 h-5 hover:cursor-pointer" title={book.trangThai}>        
           {book.trangThai === "Còn sẵn" ? (
-            <Check className="w-5 h-5" color="#2ab23a" />
+            <Check color="#2ab23a" />
           ) : book.trangThai === "Đang mượn" ? (
-            <CalendarClock className="w-5 h-5" color="#fe9501" />
+            <CalendarClock color="#fe9501" />
           ) : (
-            <X className="w-5 h-5" color="#f50000" />
+            <X color="#f50000" />
           )}
+          </Button>  
         </div>
       </div>
     );

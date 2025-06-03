@@ -38,7 +38,6 @@ public class BookService {
         String tenSach = book.getTenSach();
 
         List<String> childIdList = new ArrayList<>();
-        List<String> barcodeLinks = new ArrayList<>();
 
         for (int i = 0; i < book.getTongSoLuong(); i++) {
             ChildBook child = new ChildBook();
@@ -50,9 +49,10 @@ public class BookService {
             childIdList.add(childId);
             try {
                 BufferedImage barcodeImage = uploadService.generateBarcodeImage(childId);
+                tenSach = tenSach.replaceAll("[^\\p{L}\\p{N} ]", "");
                 com.google.api.services.drive.model.File uploadedFile = uploadService.uploadBarcodeToDrive(barcodeImage, tenSach + "_" + childId);
                 System.out.println("Upload successful: " + uploadedFile.getId());
-                barcodeLinks.add(uploadedFile.getWebViewLink());
+                child.setLink(uploadedFile.getWebViewLink());
             } catch (Exception e) {
                 e.printStackTrace();
             }

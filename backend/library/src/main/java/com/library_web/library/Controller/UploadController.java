@@ -33,7 +33,7 @@ public class UploadController {
         try {
         BufferedImage barcodeImage = uploadService.generateBarcodeImage(id);
         com.google.api.services.drive.model.File uploadedFile = uploadService.uploadBarcodeToDrive(barcodeImage, name + "_" + id); 
-        return ResponseEntity.ok().body("Upload successful: " + uploadedFile.getId());
+        return ResponseEntity.ok().body("Upload successful: " + uploadedFile.getWebViewLink());
     } catch (Exception e) {
         return ResponseEntity.status(400).body("Upload failed: " + e.getMessage());
         }
@@ -45,7 +45,7 @@ public class UploadController {
         try {
         BufferedImage barcodeImage = uploadService.generateBarcodeImage(id);
         com.google.api.services.drive.model.File uploadedFile = uploadService.uploadUserBarcodeToDrive(barcodeImage, name + "_" + id); 
-        return ResponseEntity.ok().body("Upload successful: " + uploadedFile.getId());
+        return ResponseEntity.ok().body("Upload successful: " + uploadedFile.getWebViewLink());
     } catch (Exception e) {
         return ResponseEntity.status(400).body("Upload failed: " + e.getMessage());
         }
