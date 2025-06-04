@@ -1,0 +1,44 @@
+{
+    "faqs": [
+      {
+        "question": "Làm thế nào để đặt lại mật khẩu tài khoản thư viện của tôi?",
+        "answer": "Để đặt lại mật khẩu, hãy vào trang đăng nhập và nhấp vào 'Quên mật khẩu'. Làm theo hướng dẫn được gửi đến email của bạn để đặt lại mật khẩu."
+      },
+      {
+        "question": "Làm thế nào để liên hệ với bộ phận hỗ trợ thư viện?",
+        "answer": "Bạn có thể liên hệ với bộ phận hỗ trợ thư viện qua email tại support@readhub.com hoặc gọi đến số 123-456-7890. Đội ngũ hỗ trợ của chúng tôi hoạt động từ 9 giờ sáng đến 5 giờ chiều, từ thứ Hai đến thứ Sáu."
+      },
+      {
+        "question": "Giờ mở cửa của thư viện là khi nào?",
+        "answer": "Giờ mở cửa của chúng tôi là từ 9 giờ sáng đến 5 giờ chiều, từ thứ Hai đến thứ Sáu."
+      },
+      {
+        "question": "Làm thế nào để theo dõi sách tôi đã mượn?",
+        "answer": "Để theo dõi sách đã mượn, hãy đăng nhập vào tài khoản của bạn và vào phần 'Sách đã mượn' để xem trạng thái mượn sách."
+      },
+      {
+        "question": "Chính sách trả sách của thư viện là gì?",
+        "answer": "Bạn có thể trả sách trong vòng 30 ngày kể từ ngày mượn. Sách phải ở trạng thái ban đầu. Liên hệ với bộ phận hỗ trợ thư viện để bắt đầu quá trình trả sách."
+      },
+      {
+        "question": "Làm thế nào để cập nhật thông tin tài khoản thư viện của tôi?",
+        "answer": "Để cập nhật thông tin tài khoản, hãy đăng nhập và vào phần 'Cài đặt tài khoản'. Tại đây, bạn có thể cập nhật thông tin cá nhân và liên hệ."
+      },
+      {
+        "question": "Thư viện có hỗ trợ mượn sách liên thư viện không?",
+        "answer": "Có, chúng tôi hỗ trợ mượn sách liên thư viện. Thời gian giao nhận và tính khả dụng phụ thuộc vào địa điểm. Vui lòng xem chính sách mượn liên thư viện để biết thêm chi tiết."
+      },
+      {
+        "question": "Làm thế nào để hủy đặt trước một cuốn sách?",
+        "answer": "Để hủy đặt trước sách, hãy liên hệ với đội ngũ hỗ trợ thư viện càng sớm càng tốt. Nếu yêu cầu chưa được xử lý, chúng tôi sẽ hủy cho bạn."
+      },
+      {
+        "question": "Thư viện chấp nhận những phương thức thanh toán nào cho tiền phạt?",
+        "answer": "Chúng tôi chấp nhận các loại thẻ tín dụng lớn và các phương thức thanh toán khác được liệt kê trên trang thanh toán tiền phạt."
+      },
+      {
+        "question": "Làm thế nào để áp dụng mã giảm giá tại thư viện?",
+        "answer": "Để áp dụng mã giảm giá, hãy nhập mã vào ô 'Mã giảm giá' trong quá trình thanh toán và nhấp 'Áp dụng'. Số tiền giảm sẽ được áp dụng vào tổng tiền phạt hoặc phí của bạn."
+      }
+    ]
+}
