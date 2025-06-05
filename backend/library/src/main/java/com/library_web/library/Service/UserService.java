@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import com.library_web.library.Model.User;
 import com.library_web.library.Repository.CartRepo;
 import com.library_web.library.Repository.UserRepo;
 
+import java.awt.image.BufferedImage;
+
 @Service
 public class UserService {
     @Autowired
@@ -22,6 +25,8 @@ public class UserService {
     private CartRepo cartRepository;
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private UploadService uploadService;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -31,7 +36,13 @@ public class UserService {
         if (user.getAvatarUrl() == null || user.getAvatarUrl().isBlank()) {
             user.setAvatarUrl("https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482760jWL/anh-mo-ta.png");
         }
-
+        try {
+            BufferedImage barcodeImage = uploadService.generateBarcodeImage(user.getId());
+            com.google.api.services.drive.model.File uploadedFile = uploadService.uploadBarcodeToDrive(barcodeImage, user.getTenND() + "_" + user.getId()); 
+            user.setBarcodeUrl(uploadedFile.getWebViewLink());
+        } catch (Exception e) {
+            System.err.println("Lỗi khi tạo mã vạch: " + e.getMessage());
+        }
         User savedUser = userRepo.save(user);
         // Tạo giỏ hàng mới cho người dùng
         Cart cart = new Cart();
@@ -93,7 +104,16 @@ public class UserService {
         if (userMoi.getNgayTao() == null) {
             userMoi.setNgayTao(LocalDateTime.now());
         }
-
+        // Gắn link barcode nếu chưa có
+        if (userMoi.getBarcodeUrl() == null || userMoi.getBarcodeUrl().isBlank()) {
+            try {
+                BufferedImage barcodeImage = uploadService.generateBarcodeImage(userMoi.getId());
+                com.google.api.services.drive.model.File uploadedFile = uploadService.uploadBarcodeToDrive(barcodeImage, userMoi.getTenND() + "_" + userMoi.getId());
+                userMoi.setBarcodeUrl(uploadedFile.getWebViewLink());
+            } catch (Exception e) {
+                System.err.println("Lỗi khi tạo mã vạch: " + e.getMessage());
+            }
+        }
         // Gán avatar mặc định nếu chưa chọn
         if (userMoi.getAvatarUrl() == null || userMoi.getAvatarUrl().isBlank()) {
             userMoi.setAvatarUrl("https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482760jWL/anh-mo-ta.png");

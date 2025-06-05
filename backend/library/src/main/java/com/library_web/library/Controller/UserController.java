@@ -86,7 +86,7 @@ public class UserController {
         detail.setNgaySinh(user.getNgaySinh() != null ? user.getNgaySinh().toString() : null);
         detail.setGioiTinh(user.getGioiTinh() != null ? user.getGioiTinh().toString() : null);
         detail.setNgayTao(user.getNgayTao() != null ? user.getNgayTao().toString() : null);
-
+        detail.setBarcodeUrl(user.getBarcodeUrl());
         detail.setSoSachDangMuon(borrowCardService.countBooksBeingBorrowed(id));
         detail.setSoSachQuaHan(borrowCardService.countBooksOverdue(id));
 

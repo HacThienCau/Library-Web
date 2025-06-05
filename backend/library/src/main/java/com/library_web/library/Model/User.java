@@ -25,6 +25,7 @@ public class User {
     private LocalDateTime ngayTao;
     private String avatarUrl;
     private String sdt;
+    private String barcodeUrl;
 
     public enum GioiTinh {
         Nam,

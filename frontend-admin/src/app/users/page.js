@@ -5,7 +5,7 @@ import Sidebar from "../components/sidebar/Sidebar";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { useRouter } from "next/navigation";
-import { Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Barcode, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { ThreeDot } from "react-loading-indicators";
@@ -90,6 +90,16 @@ const page = () => {
           </p>
         </div>
         <div className="w-full flex justify-end gap-2 md:gap-3.5">
+          <Button
+            className="w-fit h-10 bg-[#062D76] hover:bg-gray-700 cursor-pointer"
+            title="Xem barcode"
+            onClick={() => {
+              window.open(`${user.barcodeUrl}`, "_blank");
+            }}
+          >
+            <Barcode className="w-5 h-5" color="white" />
+            <p className="hidden md:block">Barcode</p>
+          </Button>
           <Button
             className="w-fit h-10 bg-[#062D76] hover:bg-gray-700 cursor-pointer"
             onClick={() => {
