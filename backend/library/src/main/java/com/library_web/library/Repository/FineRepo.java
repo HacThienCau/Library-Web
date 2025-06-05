@@ -13,4 +13,5 @@ public interface FineRepo extends MongoRepository<Fine, String> {
     List<Fine> findByUserId(String userId);
     Optional<Fine> findByOrderId(String orderId);
     long countByNgayTaoBetween(LocalDateTime start, LocalDateTime end);
+    List<Fine> findByCardId(String cardId);
 }
