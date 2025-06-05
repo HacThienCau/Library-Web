@@ -12,6 +12,7 @@ import ImageCarousel from "./ImageCarousel";
 import BookCard from "./BookCard";
 
 import Chat from "./Chat";
+import Chatbot from "@/components/Chatbot/chatbot";
 
 const bookData = [
   {
@@ -560,7 +561,8 @@ export function HeroSection() {
             </div>
           </div>
         </section>
-        <Chat />
+        {/* <Chat /> */}
+        <Chatbot />
       </main>
     </>
   );
