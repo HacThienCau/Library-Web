@@ -50,9 +50,10 @@ export default function Chatbot() {
       const chatMessages = messages.slice(1);
       console.log("CHAT MESSAGES", chatMessages);
 
+       const userId = localStorage.getItem("id"); 
+
       // Call the chat completion API
-      const res = await chatCompletion([...chatMessages, newMessage]);
-      console.log("RESPONSE", res);
+      const res = await chatCompletion([...chatMessages, newMessage], userId);
 
       setMessages((prevMessages) => [...prevMessages, res]);
     } catch (error) {

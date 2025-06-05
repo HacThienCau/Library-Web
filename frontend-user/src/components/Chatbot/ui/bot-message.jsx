@@ -1,4 +1,6 @@
 import { RiRobot3Line } from 'react-icons/ri';
+import ReactMarkdown from 'react-markdown';
+
 
 export default function BotMessage({ role, content }) {
     return (
@@ -7,9 +9,10 @@ export default function BotMessage({ role, content }) {
                 <RiRobot3Line size={18}/>
             </div>
 
-            <div>
+            <div className="prose max-w-[400px]">
                 <div>{role}</div>
-                <p>{content}</p>
+                 {/* <p className="whitespace-pre-line">{content}</p> */}
+                  <ReactMarkdown>{content}</ReactMarkdown>
             </div>
         </div>
     );
