@@ -6,10 +6,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 public interface BorrowCardRepo extends MongoRepository<BorrowCard, String> {
     // Tìm phiếu mượn theo ID người dùng
     List<BorrowCard> findByUserId(String userId);
     List<BorrowCard> findTop5ByUserIdOrderByBorrowDateDesc(String userId);
     long countByBorrowDateBetween(LocalDateTime start, LocalDateTime end);
+    @Query("{ 'status': ?0, 'childBookIds': ?1 }")
+    List<BorrowCard> findByStatusAndChildBookId(String status, String childBookId);
 }

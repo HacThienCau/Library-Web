@@ -1,7 +1,11 @@
 package com.library_web.library.Service;
 
+import com.library_web.library.Model.BorrowCard;
 import com.library_web.library.Model.ChildBook;
+import com.library_web.library.Model.Fine;
+import com.library_web.library.Repository.BorrowCardRepo;
 import com.library_web.library.Repository.ChildBookRepo;
+import com.library_web.library.Repository.FineRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,10 @@ public class ChildBookService {
     private ChildBookRepo childBookRepo;
     @Autowired
     private BookService parentBookService;
+    @Autowired
+    private BorrowCardRepo borrowCardRepo;
+    @Autowired
+    private FineRepo fineRepo;
 
     public ChildBook themChild(ChildBook childBook) {
         return childBookRepo.save(childBook);
@@ -43,5 +51,15 @@ public class ChildBookService {
         ChildBook child = layBookTheoId(childId);
         Map<String, Object> parentBook = parentBookService.layBookTheoId(child.getIdParent());
         return Map.of("childBook", child, "parentBook", parentBook);
+    }
+
+    public String findBookInBorrowing(String bookId) {
+        List<BorrowCard> borrowCards = borrowCardRepo.findByStatusAndChildBookId("Đang mượn", bookId);
+        return borrowCards.isEmpty() ? "Sách không có trong phiếu mượn" : borrowCards.get(0).getId();
+    }
+
+    public String findBookInLost(String bookId) {
+        List<Fine> fineCards = fineRepo.findByCardId(bookId);
+        return fineCards.isEmpty() ? "Sách không có trong phiếu phạt" : fineCards.get(0).getId();
     }
 }

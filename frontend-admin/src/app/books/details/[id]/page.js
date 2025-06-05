@@ -68,6 +68,38 @@ const page = () => {
       setFilterBooks([]);
     }
   };
+  const handleFind = async(bookId, status) => {
+    try {
+      if(status === "Đang mượn") {
+        const response = await fetch(`http://localhost:8081/bookInBorrowing/${bookId}`, {
+          method: "GET",
+        });
+        if(!response.ok) {
+          toast.error(response.text());
+          return;
+        }
+        const data = await response.text();
+        window.open(`/borrow/${data}`, '_blank').focus();
+      }
+      else if (status === "Đã xóa"){
+        const response = await fetch(`http://localhost:8081/bookInLost/${bookId}`, {
+          method: "GET",
+        });
+        if(!response.ok) {
+          toast.error(response.text());
+          return;
+        }
+        const data = await response.text();
+        window.open(`/fine/${data}`, '_blank').focus();
+      }
+      else{
+        return;
+      }
+    } catch (error) {
+      toast.error("Lỗi khi tìm kiếm sách con");
+      console.error("Lỗi khi tìm kiếm sách con:", error);
+    }
+  }
   const BookCard = ({ book }) => {
     return (
       <div className="flex bg-white w-full rounded-lg shadow-lg px-5 py-3 gap-[10px] md:gap-[30px] items-center">
@@ -96,7 +128,7 @@ const page = () => {
     return (
       <div className="flex bg-white w-full rounded-lg shadow-lg justify-between">
         <div className="flex w-full p-3 gap-2">
-          <p className="text-sm">{book.id}</p>
+          <p className="text-sm cursor-pointer" onClick={()=>{handleFind(book.id, book.trangThai)}}>{book.id}</p>
           <Button variant="ghost" className="w-5 h-5 hover:cursor-pointer" title="Xem barcode" onClick={()=>{window.open(book?.link, '_blank').focus();}}>
             <Barcode color="#062D76"/>  
           </Button>
