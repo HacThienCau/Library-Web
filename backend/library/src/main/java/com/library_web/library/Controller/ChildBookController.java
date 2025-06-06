@@ -41,5 +41,27 @@ public class ChildBookController {
         Map<String, Object> result = childBookService.getChildAndParent(id);
         return ResponseEntity.ok(result);
     }
-    
+    @GetMapping("/bookInBorrowing/{bookId}")
+    public ResponseEntity<?> findBookInBorrowing(@PathVariable String bookId) {
+        System.out.println("bookId: " + bookId);
+        String BorrowCardId = childBookService.findBookInBorrowing(bookId);
+        System.out.println("BorrowCardId: " + BorrowCardId);
+        if(BorrowCardId.equalsIgnoreCase("Sách không có trong phiếu mượn")) {
+            return ResponseEntity.status(404).body("Sách không có trong phiếu mượn");
+        } else {
+            return ResponseEntity.ok(BorrowCardId);
+        }
+    }
+
+    @GetMapping("/bookInLost/{bookId}")
+    public ResponseEntity<?> findBookInLost(@PathVariable String bookId) {
+        System.out.println("bookId: " + bookId);
+        String FineCardId = childBookService.findBookInLost(bookId);
+        System.out.println("FineCardId: " + FineCardId);
+        if(FineCardId.equalsIgnoreCase("Sách không có trong phiếu phạt")) {
+            return ResponseEntity.status(404).body("Sách không có trong phiếu phạt");
+        } else {
+            return ResponseEntity.ok(FineCardId);
+        }
+    }
 }

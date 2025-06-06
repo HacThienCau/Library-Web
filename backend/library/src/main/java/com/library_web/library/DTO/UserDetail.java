@@ -17,7 +17,7 @@ public class UserDetail {
     private String ngaySinh;
     private String gioiTinh;
     private String ngayTao;
-
+    private String barcodeUrl;
     private int soSachDangMuon;
     private int soSachQuaHan;
 }
