@@ -5,6 +5,7 @@ import {
   fetchBorrowCardsByUserId,
   fetchFAQS,
 } from "./mongodb-actions";
+import axios from "axios";
 
 const openAI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -94,7 +95,7 @@ export async function chatCompletion(chatMessages, userId) {
     }
     // 4. Phiếu mượn
     if (
-      latestMessage.includes("phiếu mượn") ||
+      latestMessage.includes("phiếu mượn của tôi") ||
       latestMessage.includes("có mượn sách gì không") ||
       latestMessage.includes("đang mượn sách gì")
     ) {
@@ -128,6 +129,128 @@ export async function chatCompletion(chatMessages, userId) {
         )}`,
       };
     }
+
+    // Phát hiện người dùng muốn huỷ phiếu mượn
+// if (latestMessage.includes("hủy phiếu mượn") || latestMessage.includes("xóa phiếu mượn")) {
+//   const borrowCards = await fetchBorrowCardsByUserId(userId);
+//   const requestCards = borrowCards.filter(c => c.status === "Đang yêu cầu");
+
+//   if (requestCards.length === 0) {
+//     return {
+//       role: "assistant",
+//       content: "Bạn không có phiếu mượn nào đang ở trạng thái 'Đang yêu cầu' để hủy.",
+//     };
+//   }
+
+//   const list = requestCards
+//     .map((card) => `• ID: \`${card._id}\` - gồm ${card.bookIds.length} sách`)
+//     .join("\n");
+
+//   return {
+//     role: "assistant",
+//     content:
+//       "Đây là các phiếu mượn bạn có thể hủy. Vui lòng gửi lại ID phiếu mượn bạn muốn hủy:\n\n" + list,
+//   };
+// }
+if (latestMessage.includes("hủy phiếu mượn") || latestMessage.includes("xóa phiếu mượn")) {
+  const borrowCards = await fetchBorrowCardsByUserId(userId);
+  const data = await fetchBooksAndCategories();
+  const bookMap = new Map(data.books.map((b) => [b._id.toString(), b]));
+
+  const requestCards = borrowCards.filter(c => c.status === "Đang yêu cầu");
+
+  if (requestCards.length === 0) {
+    return {
+      role: "assistant",
+      content: "✅ Hiện tại bạn không có phiếu mượn nào đang ở trạng thái 'Đang yêu cầu' để có thể hủy.",
+    };
+  }
+
+  const list = requestCards
+    .map((card) => {
+      const bookList = card.bookIds
+        .map(id => {
+          const book = bookMap.get(id);
+          return book ? `- ${book.tenSach} (${book.tenTacGia})` : null;
+        })
+        .filter(Boolean)
+        .join("\n");
+
+      return `📄 **Phiếu mượn ID:** \`${card._id}\`\nBao gồm sách:\n${bookList}`;
+    })
+    .join("\n\n---\n\n");
+
+  return {
+    role: "assistant",
+    content:
+      `🗑️ Đây là các phiếu mượn bạn có thể hủy (trạng thái: "Đang yêu cầu"):\n\n${list}\n\n**Vui lòng gửi lại ID phiếu mượn bạn muốn hủy.**`,
+  };
+}
+
+// Nếu tin nhắn là một ID phiếu mượn
+if (/^[a-f\d]{24}$/.test(latestMessage.trim())) {
+  const borrowCards = await fetchBorrowCardsByUserId(userId);
+  const cardToDelete = borrowCards.find(
+    (c) =>
+      c._id?.toString?.() === latestMessage.trim() &&
+      c.status === "Đang yêu cầu"
+  );
+
+  if (cardToDelete) {
+    try {
+      await axios.delete(`http://localhost:8081/borrow-card/${cardToDelete._id}`);
+      return {
+        role: "assistant",
+        content: `✅ Đã hủy thành công phiếu mượn có ID: \`${cardToDelete._id}\`.`,
+      };
+    } catch (error) {
+      return {
+        role: "assistant",
+        content: `❌ Không thể hủy phiếu mượn. Lỗi: ${error?.response?.data || "Không rõ"}`,
+      };
+    }
+  }
+}
+
+
+// 4.1 Nếu người dùng muốn mượn sách
+if (
+  latestMessage.includes("đăng ký mượn") ||
+  latestMessage.includes("muốn mượn") || 
+  latestMessage.includes("tôi muốn mượn sách") ||
+  latestMessage.includes("tạo phiếu mượn")
+) {
+  const matchedBooks = data.books.filter((book) =>
+    latestMessage.includes(book.tenSach.toLowerCase())
+  );
+
+  if (matchedBooks.length === 0) {
+    return {
+      role: "assistant",
+      content: "❌ Mình không tìm thấy tên sách nào khớp trong yêu cầu của bạn. Vui lòng viết rõ tên sách bạn muốn mượn nhé!",
+    };
+  }
+
+  const bookIds = matchedBooks.map((b) => b._id);
+  try {
+    const response = await axios.post("http://localhost:8081/borrow-card/create", {
+      userId,
+      bookIds,
+    });
+
+    return {
+      role: "assistant",
+      content: `✅ Đã tạo phiếu mượn thành công cho các sách:\n${matchedBooks
+        .map((b) => `• ${b.tenSach} (${b.tenTacGia})`)
+        .join("\n")}\n\n Bạn vui lòng đến thư viện nhận sách sớm nhất nhé!`,
+    };
+  } catch (error) {
+    return {
+      role: "assistant",
+      content: `❌ Không thể tạo phiếu mượn. Lỗi: ${error?.response?.data || "Không rõ nguyên nhân"}`,
+    };
+  }
+}
 
     // 5. Fallback gửi lên OpenAI nếu không khớp
     const borrowCards = await fetchBorrowCardsByUserId(userId);
@@ -176,6 +299,7 @@ Hãy dựa trên những dữ liệu sau để trả lời tự nhiên và chín
     const completion = await openAI.chat.completions.create({
       messages: chat,
       model: "gpt-4o-mini",
+
     });
 
     const assistantMessage = completion.choices[0].message?.content;
