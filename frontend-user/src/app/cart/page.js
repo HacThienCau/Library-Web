@@ -4,6 +4,7 @@ import LeftSideBar from "../components/LeftSideBar";
 import ChatBotButton from "../components/ChatBotButton";
 import BookCard from "./book";
 import axios from "axios";
+import toast from "react-hot-toast";
 // const books = [
 //   {
 //     id: "DRPN001",
@@ -128,7 +129,8 @@ const page = () => {
       setBooks(response.data.books);
       console.log("Giỏ hàng sau khi xóa:", response);
       // Thông báo thành công
-      alert("Đã xóa sách thành công!");
+      //alert("Đã xóa sách thành công!");
+      toast.success("Đã xóa sách thành công!");
       setSelected([]); // Reset danh sách đã chọn
     } catch (error) {
       console.error("Lỗi khi xóa sách:", error);

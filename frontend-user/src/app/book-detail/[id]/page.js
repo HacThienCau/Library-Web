@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import BookReview from "@/components/ui/bookreview";
 import { useParams } from "next/navigation";
 import axios from "axios";
+import toast from "react-hot-toast";
 import BookCarousel from "@/app/components/BookCarousel";
 
 
@@ -95,7 +96,8 @@ function page() {
         }
       );
 
-      alert("Đã thêm sách vào giỏ!");
+      //alert("Đã thêm sách vào giỏ!");
+      toast.success("Đã thêm sách vào giỏ hàng thành công!");
       console.log(res.data);
       setIsAddedToCart(true); // Đánh dấu là đã thêm vào giỏ hàng
 
