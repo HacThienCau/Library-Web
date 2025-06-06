@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
 
 @Service
 public class NotificationService {
@@ -30,7 +32,17 @@ public class NotificationService {
 
     // Lấy tất cả thông báo của người dùng theo userId
     public List<Notification> getAllNotifications(String userId) {
-        return notificationRepository.findByUserId(userId);
+        List<Notification> notifications = notificationRepository.findByUserId(userId);
+
+        // Sắp xếp danh sách thông báo theo ngày (mới nhất trước)
+        Collections.sort(notifications, new Comparator<Notification>() {
+            @Override
+            public int compare(Notification n1, Notification n2) {
+                return n2.getTimestamp().compareTo(n1.getTimestamp());
+            }
+        });
+
+        return notifications;
     }
 
     // Lấy thông báo chưa đọc

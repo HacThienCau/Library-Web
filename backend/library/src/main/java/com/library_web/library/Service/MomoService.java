@@ -136,6 +136,8 @@ public class MomoService {
         }
     }
 
+    @Autowired
+    private EmailService emailService;
     public ResponseEntity<?> confirmPayment(String orderId, String amountStr) {
         try {
             Optional<Fine> optionalFine = fineRepo.findByOrderId(orderId);
@@ -155,7 +157,7 @@ public class MomoService {
                 fine.setNgayThanhToan(LocalDateTime.now());
                 fineRepo.save(fine);
             }
-
+            emailService.mailFine(fine);
             return ResponseEntity.ok("Xác nhận thanh toán thành công");
 
         } catch (Exception e) {
