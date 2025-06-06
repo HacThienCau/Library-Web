@@ -51,11 +51,12 @@ public class BookService {
                 BufferedImage barcodeImage = uploadService.generateBarcodeImage(childId);
                 tenSach = tenSach.replaceAll("[^\\p{L}\\p{N} ]", "");
                 com.google.api.services.drive.model.File uploadedFile = uploadService.uploadBarcodeToDrive(barcodeImage, tenSach + "_" + childId);
-                System.out.println("Upload successful: " + uploadedFile.getId());
+                System.out.println("Upload successful: " + uploadedFile.getWebViewLink());
                 child.setLink(uploadedFile.getWebViewLink());
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            childBookRepo.save(savedChild);
         }
         return savedBook;
     }
