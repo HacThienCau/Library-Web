@@ -3,6 +3,7 @@ import "./globals.css";
 
 import RequireAuth from "@/components/RequireAuth";
 import { Toaster } from "react-hot-toast";
+import Chatbot from "@/components/Chatbot/chatbot";
 
 // Thêm Montserrat font
 const montserrat = Montserrat({
@@ -23,6 +24,7 @@ export default function RootLayout({ children }) {
       <RequireAuth>
           {children}
         </RequireAuth>
+        <Chatbot />
       </body>
     </html>
   );

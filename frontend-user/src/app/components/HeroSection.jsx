@@ -562,7 +562,6 @@ export function HeroSection() {
           </div>
         </section>
         {/* <Chat /> */}
-        <Chatbot />
       </main>
     </>
   );
