@@ -2,7 +2,16 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "../components/sidebar/Sidebar";
-import { BookCheck, List, Loader, MailWarning, Plus, Search, TicketX, TimerOff } from "lucide-react";
+import {
+  BookCheck,
+  List,
+  Loader,
+  MailWarning,
+  Plus,
+  Search,
+  TicketX,
+  TimerOff,
+} from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import toast from "react-hot-toast";
@@ -10,15 +19,12 @@ import toast from "react-hot-toast";
 const page = () => {
   const [allBorrowCards, setAllBorrowCards] = useState([]);
   const [selectedButton, setSelectedButton] = useState("Đang yêu cầu");
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const fetchBorrowCards = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8081/borrow-card/`,
-        {
-          method:"GET"
-        }
-      );
+      const response = await fetch(`http://localhost:8081/borrow-card/`, {
+        method: "GET",
+      });
       setAllBorrowCards(await response.json());
     } catch (error) {
       console.error("Lỗi khi fetch phiếu mượn:", error);
@@ -37,8 +43,8 @@ const page = () => {
     return false;
   });
 
-  const [searchQuery, setSearchQuery] = useState("")
-  const [searchFilter, setSearchFilter] = useState([])
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFilter, setSearchFilter] = useState([]);
   const handleSearch = () => {
     //Hàm tìm kiếm
     if (searchQuery) {
@@ -65,265 +71,301 @@ const page = () => {
   const handleButtonClick = (buttonType) => {
     setSelectedButton(buttonType);
     setSearchFilter([]);
-    setSearchQuery("")
+    setSearchQuery("");
   };
 
   const route = useRouter();
   const handleDetails = (id) => {
     route.push(`/borrow/${id}`);
   };
-  const handleAddBorrow = () =>{
+  const handleAddBorrow = () => {
     route.push(`/borrow/addBorrow`);
-  }
+  };
 
-  const fetchExpired = async(list) => {
+  const fetchExpired = async (list) => {
     try {
       //phiếu nào hết hạn thì gửi
       const responses = await Promise.all(
-        list.map(item =>
+        list.map((item) =>
           fetch(`http://localhost:8081/borrow-card/expired/${item?.id}`, {
-            method: 'PUT',
+            method: "PUT",
           })
         )
-      );  
-      toast.success("Xem xét phiếu hết hạn thành công")
-      fetchBorrowCards()
+      );
+      toast.success("Xem xét phiếu hết hạn thành công");
+      fetchBorrowCards();
     } catch (error) {
-      console.error('Lỗi khi xem xét phiếu hết hạn:', error);
+      console.error("Lỗi khi xem xét phiếu hết hạn:", error);
     }
-  }
+  };
 
-  const fetchMailing = async(list) => {
+  const fetchMailing = async (list) => {
     try {
       //đưa lên backend để dò với startToMail
-      const response = await fetch('http://localhost:8081/borrow-card/askToReturn',
+      const response = await fetch(
+        "http://localhost:8081/borrow-card/askToReturn",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
-          body:JSON.stringify(list),
+          body: JSON.stringify(list),
         }
       );
-      toast.success("Gửi mail hối trả sách thành công")
-      
-      fetchBorrowCards()
-    } catch (error) {    
-      toast.error('Lỗi khi gửi mail hối trả sách');  
-      console.error('Lỗi khi gửi mail hối trả sách :', error);
-    }
-  }
+      toast.success("Gửi mail hối trả sách thành công");
 
-  const handleExpired = () =>{
+      fetchBorrowCards();
+    } catch (error) {
+      toast.error("Lỗi khi gửi mail hối trả sách");
+      console.error("Lỗi khi gửi mail hối trả sách :", error);
+    }
+  };
+
+  const handleExpired = () => {
     setSelectedButton("Đang yêu cầu");
-    if (confirm('Bạn chắc chắn muốn tiến hành xem xét các phiếu hết hạn?')) {
+    if (confirm("Bạn chắc chắn muốn tiến hành xem xét các phiếu hết hạn?")) {
       // Đồng ý
       const today = new Date();
-      const expiredList = filteredCards.filter(card => {
+      const expiredList = filteredCards.filter((card) => {
         return new Date(card.getBookDate) < today;
       });
-      fetchExpired(expiredList)
+      fetchExpired(expiredList);
     } else {
       // Hủy
     }
-  }
-  const handleMailing = () =>{
+  };
+  const handleMailing = () => {
     setSelectedButton("Đang mượn");
-    if (confirm('Bạn chắc chắn muốn tiến hành gửi mail hối trả sách?')) {
+    if (confirm("Bạn chắc chắn muốn tiến hành gửi mail hối trả sách?")) {
       // Đồng ý
-      fetchMailing(filteredCards)
+      fetchMailing(filteredCards);
     } else {
       // Hủy
     }
-  }
+  };
 
   return (
     <main className="flex flex-col min-h-screen w-full bg-[#EFF3FB]">
       <div className="flex">
         <Sidebar />
-        <section className="self-stretch pr-[1.25rem] md:ml-52 ml-[1.25rem] py-6 gap-2 items-center px-10 w-full max-md:max-w-full mb-2">
-          <div className="mx-auto">
-            <header className="flex justify-between gap-8 max-lg:gap-3 max-sm:flex-col p-3 rounded-xl ">
-              {/* Current Borrowings Status */}
-              <div className="flex w-2/3 gap-5">
-              <Button
-                className={`flex flex-1 gap-3 justify-center text-white hover:bg-gray-500 items-center text-[1.125rem] max-md:text-[1rem] font-medium rounded-md py-5 max-md:py-2 cursor-pointer ${
-                  selectedButton === "Đang yêu cầu"? "bg-[#062D76]": "bg-[#b6cefa]"}`}
-                onClick={() => handleButtonClick("Đang yêu cầu")}
-              >
-                <Loader
-                  style={{
-                    width: "1.25rem",
-                    height: "1.25rem",
-                  }}
-                  className="size-6"
-                />
-                Đang yêu cầu
-              </Button>
-
-              <Button
-                className={`flex flex-1 gap-3 justify-center text-white hover:bg-gray-500 items-center text-[1.125rem] max-md:text-[1rem] font-medium rounded-md py-5 max-md:py-2 cursor-pointer ${
-                  selectedButton === "Đang mượn"? "bg-[#062D76]": "bg-[#b6cefa]"}`}
-                onClick={() => handleButtonClick("Đang mượn")}
-              >
-                <BookCheck
-                  style={{
-                    width: "1.25rem",
-                    height: "1.25rem",
-                  }}
-                  className="size-6"
-                />
-                Đang mượn
-              </Button>
-
-              {/* Returned Status */}
-              <Button
-                className={`flex flex-1 gap-3 justify-center text-white hover:bg-gray-500 items-center text-[1.125rem] max-md:text-[1rem] font-medium rounded-md py-5 max-md:py-2 cursor-pointer ${
-                  selectedButton === "Hết hạn"? "bg-[#062D76]": "bg-[#b6cefa]"}`}
-                onClick={() => handleButtonClick("Hết hạn")}
-              >
-                <TimerOff
-                  style={{
-                    width: "1.25rem",
-                    height: "1.25rem",
-                  }}
-                  className="size-6"
-                />
-                Hết hạn
-              </Button>
-              </div>
-              <div className="flex gap-5">
-                {/*Bên Phải*/}
-            <Input
-              type="text"
-              placeholder="Tìm kiếm"
-              className="w-full h-10 font-thin text-black text-2xl bg-white rounded-[10px]"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+        {loading ? (
+          <div className="flex md:ml-52 w-full h-screen justify-center items-center">
+            <ThreeDot
+              color="#062D76"
+              size="large"
+              text="Vui lòng chờ"
+              variant="bounce"
+              textColor="#062D76"
             />
-            <Button
-              title={"Tìm kiếm"}
-              className="w-10 h-10 cursor-pointer text-[20px] bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
-              onClick={() => {
-                handleSearch();
-              }}
-            >
-              <Search className="w-10 h-10" color="white" />
-            </Button>
-              </div>
-            </header>
-            {/* Borrowing Cards Section */}
-            <section className="gap-y-2.5 mt-5">
-              {(searchFilter?.length>0?searchFilter:filteredCards)?.map((borrowing) => (
-                <article
-                  key={borrowing.id}
-                  className="p-4 bg-white rounded-xl shadow-sm mb-2"
-                >
-                  <div className="flex justify-between items-center max-md:flex-col max-md:gap-5 max-md:items-start">
-                    <div className="flex flex-col gap-2">
-                      <h3 className="text-[1rem] font-semibold text-[#131313]/50">
-                        ID:{" "}
-                        <span className="text-[#131313] font-medium">
-                          {borrowing.id}
-                        </span>
-                      </h3>
-                      <p className="text-[1rem] font-semibold text-[#131313]/50">
-                        User ID:{" "}
-                        <span className="text-[#131313] font-medium ">
-                          {borrowing.userId}
-                        </span>
-                      </p>
-                      <p className="text-[1rem] font-semibold text-[#131313]/50">
-                        Ngày mượn:{" "}
-                        <span className="text-[#131313] font-medium ">
-                          {formatDate(borrowing.borrowDate)}
-                        </span>
-                      </p>
-                      <p className="text-[1rem] font-semibold text-[#131313]/50">
-                        {selectedButton === "Đang mượn" && (
-                          <>
-                            Ngày trả dự kiến:{" "}
-                            <span className="text-[#131313] font-medium">
-                              {formatDate(borrowing.dueDate)}
-                            </span>
-                          </>
-                        )}
-
-                        {selectedButton === "Hết hạn" && (
-                          <>
-                          {/*Hết hạn do trả sách hoặc hết hạn do ko lấy sách đúng hạn */}
-                            {borrowing.dueDate?"Ngày trả: ":"Hạn lấy sách: "}
-                            <span className="text-[#131313] font-medium">
-                              {borrowing.dueDate?formatDate(borrowing.dueDate):formatDate(borrowing.getBookDate)}
-                            </span>
-                          </>
-                        )}
-
-                        {selectedButton === "Đang yêu cầu" && (
-                          <>
-                            Hạn lấy sách:{" "}
-                            <span className="text-[#131313] font-medium">
-                              {formatDate(borrowing.getBookDate)}
-                            </span>
-                          </>
-                        )}
-                      </p>
-                    </div>
-                    <Button
-                      className="flex gap-2 justify-center items-center px-3 py-1 text-[1rem] font-normal self-center bg-[#062D76] text-white hover:bg-[#E6EAF1] hover:text-[#062D76] rounded-xl cursor-pointer"
-                      aria-label={`View details for borrowing ${borrowing.id}`}
-                      onClick={() => {
-                        handleDetails(borrowing.id);
-                      }}
-                    >
-                      <List
-                        style={{
-                          width: "1.5rem",
-                          height: "1.5rem",
-                          strokeWidth: "1px",
-                        }}
-                        className="size-6"
-                      />
-                      Xem chi tiết
-                    </Button>
-                  </div>
-                </article>
-              ))}
-            </section>
-            {/*Nút Thêm - Floating Button*/}
-        <div className={`fixed bottom-6 right-10 ${selectedButton==="Đang yêu cầu"?"":"hidden"}`}>
-          <Button
-            title={"Xét phiếu hết hạn"}
-            className="bg-red-700 rounded-3xl w-12 h-12 border-2 border-white"
-            onClick={() => {
-              handleExpired();
-            }}
-          >
-            <TicketX className="w-24 h-24" color="white" />
-          </Button>
-          <Button
-            title={"Thêm Phiếu Mượn"}
-            className="bg-[#062D76] rounded-3xl w-12 h-12 border-2 border-white"
-            onClick={() => {
-              handleAddBorrow();
-            }}
-          >
-            <Plus className="w-24 h-24" color="white" />
-          </Button>
-        </div>
-        <div className={`fixed bottom-6 right-10 ${selectedButton==="Đang mượn"?"":"hidden"}`}>
-          <Button
-            title={"Gửi Mail hối trả sách"}
-            className="bg-red-700 rounded-3xl w-12 h-12 border-2 border-white"
-            onClick={() => {
-              handleMailing()
-            }}
-          >
-            <MailWarning className="w-24 h-24" color="white" />
-          </Button>
-        </div>
           </div>
-        </section>
+        ) : (
+          <section className="self-stretch pr-[1.25rem] md:ml-52 ml-[1.25rem] py-6 gap-2 items-center px-10 w-full max-md:max-w-full mb-2">
+            <div className="mx-auto">
+              <header className="flex justify-between gap-8 max-lg:gap-3 max-sm:flex-col p-3 rounded-xl ">
+                {/* Current Borrowings Status */}
+                <div className="flex w-2/3 gap-5">
+                  <Button
+                    className={`flex flex-1 gap-3 justify-center text-white hover:bg-gray-500 items-center text-[1.125rem] max-md:text-[1rem] font-medium rounded-md py-5 max-md:py-2 cursor-pointer ${
+                      selectedButton === "Đang yêu cầu"
+                        ? "bg-[#062D76]"
+                        : "bg-[#b6cefa]"
+                    }`}
+                    onClick={() => handleButtonClick("Đang yêu cầu")}
+                  >
+                    <Loader
+                      style={{
+                        width: "1.25rem",
+                        height: "1.25rem",
+                      }}
+                      className="size-6"
+                    />
+                    Đang yêu cầu
+                  </Button>
+
+                  <Button
+                    className={`flex flex-1 gap-3 justify-center text-white hover:bg-gray-500 items-center text-[1.125rem] max-md:text-[1rem] font-medium rounded-md py-5 max-md:py-2 cursor-pointer ${
+                      selectedButton === "Đang mượn"
+                        ? "bg-[#062D76]"
+                        : "bg-[#b6cefa]"
+                    }`}
+                    onClick={() => handleButtonClick("Đang mượn")}
+                  >
+                    <BookCheck
+                      style={{
+                        width: "1.25rem",
+                        height: "1.25rem",
+                      }}
+                      className="size-6"
+                    />
+                    Đang mượn
+                  </Button>
+
+                  {/* Returned Status */}
+                  <Button
+                    className={`flex flex-1 gap-3 justify-center text-white hover:bg-gray-500 items-center text-[1.125rem] max-md:text-[1rem] font-medium rounded-md py-5 max-md:py-2 cursor-pointer ${
+                      selectedButton === "Hết hạn"
+                        ? "bg-[#062D76]"
+                        : "bg-[#b6cefa]"
+                    }`}
+                    onClick={() => handleButtonClick("Hết hạn")}
+                  >
+                    <TimerOff
+                      style={{
+                        width: "1.25rem",
+                        height: "1.25rem",
+                      }}
+                      className="size-6"
+                    />
+                    Hết hạn
+                  </Button>
+                </div>
+                <div className="flex gap-5">
+                  {/*Bên Phải*/}
+                  <Input
+                    type="text"
+                    placeholder="Tìm kiếm"
+                    className="w-full h-10 font-thin text-black text-2xl bg-white rounded-[10px]"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <Button
+                    title={"Tìm kiếm"}
+                    className="w-10 h-10 cursor-pointer text-[20px] bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
+                    onClick={() => {
+                      handleSearch();
+                    }}
+                  >
+                    <Search className="w-10 h-10" color="white" />
+                  </Button>
+                </div>
+              </header>
+              {/* Borrowing Cards Section */}
+              <section className="gap-y-2.5 mt-5">
+                {(searchFilter?.length > 0 ? searchFilter : filteredCards)?.map(
+                  (borrowing) => (
+                    <article
+                      key={borrowing.id}
+                      className="p-4 bg-white rounded-xl shadow-sm mb-2"
+                    >
+                      <div className="flex justify-between items-center max-md:flex-col max-md:gap-5 max-md:items-start">
+                        <div className="flex flex-col gap-2">
+                          <h3 className="text-[1rem] font-semibold text-[#131313]/50">
+                            ID:{" "}
+                            <span className="text-[#131313] font-medium">
+                              {borrowing.id}
+                            </span>
+                          </h3>
+                          <p className="text-[1rem] font-semibold text-[#131313]/50">
+                            User ID:{" "}
+                            <span className="text-[#131313] font-medium ">
+                              {borrowing.userId}
+                            </span>
+                          </p>
+                          <p className="text-[1rem] font-semibold text-[#131313]/50">
+                            Ngày mượn:{" "}
+                            <span className="text-[#131313] font-medium ">
+                              {formatDate(borrowing.borrowDate)}
+                            </span>
+                          </p>
+                          <p className="text-[1rem] font-semibold text-[#131313]/50">
+                            {selectedButton === "Đang mượn" && (
+                              <>
+                                Ngày trả dự kiến:{" "}
+                                <span className="text-[#131313] font-medium">
+                                  {formatDate(borrowing.dueDate)}
+                                </span>
+                              </>
+                            )}
+
+                            {selectedButton === "Hết hạn" && (
+                              <>
+                                {/*Hết hạn do trả sách hoặc hết hạn do ko lấy sách đúng hạn */}
+                                {borrowing.dueDate
+                                  ? "Ngày trả: "
+                                  : "Hạn lấy sách: "}
+                                <span className="text-[#131313] font-medium">
+                                  {borrowing.dueDate
+                                    ? formatDate(borrowing.dueDate)
+                                    : formatDate(borrowing.getBookDate)}
+                                </span>
+                              </>
+                            )}
+
+                            {selectedButton === "Đang yêu cầu" && (
+                              <>
+                                Hạn lấy sách:{" "}
+                                <span className="text-[#131313] font-medium">
+                                  {formatDate(borrowing.getBookDate)}
+                                </span>
+                              </>
+                            )}
+                          </p>
+                        </div>
+                        <Button
+                          className="flex gap-2 justify-center items-center px-3 py-1 text-[1rem] font-normal self-center bg-[#062D76] text-white hover:bg-[#E6EAF1] hover:text-[#062D76] rounded-xl cursor-pointer"
+                          aria-label={`View details for borrowing ${borrowing.id}`}
+                          onClick={() => {
+                            handleDetails(borrowing.id);
+                          }}
+                        >
+                          <List
+                            style={{
+                              width: "1.5rem",
+                              height: "1.5rem",
+                              strokeWidth: "1px",
+                            }}
+                            className="size-6"
+                          />
+                          Xem chi tiết
+                        </Button>
+                      </div>
+                    </article>
+                  )
+                )}
+              </section>
+              {/*Nút Thêm - Floating Button*/}
+              <div
+                className={`fixed bottom-6 right-10 ${
+                  selectedButton === "Đang yêu cầu" ? "" : "hidden"
+                }`}
+              >
+                <Button
+                  title={"Xét phiếu hết hạn"}
+                  className="bg-red-700 rounded-3xl w-12 h-12 border-2 border-white"
+                  onClick={() => {
+                    handleExpired();
+                  }}
+                >
+                  <TicketX className="w-24 h-24" color="white" />
+                </Button>
+                <Button
+                  title={"Thêm Phiếu Mượn"}
+                  className="bg-[#062D76] rounded-3xl w-12 h-12 border-2 border-white"
+                  onClick={() => {
+                    handleAddBorrow();
+                  }}
+                >
+                  <Plus className="w-24 h-24" color="white" />
+                </Button>
+              </div>
+              <div
+                className={`fixed bottom-6 right-10 ${
+                  selectedButton === "Đang mượn" ? "" : "hidden"
+                }`}
+              >
+                <Button
+                  title={"Gửi Mail hối trả sách"}
+                  className="bg-red-700 rounded-3xl w-12 h-12 border-2 border-white"
+                  onClick={() => {
+                    handleMailing();
+                  }}
+                >
+                  <MailWarning className="w-24 h-24" color="white" />
+                </Button>
+              </div>
+            </div>
+          </section>
+        )}
       </div>
     </main>
   );

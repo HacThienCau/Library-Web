@@ -211,7 +211,6 @@ const ChiTietPhieuMuon = () => {
     return (
       <main className="flex flex-col min-h-screen text-foreground">
         <div className="pt-16 flex">
-       
           <section className="flex justify-center items-center self-center pr-[1.25rem] md:pl-60 ml-[1.25rem] w-full h-screen">
             <ThreeDot
               color="#062D76"
@@ -242,7 +241,6 @@ const ChiTietPhieuMuon = () => {
   return (
     <main className="flex flex-col min-h-screen text-foreground">
       <div className="pt-16 flex">
-    
         <section className="self-stretch pr-[1.25rem] ml-[1.25rem] my-auto w-full max-md:max-w-full mt-8 mb-2">
           <div className="flex flex-col w-full max-md:max-w-full">
             {/*Nút Back*/}
@@ -305,16 +303,16 @@ const ChiTietPhieuMuon = () => {
 
               <div className="flex justify-center mt-4 gap-4">
                 <Button
-                  className="bg-gray-500 hover:bg-gray-700  text-white cursor-pointer"
-                  onClick={() => setPopUpOpen(false)}
-                >
-                  Hủy
-                </Button>
-                <Button
                   className="bg-red-500 hover:bg-red-700 justify-center  text-white cursor-pointer"
                   onClick={() => handleDelete(borrowDetail)}
                 >
                   Xóa
+                </Button>
+                <Button
+                  className="bg-gray-500 hover:bg-gray-700  text-white cursor-pointer"
+                  onClick={() => setPopUpOpen(false)}
+                >
+                  Hủy
                 </Button>
               </div>
             </div>
@@ -336,16 +334,16 @@ const ChiTietPhieuMuon = () => {
 
               <div className="flex justify-center mt-4 gap-4">
                 <Button
-                  className="bg-gray-500 hover:bg-gray-700  text-white cursor-pointer"
-                  onClick={() => setPopUpBookOpen(false)}
-                >
-                  Hủy
-                </Button>
-                <Button
                   className="bg-red-500 hover:bg-red-700 justify-center  text-white cursor-pointer"
                   onClick={() => handleDeleteConfirmed()}
                 >
                   Xóa
+                </Button>
+                <Button
+                  className="bg-gray-500 hover:bg-gray-700  text-white cursor-pointer"
+                  onClick={() => setPopUpBookOpen(false)}
+                >
+                  Hủy
                 </Button>
               </div>
             </div>

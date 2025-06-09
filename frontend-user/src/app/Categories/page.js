@@ -70,7 +70,7 @@ const BookSortFilters = ({ onSelectSort, selectedSort }) => {
         <button
           key={opt.value}
           onClick={() => onSelectSort(opt.value)}
-          className={`w-full px-4 py-2 rounded-lg text-center ${
+          className={`w-full px-4 py-2 rounded-lg text-center cursor-pointer ${
             selectedSort === opt.value
               ? "bg-sky-900 text-white"
               : "bg-zinc-200 text-[#062D76]"

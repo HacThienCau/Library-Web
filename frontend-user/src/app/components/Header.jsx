@@ -536,11 +536,12 @@ export const Header = () => {
 
                       <DropdownMenuContent className="w-40 left-full top-0 mt-[-4px]">
                         <DropdownMenuItem
+                          className="justify-between cursor-pointer"
                           onClick={() => router.push(`/borrowed-card`)}
                         >
                           Phiếu mượn
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => router.push(`/fine`)}>
+                        <DropdownMenuItem className="justify-between cursor-pointer" onClick={() => router.push(`/fine`)}>
                           Phiếu phạt
                         </DropdownMenuItem>
                       </DropdownMenuContent>

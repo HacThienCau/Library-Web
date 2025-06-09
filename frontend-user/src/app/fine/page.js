@@ -104,7 +104,7 @@ const page = () => {
           <p className="text-[1rem] font-semibold text-[#131313]/50">
             Số Tiền:{" "}
             <span className="text-red-600 font-medium ">
-              {fine.soTien}&nbsp;đồng
+              {fine.soTien.toLocaleString("vi-VN")}&nbsp;đồng
             </span>
           </p>
           <p className="text-[1rem] font-semibold text-[#131313]/50">
