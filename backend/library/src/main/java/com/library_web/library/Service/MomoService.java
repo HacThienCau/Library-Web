@@ -39,6 +39,9 @@ public class MomoService {
     @Value("${momo.ipnUrl}")
     private String ipnUrl;
 
+    @Autowired
+    private EmailService emailService;
+
     public ResponseEntity<?> createPaymentRequest(String fineId) {
         try {
             Optional<Fine> optionalFine = fineRepo.findById(fineId);
@@ -126,6 +129,7 @@ public class MomoService {
                     }
                 }
             }
+            
             // Trả về acknowledged để MoMo biết đã nhận IPN
             return ResponseEntity.ok("acknowledged");
 
@@ -136,8 +140,6 @@ public class MomoService {
         }
     }
 
-    @Autowired
-    private EmailService emailService;
     public ResponseEntity<?> confirmPayment(String orderId, String amountStr) {
         try {
             Optional<Fine> optionalFine = fineRepo.findByOrderId(orderId);
@@ -157,7 +159,7 @@ public class MomoService {
                 fine.setNgayThanhToan(LocalDateTime.now());
                 fineRepo.save(fine);
             }
-            emailService.mailFine(fine);
+            emailService.mailPay(fine);
             return ResponseEntity.ok("Xác nhận thanh toán thành công");
 
         } catch (Exception e) {
