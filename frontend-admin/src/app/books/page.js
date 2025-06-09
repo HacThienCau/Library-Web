@@ -14,14 +14,16 @@ const page = () => {
   const [filterBooks, setFilterBooks] = useState([]);
   const [popUpOpen, setPopUpOpen] = useState(false);
   const [deleteOne, setDeleteOne] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const handleSearch = () => {
     if (searchQuery) {
       const filterBook = bookList.filter((book) =>
         book.id.toString() === searchQuery || //tìm theo id
         book?.tenSach.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên sách
         book?.tenTacGia.toLowerCase().includes(searchQuery.toLowerCase()) || //tìm theo tên tg
-        book?.tenTheLoaiCha?.toLowerCase().includes(searchQuery.toLowerCase()) ||//tìm theo thể loại cha bài viết
+        book?.tenTheLoaiCha
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase()) || //tìm theo thể loại cha bài viết
         book?.tenTheLoaiCon?.toLowerCase().includes(searchQuery.toLowerCase()) //tìm theo nội dung bài viết
           ? book
           : null
@@ -44,62 +46,61 @@ const page = () => {
   const handleEdit = (id) => {
     route.push(`/books/${id}`);
   };
-  const handleShowDetail = (id) =>{
+  const handleShowDetail = (id) => {
     route.push(`/books/details/${id}`);
-  }
+  };
   const fetchBook = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const res = await fetch("http://localhost:8081/books", {
         method: "GET",
       });
-  
+
       if (!res.ok) {
         throw new Error("Không thể lấy danh sách sách");
       }
-  
+
       const books = await res.json();
-      console.log(books)
-      setBookList(books)
-      setLoading(false)
+      console.log(books);
+      setBookList(books);
+      setLoading(false);
     } catch (error) {
       console.error("Lỗi:", error.message);
     }
   };
 
-
   useEffect(() => {
     fetchBook();
   }, []);
-  
-  const handleDelete = async(book) =>{
-    if(book.soLuongMuon > 0){
-      toast.error("Sách vẫn còn đang được mượn!")
+
+  const handleDelete = async (book) => {
+    if (book.soLuongMuon > 0) {
+      toast.error("Sách vẫn còn đang được mượn!");
       return;
     }
-    setLoading(true)
+    setLoading(true);
     try {
       const res = await fetch(`http://localhost:8081/book/${book.id}`, {
         method: "DELETE",
       });
-  
+
       if (!res.ok) {
         toast.error("Xóa sách thất bại");
-        setLoading(false)
-        setDeleteOne(null)
-        setPopUpOpen(false)
+        setLoading(false);
+        setDeleteOne(null);
+        setPopUpOpen(false);
         return;
       }
-  
-      toast.success("Xóa sách thành công")
-      setLoading(false)
-      await fetchBook()
-      setDeleteOne(null)
-      setPopUpOpen(false)
+
+      toast.success("Xóa sách thành công");
+      setLoading(false);
+      await fetchBook();
+      setDeleteOne(null);
+      setPopUpOpen(false);
     } catch (error) {
       console.error("Lỗi:", error.message);
     }
-  } 
+  };
 
   const BookCard = ({ book }) => {
     return (
@@ -107,7 +108,7 @@ const page = () => {
         <img src={`${book.hinhAnh[0]}`} className="w-[145px] h-[205px]" />
         <div className="flex flex-col gap-[10px] relative w-full">
           <p className="font-bold">{book.tenSach}</p>
-          <p >Tác giả:&nbsp;{book.tenTacGia}</p>
+          <p>Tác giả:&nbsp;{book.tenTacGia}</p>
           <p className="">Tổng số lượng:&nbsp;{book.tongSoLuong}</p>
           <p className="">Số lượng mượn:&nbsp;{book.soLuongMuon}</p>
           <p className="">Số lượng xóa:&nbsp;{book.soLuongXoa}</p>
@@ -163,53 +164,54 @@ const page = () => {
           />
         </div>
       ) : (
-      <div className="flex w-full flex-col py-6 md:ml-52 relative mt-5 gap-2 items-center px-10">
-        <div className="flex w-full items-center h-[10px] justify-between mb-10">
-          <div className="flex flex-1 gap-5">
-            <Input
-              type="text"
-              placeholder="Tìm kiếm"
-              className="flex flex-1 h-10 font-thin text-black text-[1.5rem] self-center bg-white rounded-[10px] placeholder:text-[1rem]"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+        <div className="flex w-full flex-col py-6 md:ml-52 relative mt-5 gap-2 items-center px-10">
+          <div className="flex w-full items-center h-[10px] justify-between mb-10">
+            <div className="flex flex-1 gap-5">
+              <Input
+                type="text"
+                placeholder="Tìm kiếm"
+                className="flex flex-1 h-10 font-thin text-black text-[1.5rem] self-center bg-white rounded-[10px] placeholder:text-[1rem]"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Button
+                className="w-10 h-10 cursor-pointer mr-5 text-[20px] bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
+                onClick={() => {
+                  handleSearch();
+                }}
+              >
+                <Search className="w-10 h-10" color="white" />
+              </Button>
+            </div>
+            {/* Quản lý thể loại */}
             <Button
-              className="w-10 h-10 cursor-pointer mr-5 text-[20px] bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
+              className="w-40 h-10 mr-5 cursor-pointer bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
               onClick={() => {
-                handleSearch();
+                handleCategory();
               }}
             >
-              <Search className="w-10 h-10" color="white" />
+              Quản lý thể loại
+            </Button>
+            <Button
+              className="w-40 h-10 cursor-pointer bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
+              onClick={() => {
+                handleAddBook();
+              }}
+            >
+              <Plus className="w-5 h-5" color="white" />
+              Thêm sách mới
             </Button>
           </div>
-          {/* Quản lý thể loại */}
-          <Button
-            className="w-40 h-10 mr-5 cursor-pointer bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
-            onClick={() => {
-              handleCategory();
-            }}
-          >
-            Quản lý thể loại
-          </Button>
-          <Button
-            className="w-40 h-10 cursor-pointer bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
-            onClick={() => {
-              handleAddBook();
-            }}
-          >
-            <Plus className="w-5 h-5" color="white" />
-            Thêm sách mới
-          </Button>
+          {bookList &&
+            (filterBooks.length > 0 //nếu đang search thì hiện danh sách lọc
+              ? filterBooks.map((book) => {
+                  return <BookCard key={book?.id} book={book} />;
+                })
+              : bookList.map((book) => {
+                  return <BookCard key={book?.id} book={book} />;
+                }))}
         </div>
-        {bookList &&
-          (filterBooks.length > 0 //nếu đang search thì hiện danh sách lọc
-            ? filterBooks.map((book) => {
-                return <BookCard key={book?.id} book={book} />;
-              })
-            : bookList.map((book) => {
-                return <BookCard key={book?.id} book={book} />;
-              }))}
-      </div>)}
+      )}
       {popUpOpen && (
         <div className="fixed inset-0 items-center justify-center z-100 flex">
           <div className="w-full h-full bg-black opacity-[80%] absolute top-0 left-0"></div>
@@ -224,23 +226,25 @@ const page = () => {
               <div className="flex flex-col gap-[10px] relative w-full">
                 <p className="">ID:&nbsp;{deleteOne.id}</p>
                 <p className="font-bold text-[1.125rem]">{deleteOne.tenSach}</p>
-                <p >Tác giả:&nbsp;{deleteOne.tenTacGia}</p>
-                <p >Tổng số lượng:&nbsp;{deleteOne.tongSoLuong}</p>
-                <p >Số lượng mượn:&nbsp;{deleteOne.soLuongMuon}</p>
+                <p>Tác giả:&nbsp;{deleteOne.tenTacGia}</p>
+                <p>Tổng số lượng:&nbsp;{deleteOne.tongSoLuong}</p>
+                <p>Số lượng mượn:&nbsp;{deleteOne.soLuongMuon}</p>
               </div>
             </div>
             <div className="flex justify-end mt-4 gap-4">
+              <Button
+                className="bg-red-500 hover:bg-red-700 text-white"
+                onClick={() => {
+                  handleDelete(deleteOne);
+                }}
+              >
+                Xóa
+              </Button>
               <Button
                 className="bg-gray-500 hover:bg-gray-700 text-white"
                 onClick={() => setPopUpOpen(false)}
               >
                 Hủy
-              </Button>
-              <Button
-                className="bg-red-500 hover:bg-red-700 text-white"
-                onClick={() => {handleDelete(deleteOne)}}
-              >
-                Xóa
               </Button>
             </div>
           </div>

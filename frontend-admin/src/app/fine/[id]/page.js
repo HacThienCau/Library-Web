@@ -98,7 +98,7 @@ function page() {
             <div className="flex bg-white w-full rounded-lg mt-2 relative drop-shadow-lg p-5 gap-[20px] md:gap-[50px] items-center">
               <div className="flex flex-col gap-[10px] relative w-full">
                 <p className="font-bold">ID:&nbsp;{fine?.id}</p>
-                <p className="font-bold">Số Tiền:&nbsp;{fine?.soTien}&nbsp;đồng</p>
+                <p className="font-bold">Số Tiền:&nbsp;{fine?.soTien.toLocaleString("vi-VN")}&nbsp;đồng</p>
                 <p className="">Nội Dung:&nbsp;{fine?.noiDung}</p>
               </div>
               <div className="flex flex-col gap-[10px] relative w-full">

@@ -13,7 +13,7 @@ export default function Chatbot() {
   const [userMessage, setUserMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Xin chào,tôi có thể giúp gì cho bạn?" },
+    { role: "assistant", content: "Xin chào, tôi có thể giúp gì cho bạn?" },
   ]);
 
   // Scroll to the bottom when messages changes
@@ -50,7 +50,7 @@ export default function Chatbot() {
       const chatMessages = messages.slice(1);
       console.log("CHAT MESSAGES", chatMessages);
 
-       const userId = localStorage.getItem("id"); 
+      const userId = localStorage.getItem("id");
 
       // Call the chat completion API
       const res = await chatCompletion([...chatMessages, newMessage], userId);
@@ -63,6 +63,16 @@ export default function Chatbot() {
     }
   };
 
+  const TypingIndicator = () => {
+    return (
+      <div className="flex space-x-1">
+        <span className="text-xl animate-bounce">.</span>
+        <span className="text-xl animate-bounce delay-200">.</span>
+        <span className="text-xl animate-bounce delay-400">.</span>
+      </div>
+    );
+  };
+
   return (
     <>
       <TbMessageChatbot
@@ -71,13 +81,13 @@ export default function Chatbot() {
         className={clsx(
           "text-[#062D76] fixed right-12 bottom-[calc(1rem)] hover:cursor-pointer hover:text-blue-400 z-50",
           {
-            'animate-bounce': !showChat
-          },
+            "animate-bounce": !showChat,
+          }
         )}
       />
 
       {showChat && (
-        <div className="fixed right-12 bottom-[calc(4rem+1.5rem)] border hover:cursor-pointer pb-1  shadow-md shadow-white h-[474px] w-[500px] bg-white rounded-md z-50">
+        <div className="fixed right-12 bottom-[calc(4rem+1.5rem)] border shadow-md shadow-white h-[474px] w-[500px] bg-white rounded-md z-50">
           <div className="flex flex-col h-full">
             {/* CHAT HEADER  */}
             <div className="bg-[#062D76] text-white flex items-center justify-between p-3 rounded-t-md">
@@ -88,20 +98,31 @@ export default function Chatbot() {
             {/* CHAT CONTAINER  */}
             <div
               ref={chatContainerRef}
-              className="flex flex-col flex-1 items-center p-3 mt-5 overflow-y-auto"
+              className="flex flex-col flex-1 items-center p-3 mt-2 overflow-y-auto"
             >
               {messages &&
                 messages.map((m, i) => {
+                  const isLoading =
+                    loading &&
+                    messages[i]?.role !== "assistant" &&
+                    i === messages.length - 2;
                   return m.role === "assistant" ? (
-                    <BotMessage {...m} key={i} />
+                    <BotMessage {...m} key={i} loading={isLoading} />
                   ) : (
                     <UserMessage {...m} key={i} />
                   );
                 })}
 
               {loading && (
-                <div className="text-center text-gray-500 mt-2">loading...</div>
+                <BotMessage
+                  role="assistant"
+                  loading={true}
+                  content={<TypingIndicator />}
+                />
               )}
+              {/* {loading && (
+                <div className="text-center text-gray-500 mt-2">...loading...</div>
+              )} */}
             </div>
 
             {/* MESSAGE INPUT  */}

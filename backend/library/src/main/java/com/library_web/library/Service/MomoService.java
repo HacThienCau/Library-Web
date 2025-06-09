@@ -157,7 +157,7 @@ public class MomoService {
                 fine.setNgayThanhToan(LocalDateTime.now());
                 fineRepo.save(fine);
             }
-            emailService.mailFine(fine);
+            emailService.mailPay(fine);
             return ResponseEntity.ok("Xác nhận thanh toán thành công");
 
         } catch (Exception e) {

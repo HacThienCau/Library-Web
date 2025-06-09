@@ -190,7 +190,7 @@ function page() {
           id: data.id,
           username: data.tenND,
           email: data.email,
-          sdt: data.sdt,
+          sdt: data.sdt ? data.sdt : "",
           birthDate: new Date(data.ngaySinh),
           avatar: data.avatarUrl,
         });

@@ -98,7 +98,7 @@ const page = () => {
           <p className="text-[1rem] font-semibold text-[#131313]/50">
             Số Tiền:{" "}
             <span className="text-red-600 font-medium ">
-              {fine.soTien}&nbsp;đồng
+              {fine.soTien.toLocaleString("vi-VN")}&nbsp;đồng
             </span>
           </p>
           <p className="text-[1rem] font-semibold text-[#131313]/50">
@@ -125,98 +125,110 @@ const page = () => {
   return (
     <div className="flex flex-row w-full min-h-screen h-full bg-[#EFF3FB]">
       <Sidebar />
-      <div className="flex w-full flex-col py-6 md:ml-52 relative mt-5 gap-2 items-center px-10">
-        {" "}
-        {/*Main*/}
-        <div className="flex w-full items-center h-[10px] justify-between mb-10">
+      {loading ? (
+        <div className="flex md:ml-52 w-full h-screen justify-center items-center">
+          <ThreeDot
+            color="#062D76"
+            size="large"
+            text="Vui lòng chờ"
+            variant="bounce"
+            textColor="#062D76"
+          />
+        </div>
+      ) : (
+        <div className="flex w-full flex-col py-6 md:ml-52 relative mt-5 gap-2 items-center px-10">
           {" "}
-          {/*Thanh Trên*/}
-          <div className="flex w-1/2 gap-10">
+          {/*Main*/}
+          <div className="flex w-full items-center h-[10px] justify-between mb-10">
             {" "}
-            {/*Bên Trái*/}
-            <Button
-              title={"Chưa Thanh Toán"}
-              className={`w-50 h-10 cursor-pointer ${
-                mode === 0 ? "bg-[#062D76]" : "bg-[#b6cefa]"
-              } hover:bg-gray-500 font-bold rounded-[10px] overflow-hidden`}
-              onClick={() => {
-                setMode(0);
-                setSearchQuery("");
-                filterFines.length = 0;
-              }}
-            >
-              <Timer className="w-5 h-5" color="white" />
-              Chưa Thanh Toán
-            </Button>
-            <Button
-              title={"Đã Thanh Toán"}
-              className={`w-50 h-10 cursor-pointer ${
-                mode === 1 ? "bg-[#062D76]" : "bg-[#b6cefa]"
-              }  hover:bg-gray-500 font-bold rounded-[10px] overflow-hidden`}
-              onClick={() => {
-                setMode(1);
-                setSearchQuery("");
-                filterFines.length = 0;
-              }}
-            >
-              <DollarSign className="w-5 h-5" color="white" />
-              Đã Thanh Toán
-            </Button>
+            {/*Thanh Trên*/}
+            <div className="flex w-1/2 gap-10">
+              {" "}
+              {/*Bên Trái*/}
+              <Button
+                title={"Chưa Thanh Toán"}
+                className={`w-50 h-10 cursor-pointer ${
+                  mode === 0 ? "bg-[#062D76]" : "bg-[#b6cefa]"
+                } hover:bg-gray-500 font-bold rounded-[10px] overflow-hidden`}
+                onClick={() => {
+                  setMode(0);
+                  setSearchQuery("");
+                  filterFines.length = 0;
+                }}
+              >
+                <Timer className="w-5 h-5" color="white" />
+                Chưa Thanh Toán
+              </Button>
+              <Button
+                title={"Đã Thanh Toán"}
+                className={`w-50 h-10 cursor-pointer ${
+                  mode === 1 ? "bg-[#062D76]" : "bg-[#b6cefa]"
+                }  hover:bg-gray-500 font-bold rounded-[10px] overflow-hidden`}
+                onClick={() => {
+                  setMode(1);
+                  setSearchQuery("");
+                  filterFines.length = 0;
+                }}
+              >
+                <DollarSign className="w-5 h-5" color="white" />
+                Đã Thanh Toán
+              </Button>
+            </div>
+            <div className="flex flex-1 gap-5">
+              {" "}
+              {/*Bên Phải*/}
+              <Input
+                type="text"
+                placeholder="Tìm kiếm"
+                className="flex flex-1 h-10 font-thin text-black text-2xl bg-white rounded-[10px]"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              />
+              <Button
+                title={"Tìm kiếm"}
+                className="w-10 h-10 cursor-pointer text-[20px] bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
+                onClick={() => {
+                  handleSearch();
+                }}
+              >
+                <Search className="w-10 h-10" color="white" />
+              </Button>
+            </div>
           </div>
-          <div className="flex flex-1 gap-5">
-            {" "}
-            {/*Bên Phải*/}
-            <Input
-              type="text"
-              placeholder="Tìm kiếm"
-              className="flex flex-1 h-10 font-thin text-black text-2xl bg-white rounded-[10px]"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            />
-            <Button
-              title={"Tìm kiếm"}
-              className="w-10 h-10 cursor-pointer text-[20px] bg-[#062D76] hover:bg-gray-700 font-bold rounded-[10px] overflow-hidden"
-              onClick={() => {
-                handleSearch();
-              }}
-            >
-              <Search className="w-10 h-10" color="white" />
-            </Button>
-          </div>
-        </div>
-        {loading ? (
-          <div className="flex md:ml-52 w-full h-screen justify-center items-center">
-            <ThreeDot
-              color="#062D76"
-              size="large"
-              text="Vui lòng chờ"
-              variant="bounce"
-              textColor="#062D76"
-            />
-          </div>
-        ) : (
-          (filterFines?.length > 0 ? filterFines : filteredCards)?.map(
-            (fine) => {
-              return <FineCard key={fine?.id} fine={fine} />;
-            }
-          )
-        )}
-        {/*Nút Thêm - Floating Button*/}
-        <div
-          className={`fixed bottom-10 right-10 ${mode === 0 ? "" : "hidden"}`}
-        >
-          <Button
-            title={"Thêm Phiếu Phạt"}
-            className="bg-[#062D76] rounded-3xl w-12 h-12"
-            onClick={() => {
-              handleAddFine();
-            }}
+          {loading ? (
+            <div className="flex md:ml-52 w-full h-screen justify-center items-center">
+              <ThreeDot
+                color="#062D76"
+                size="large"
+                text="Vui lòng chờ"
+                variant="bounce"
+                textColor="#062D76"
+              />
+            </div>
+          ) : (
+            (filterFines?.length > 0 ? filterFines : filteredCards)?.map(
+              (fine) => {
+                return <FineCard key={fine?.id} fine={fine} />;
+              }
+            )
+          )}
+          {/*Nút Thêm - Floating Button*/}
+          <div
+            className={`fixed bottom-10 right-10 ${mode === 0 ? "" : "hidden"}`}
           >
-            <Plus className="w-24 h-24" color="white" />
-          </Button>
+            <Button
+              title={"Thêm Phiếu Phạt"}
+              className="bg-[#062D76] rounded-3xl w-12 h-12"
+              onClick={() => {
+                handleAddFine();
+              }}
+            >
+              <Plus className="w-24 h-24" color="white" />
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

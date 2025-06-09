@@ -5,10 +5,10 @@ const LeftSideBar2 = ({ groupedCategories, selectedSubcategory, onSelectSubcateg
     {/* Mục Tất cả */}
     <button
       onClick={() => onSelectSubcategory("all")}
-      className={`mb-3 block w-full text-left px-3 py-2 rounded-lg font-bold ${
-        selectedSubcategory === null
+      className={`mb-3 block w-full text-center px-3 py-2 rounded-lg font-bold cursor-pointer ${
+        selectedSubcategory === "all"
           ? "bg-sky-900 text-white"
-          : "bg-zinc-200 text-[#062D76]"
+          : "hover:bg-zinc-200 text-[#062D76]"
       }`}
     >
       Tất cả
@@ -25,7 +25,7 @@ const LeftSideBar2 = ({ groupedCategories, selectedSubcategory, onSelectSubcateg
               <li key={sub.id}>
                 <button
                   onClick={() => onSelectSubcategory(sub)}
-                  className={`w-full text-left px-2 py-1 rounded-lg ${
+                  className={`w-full text-left px-2 py-1 rounded-lg cursor-pointer ${
                     isSelected
                       ? "bg-sky-900 text-white"
                       : "hover:bg-zinc-200"
