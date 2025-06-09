@@ -125,7 +125,7 @@ function page() {
                   <p className="text-[1rem] font-semibold text-[#131313]/50">
                     Số Tiền:{" "}
                     <span className="text-[#131313] font-medium ">
-                      {fine.soTientoLocaleString("vi-VN")}
+                      {fine.soTien.toLocaleString("vi-VN")}
                     </span>
                   </p>
                   <p className="text-[1rem] font-semibold text-[#131313]/50">
