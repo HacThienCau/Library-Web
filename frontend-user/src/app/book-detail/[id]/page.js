@@ -96,8 +96,8 @@ function page() {
         }
       );
 
-      //alert("Đã thêm sách vào giỏ!");
-      toast.success("Đã thêm sách vào giỏ hàng thành công!");
+      // alert("Đã thêm sách vào giỏ!");
+      toast.success("Đã thêm sách vào giỏ!");
       console.log(res.data);
       setIsAddedToCart(true); // Đánh dấu là đã thêm vào giỏ hàng
 

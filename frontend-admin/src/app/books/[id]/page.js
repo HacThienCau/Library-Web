@@ -2,7 +2,7 @@
 import Sidebar from "@/app/components/sidebar/Sidebar";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import { ArrowUpFromLine, ChevronDown, CircleCheck, Undo2 } from "lucide-react";
+import { ArrowUpFromLine, ChevronDown, CircleCheck, Info, Undo2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -235,6 +235,7 @@ function page() {
       console.error("Lỗi:", error.message);
     }
   };
+  const [hint, setHint] = useState(false);
   return (
     <div className="flex flex-row w-full h-full min-h-screen bg-[#EFF3FB] pb-15">
       <Sidebar />
@@ -333,7 +334,13 @@ function page() {
           {/*Dòng số lượng và thể loại */}
           <div className="flex w-full justify-between gap-10">
             <div className="flex flex-col w-2/3 gap-[5px] md:gap-[10px]">
+            <div className="flex items-center gap-2 relative">
               <p className="font-semibold text-lg mt-3">Số lượng</p>
+              <Info className="w-3 h-3" color="#062D76" onMouseEnter={()=>{setHint(true)}} onMouseLeave={()=>setHint(false)}/>
+              {hint && <div className="absolute top-0 left-28 mt-2 w-50 p-2 text-sm text-white bg-gray-200 rounded-lg shadow-md z-10">
+                <p className="text-sm text-[#062D76] italic">Chỉ được phép tùy chỉnh số lượng tăng thêm</p>
+              </div>}
+            </div>              
               <Input
                 type="number"
                 placeholder="Nhập số lượng"
