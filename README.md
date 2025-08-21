@@ -1,5 +1,6 @@
 # 📚 ReadHub Library Web
 ReadHub là hệ thống quản lý thư viện hiện đại, bao gồm cả giao diện người dùng và hệ thống quản trị. Dự án được phát triển theo mô hình client-server với frontend sử dụng ReactJS + NextJS và backend là Spring Boot (Maven).
+## 
 Link repo gốc: https://github.com/WinYoon0101/Library-Web
 
 ## 🌐 Giao diện người dùng
