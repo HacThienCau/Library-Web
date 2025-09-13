@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { ThreeDot } from "react-loading-indicators";
 import Sidebar from "@/app/components/sidebar/Sidebar";
 
-const page = () => {
+const Page = () => {
   const { id } = useParams();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -209,4 +209,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

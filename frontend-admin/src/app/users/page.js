@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { ThreeDot } from "react-loading-indicators";
 
-const page = () => {
+const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [userList, setUserList] = useState(null);
   const [filterUsers, setFilterUsers] = useState([]);
@@ -231,4 +231,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -175,7 +175,7 @@ const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
   );
 };
 
-function page() {
+function Page() {
   const initialData = {
     username: "",
     email: "",
@@ -334,4 +334,4 @@ const handleSubmit = async () => {
   );
 }
 
-export default page;
+export default Page;

@@ -16,7 +16,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import toast from "react-hot-toast";
 
-const page = () => {
+const Page = () => {
   const [allBorrowCards, setAllBorrowCards] = useState([]);
   const [selectedButton, setSelectedButton] = useState("Đang yêu cầu");
   const [loading, setLoading] = useState(false);
@@ -371,4 +371,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

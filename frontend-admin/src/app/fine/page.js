@@ -15,7 +15,7 @@ import {
 import { ThreeDot } from "react-loading-indicators";
 import toast from "react-hot-toast";
 
-const page = () => {
+const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [allFines, setAllFines] = useState([]);
   const [filterFines, setFilterFines] = useState([]); //khi tìm kiếm
@@ -233,4 +233,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

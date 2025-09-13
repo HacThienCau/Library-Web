@@ -164,7 +164,7 @@ const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
   );
 };
 
-function page() {
+function Page() {
   const [formData, setFormData] = useState({
     id: "",
     username: "",
@@ -348,4 +348,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
