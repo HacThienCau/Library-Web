@@ -40,8 +40,8 @@ public class UploadService {
     }
 
     static{
-        System.load(new File("backend/library/src/main/resources/native/opencv_java460.dll").getAbsolutePath());
-		System.out.println("OpenCV version: " + Core.VERSION);
+        nu.pattern.OpenCV.loadShared();
+        System.out.println("OpenCV version: " + org.opencv.core.Core.VERSION);
     }
     public ResponseEntity<?> uploadImages(MultipartFile[] files) {
         try {
