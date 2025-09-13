@@ -17,7 +17,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
@@ -27,8 +30,8 @@ public class GoogleDriveConfig {
     @Value("${google.drive.application-name}")
     private String applicationName;
 
-    @Value("${google.drive.service-account-key-path}")
-    private String serviceAccountKeyPath;
+    @Value("${google.drive.service-account-key}")
+    private String serviceAccountKey;
 
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
@@ -36,8 +39,10 @@ public class GoogleDriveConfig {
     public Drive driveService() throws IOException, GeneralSecurityException {
         final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
+        InputStream keyStream = new ByteArrayInputStream(serviceAccountKey.getBytes(StandardCharsets.UTF_8));
+
         ServiceAccountCredentials credentials = (ServiceAccountCredentials)
-        ServiceAccountCredentials.fromStream(new ClassPathResource(serviceAccountKeyPath).getInputStream())
+        ServiceAccountCredentials.fromStream(keyStream)
         .createScoped(Collections.singleton(DriveScopes.DRIVE));
 
         // Tạo HttpRequestInitializer có timeout
