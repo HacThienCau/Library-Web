@@ -27,7 +27,7 @@ const UploadChild = ({resultChild, setResultChild}) => {
     formData.append("type", "book");
     try {
       const response = await fetch(
-        "http://localhost:8081/upload/barcodeImage",
+        "https://library-backend.onrender.com/upload/barcodeImage",
         {
           method: "POST",
           body: formData,
@@ -60,7 +60,7 @@ const UploadChild = ({resultChild, setResultChild}) => {
     setLoading(true);
     try{
       const response = await fetch(
-        `http://localhost:8081/childNParent/${text}`,
+        `https://library-backend.onrender.com/childNParent/${text}`,
         {
           method: "GET",
         }
@@ -93,7 +93,7 @@ const UploadChild = ({resultChild, setResultChild}) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8081/childNParent/${text}`,
+          `https://library-backend.onrender.com/childNParent/${text}`,
           {
             method: "GET",
           }

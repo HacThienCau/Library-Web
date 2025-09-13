@@ -23,7 +23,7 @@ const page = () => {
 
   const fetchUserInfo = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:8081/user/${id}`);
+      const response = await axios.get(`https://library-backend.onrender.com/user/${id}`);
       setUserInfo(response.data);
       const iso = response.data.ngaySinh;
       setDob(iso);
@@ -39,7 +39,7 @@ const page = () => {
     try {
       // Cập nhật thông tin người dùng
       const updatedData = { tenND: fullName, ngaySinh: dob };
-      await axios.put(`http://localhost:8081/user/${userId}`, updatedData);
+      await axios.put(`https://library-backend.onrender.com/user/${userId}`, updatedData);
       toast.success("Thông tin đã được cập nhật");
       setIsEditing(false); // Tắt chế độ sửa
       window.location.reload();

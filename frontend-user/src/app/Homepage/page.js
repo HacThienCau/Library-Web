@@ -95,7 +95,7 @@ const HomePage = () => {
     // gọi API lấy toàn bộ sách
     const fetchBooks = async () => {
       try {
-        const response = await axios.get("http://localhost:8081/books"); // đổi thành URL thật
+        const response = await axios.get("https://library-backend.onrender.com/books"); // đổi thành URL thật
         // console.log("Dữ liệu sách:", response.data);
         const convertedBooks = response.data.map((book) => ({
           id: book.id,
@@ -122,7 +122,7 @@ const HomePage = () => {
         const searchKeywords = localStorage.getItem("searchKeywords"); // mảng keyword ví dụ
         const keywords = searchKeywords ? JSON.parse(searchKeywords) : [];
 
-        const response = await axios.post("http://localhost:8081/suggest", {
+        const response = await axios.post("https://library-backend.onrender.com/suggest", {
           userId: userId,
           keywords: keywords,
         });
@@ -227,9 +227,9 @@ const HomePage = () => {
       let res;
 
       if (!searchTerm.trim()) {
-        res = await axios.get("http://localhost:8081/books");
+        res = await axios.get("https://library-backend.onrender.com/books");
       } else {
-        res = await axios.get("http://localhost:8081/search", {
+        res = await axios.get("https://library-backend.onrender.com/search", {
           params: { query: searchTerm },
         });
       }

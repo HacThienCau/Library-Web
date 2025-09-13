@@ -164,7 +164,7 @@ export function HeroSection() {
     // gọi API lấy toàn bộ sách
     const fetchBooks = async () => {
       try {
-        const response = await axios.get("http://localhost:8081/books"); // đổi thành URL thật
+        const response = await axios.get("https://library-backend.onrender.com/books"); // đổi thành URL thật
         // console.log("Dữ liệu sách:", response.data);
         const convertedBooks = response.data.map((book) => ({
           id: book.id,
@@ -187,7 +187,7 @@ export function HeroSection() {
 
     const fetchNewBooks = async () => {
       try {
-        const res = await axios.get("http://localhost:8081/books/newest");
+        const res = await axios.get("https://library-backend.onrender.com/books/newest");
         // console.log("Dữ liệu sách mới:", res.data);
         setNewBooks(res.data);
       } catch (error) {
@@ -200,7 +200,7 @@ export function HeroSection() {
     const fetchPopularBooks = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8081/books/most-borrowed"
+          "https://library-backend.onrender.com/books/most-borrowed"
         );
         // console.log("Dữ liệu sách phổ biến:", res.data);
         setPopularBooks(res.data);
@@ -213,7 +213,7 @@ export function HeroSection() {
     const fetchLiteratureBooks = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8081/books/categories/parent/Văn%20học"
+          "https://library-backend.onrender.com/books/categories/parent/Văn%20học"
         );
         // console.log("Dữ liệu sách văn học:", res.data);
         setLiteratureBooks(res.data);
@@ -226,7 +226,7 @@ export function HeroSection() {
     const fetchForeignBooks = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8081/books/categories/parent/Ngoại%20ngữ"
+          "https://library-backend.onrender.com/books/categories/parent/Ngoại%20ngữ"
         );
         // console.log("Dữ liệu sách ngoại ngữ:", res.data);
         setForeignBooks(res.data);
@@ -239,7 +239,7 @@ export function HeroSection() {
     const fetchEconomicsBooks = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8081/books/categories/parent/Kinh%20tế"
+          "https://library-backend.onrender.com/books/categories/parent/Kinh%20tế"
         );
         // console.log("Dữ liệu sách kinh tế:", res.data);
         setEconomicsBooks(res.data);
@@ -255,7 +255,7 @@ export function HeroSection() {
         const searchKeywords = localStorage.getItem("searchKeywords"); // mảng keyword ví dụ
         const keywords = searchKeywords ? JSON.parse(searchKeywords) : [];
 
-        const response = await axios.post("http://localhost:8081/suggest", {
+        const response = await axios.post("https://library-backend.onrender.com/suggest", {
           userId: userId,
           keywords: keywords,
         });

@@ -17,7 +17,7 @@ export default function CategoryPage() {
     const fetchCategories = async () => {
       setLoading(true);
       try {
-        const response = await fetch("http://localhost:8081/books/categories");
+        const response = await fetch("https://library-backend.onrender.com/books/categories");
         const data = await response.json();
         setCategories(data);
       } catch (error) {

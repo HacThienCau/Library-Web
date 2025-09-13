@@ -78,7 +78,7 @@ function BookReview() {
   const fetchUserInfo = async (userId) => {
     try {
       if (!usersMap[userId]) {
-        const res = await fetch(`http://localhost:8081/user/${userId}`);
+        const res = await fetch(`https://library-backend.onrender.com/user/${userId}`);
         const data = await res.json();
         setUsersMap((prev) => ({ ...prev, [userId]: data }));
       }
@@ -90,7 +90,7 @@ function BookReview() {
   const fetchReviews = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8081/reviews/book/${bookId}`);
+      const res = await fetch(`https://library-backend.onrender.com/reviews/book/${bookId}`);
       const data = await res.json();
       setReviews(data);
 
@@ -106,7 +106,7 @@ function BookReview() {
 
   const fetchQuestions = async () => {
     try {
-      const res = await fetch(`http://localhost:8081/questions/book/${bookId}`);
+      const res = await fetch(`https://library-backend.onrender.com/questions/book/${bookId}`);
       const data = await res.json();
       setQuestions(data);
 
@@ -129,8 +129,8 @@ function BookReview() {
     try {
       const method = editing ? "PUT" : "POST";
       const url = editing
-        ? `http://localhost:8081/reviews/${editing.id}`
-        : `http://localhost:8081/reviews`;
+        ? `https://library-backend.onrender.com/reviews/${editing.id}`
+        : `https://library-backend.onrender.com/reviews`;
 
       await fetch(url, {
         method,
@@ -149,7 +149,7 @@ function BookReview() {
 
   const handleDelete = async (id) => {
     if (confirm("Bạn có chắc muốn xóa đánh giá này?")) {
-      await fetch(`http://localhost:8081/reviews/${id}`, { method: "DELETE" });
+      await fetch(`https://library-backend.onrender.com/reviews/${id}`, { method: "DELETE" });
       fetchReviews();
     }
   };
@@ -176,7 +176,7 @@ function BookReview() {
     };
 
     try {
-      await fetch("http://localhost:8081/questions", {
+      await fetch("https://library-backend.onrender.com/questions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

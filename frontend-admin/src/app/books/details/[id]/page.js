@@ -17,7 +17,7 @@ const page = () => {
     const fetchPage = async () => {
       try {
         //lấy chi tiết sách
-        const response = await fetch(`http://localhost:8081/book/${id}`, {
+        const response = await fetch(`https://library-backend.onrender.com/book/${id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -30,7 +30,7 @@ const page = () => {
         if (!data) return;
         setBook(data);
         // lấy ds sách con từ id cha
-        const res = await fetch(`http://localhost:8081/childrenOf/${data.id}`, {
+        const res = await fetch(`https://library-backend.onrender.com/childrenOf/${data.id}`, {
           method: "GET",
         });
 
@@ -71,7 +71,7 @@ const page = () => {
   const handleFind = async(bookId, status) => {
     try {
       if(status === "Đang mượn") {
-        const response = await fetch(`http://localhost:8081/bookInBorrowing/${bookId}`, {
+        const response = await fetch(`https://library-backend.onrender.com/bookInBorrowing/${bookId}`, {
           method: "GET",
         });
         if(!response.ok) {
@@ -82,7 +82,7 @@ const page = () => {
         window.open(`/borrow/${data}`, '_blank').focus();
       }
       else if (status === "Đã xóa"){
-        const response = await fetch(`http://localhost:8081/bookInLost/${bookId}`, {
+        const response = await fetch(`https://library-backend.onrender.com/bookInLost/${bookId}`, {
           method: "GET",
         });
         if(!response.ok) {

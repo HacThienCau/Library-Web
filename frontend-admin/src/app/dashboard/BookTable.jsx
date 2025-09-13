@@ -9,7 +9,7 @@ import { Button } from "@/app/components/ui/button";
 
 const fetchBooks = async () => {
   try {
-    const response = await axios.get("http://localhost:8081/books/top5");
+    const response = await axios.get("https://library-backend.onrender.com/books/top5");
     return response.data;
   } catch (error) {
     toast.error("Lỗi khi tải danh sách sách");

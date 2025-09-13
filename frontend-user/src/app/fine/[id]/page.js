@@ -19,7 +19,7 @@ function page() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:8081/fine/${MaPhieuPhat}`
+        `https://library-backend.onrender.com/fine/${MaPhieuPhat}`
       );
       if (response.status === 200) {
         const fineData = response.data;
@@ -88,7 +88,7 @@ function page() {
   };
   const handleThanhToan = async () => {
     const response = await axios.post(
-      `http://localhost:8081/fine/pay-momo/${fine.id}`
+      `https://library-backend.onrender.com/fine/pay-momo/${fine.id}`
     );
     const payUrl = response.data;
     window.location.href = payUrl;

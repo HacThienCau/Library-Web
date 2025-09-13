@@ -94,8 +94,8 @@ const Page = () => {
     const fetchInitialData = async () => {
       try {
         const [categoriesRes, booksRes] = await Promise.all([
-          fetch("http://localhost:8081/books/categories"),
-          fetch("http://localhost:8081/books"),
+          fetch("https://library-backend.onrender.com/books/categories"),
+          fetch("https://library-backend.onrender.com/books"),
         ]);
         const categoriesData = await categoriesRes.json();
         const grouped = groupCategories(categoriesData);
@@ -115,12 +115,12 @@ const Page = () => {
 
   const fetchBooks = async (subcategory, sortKey) => {
     try {
-      let url = "http://localhost:8081/books";
+      let url = "https://library-backend.onrender.com/books";
 
       if (subcategory !== "all") {
-        url = `http://localhost:8081/books/categories/id/${subcategory.id}`;
+        url = `https://library-backend.onrender.com/books/categories/id/${subcategory.id}`;
       } else {
-        url = `http://localhost:8081/books/filter`;
+        url = `https://library-backend.onrender.com/books/filter`;
       }
 
       if (sortKey) {

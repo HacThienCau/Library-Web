@@ -52,7 +52,7 @@ const page = () => {
   const fetchBook = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8081/books", {
+      const res = await fetch("https://library-backend.onrender.com/books", {
         method: "GET",
       });
 
@@ -80,7 +80,7 @@ const page = () => {
     }
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8081/book/${book.id}`, {
+      const res = await fetch(`https://library-backend.onrender.com/book/${book.id}`, {
         method: "DELETE",
       });
 

@@ -51,7 +51,7 @@ function page() {
   const [cate2List, setCate2List] = useState([]);
   useEffect(() => {
     const fetchCategory = async() =>{
-      const response = await fetch("http://localhost:8081/books/categories");
+      const response = await fetch("https://library-backend.onrender.com/books/categories");
       const data = await response.json();
       setTotalCate(data)
       setCateList([...new Set(data.map(item => item.tenTheLoaiCha))])
@@ -94,7 +94,7 @@ function page() {
         formData.append("file", img.selectedFile); // gửi với key "file"
       }
     });
-    const res = await fetch("http://localhost:8081/upload/image", {
+    const res = await fetch("https://library-backend.onrender.com/upload/image", {
       method: "POST",
       body: formData,
     });
@@ -167,7 +167,7 @@ function page() {
     };
     try {
       console.log(bookData)
-      const res = await fetch("http://localhost:8081/addBook", {
+      const res = await fetch("https://library-backend.onrender.com/addBook", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

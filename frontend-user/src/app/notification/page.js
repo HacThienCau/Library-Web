@@ -18,7 +18,7 @@ const NotiCard = ({ id, message, timestamp, read , refreshNoti}) => {
   const handleMarkAsRead = async () => {
     if (!read) {
       try {
-        await fetch(`http://localhost:8081/notification/mark-as-read/${id}`, {
+        await fetch(`https://library-backend.onrender.com/notification/mark-as-read/${id}`, {
           method: "PUT",
         });
         toast.success("Đã đánh dấu là đã đọc!");
@@ -61,7 +61,7 @@ const page = () => {
       const fetchNotification = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8081/notification/${userId}`
+          `https://library-backend.onrender.com/notification/${userId}`
         );
         if (response.ok) {
           const data = await response.json();

@@ -15,7 +15,7 @@ const page = () => {
   const [startMail, setStartMail] = useState(0);
   const fetchSetting = async () => {
     try {
-      const res = await fetch("http://localhost:8081/settings", {
+      const res = await fetch("https://library-backend.onrender.com/settings", {
         method: "GET",
       });
       if (!res.ok) throw new Error("Không thể tải cài đặt.");
@@ -36,7 +36,7 @@ const page = () => {
   const handleSubmit = async()=>{
     setLoading(true)
     try {
-      const res = await fetch("http://localhost:8081/settings", {
+      const res = await fetch("https://library-backend.onrender.com/settings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

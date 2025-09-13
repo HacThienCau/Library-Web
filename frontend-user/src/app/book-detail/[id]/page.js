@@ -40,7 +40,7 @@ function page() {
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const response = await axios.get(`http://localhost:8081/book/${id}`);
+        const response = await axios.get(`https://library-backend.onrender.com/book/${id}`);
         const book = response.data;
         const convertedBook = {
           id: book.book_id,
@@ -74,7 +74,7 @@ function page() {
   useEffect(() => {
     const checkBookInCart = async () => {
       try {
-        const res = await axios.get(`http://localhost:8081/carts/user/${userId}`);
+        const res = await axios.get(`https://library-backend.onrender.com/carts/user/${userId}`);
         const cartBooks = res.data.books; // giả sử trả về mảng books [{ id: ..., ... }]
   
         const found = cartBooks.some(book => book.id === id); // id là id của sách hiện tại
@@ -90,7 +90,7 @@ function page() {
   const handleAddToCart = async () => {
     try {
       const res = await axios.patch(
-        `http://localhost:8081/carts/user/${userId}`,
+        `https://library-backend.onrender.com/carts/user/${userId}`,
         {
           books: [{ id: id }], // đưa vào mảng 1 phần tử
         }
@@ -115,7 +115,7 @@ function page() {
 
       // Gửi yêu cầu đến backend để tạo phiếu mượn
       const response = await axios.post(
-        "http://localhost:8081/borrow-card/create",
+        "https://library-backend.onrender.com/borrow-card/create",
         {
           userId: userId,
           bookIds: [id],

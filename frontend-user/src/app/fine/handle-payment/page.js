@@ -52,7 +52,7 @@ export default function PaymentCallback() {
     if (resultCode === "0") {
       axios
         .post(
-          `http://localhost:8081/fine/payment/confirm`,
+          `https://library-backend.onrender.com/fine/payment/confirm`,
           { orderId, amount },
           { withCredentials: true }
         )

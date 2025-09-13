@@ -22,7 +22,7 @@ const page = () => {
   const [loading, setLoading] = useState(false);
   const fetchBorrowCards = async () => {
     try {
-      const response = await fetch(`http://localhost:8081/borrow-card/`, {
+      const response = await fetch(`https://library-backend.onrender.com/borrow-card/`, {
         method: "GET",
       });
       setAllBorrowCards(await response.json());
@@ -87,7 +87,7 @@ const page = () => {
       //phiếu nào hết hạn thì gửi
       const responses = await Promise.all(
         list.map((item) =>
-          fetch(`http://localhost:8081/borrow-card/expired/${item?.id}`, {
+          fetch(`https://library-backend.onrender.com/borrow-card/expired/${item?.id}`, {
             method: "PUT",
           })
         )
@@ -103,7 +103,7 @@ const page = () => {
     try {
       //đưa lên backend để dò với startToMail
       const response = await fetch(
-        "http://localhost:8081/borrow-card/askToReturn",
+        "https://library-backend.onrender.com/borrow-card/askToReturn",
         {
           method: "POST",
           headers: {

@@ -110,7 +110,7 @@ const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
       formData.append("file", file);
 
       const response = await axios.post(
-        "http://localhost:8081/upload/image",
+        "https://library-backend.onrender.com/upload/image",
         formData,
         {
           headers: {
@@ -183,7 +183,7 @@ function page() {
         return;
       }
       try {
-        const res = await axios.get(`http://localhost:8081/user/${id}`);
+        const res = await axios.get(`https://library-backend.onrender.com/user/${id}`);
         const data = res.data;
 
         setFormData({
@@ -215,7 +215,7 @@ function page() {
 
   const handleSubmit = async () => {
     try {
-      await axios.put(`http://localhost:8081/user/${id}`, {
+      await axios.put(`https://library-backend.onrender.com/user/${id}`, {
         id: formData.id,
         tenND: formData.username,
         email: formData.email,

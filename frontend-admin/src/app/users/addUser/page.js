@@ -121,7 +121,7 @@ const AvatarUpload = ({ avatarUrl, onAvatarChange }) => {
       formData.append("file", file);
 
       const response = await axios.post(
-        "http://localhost:8081/upload/image",
+        "https://library-backend.onrender.com/upload/image",
         formData,
         {
           headers: {
@@ -192,7 +192,7 @@ function page() {
 
 const handleSubmit = async () => {
   try {
-    const response = await axios.post("http://localhost:8081/user/add-user", {
+    const response = await axios.post("https://library-backend.onrender.com/user/add-user", {
       tenND: formData.username,
       email: formData.email,
       sdt: formData.phone,

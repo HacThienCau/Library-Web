@@ -36,7 +36,7 @@ function page() {
     };
   
     try {
-      const res = await fetch("http://localhost:8081/addCategory", {
+      const res = await fetch("https://library-backend.onrender.com/addCategory", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

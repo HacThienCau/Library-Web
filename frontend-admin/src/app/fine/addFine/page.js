@@ -29,7 +29,7 @@ function AddFine() {
     setLoading(true)
     try {
       const response = await fetch(
-        `http://localhost:8081/users`,
+        `https://library-backend.onrender.com/users`,
         {
           method: "GET",
         }
@@ -52,7 +52,7 @@ function AddFine() {
     setLoading(true)
     try{
       const response = await fetch(
-        `http://localhost:8081/borrow-card/user/${userId}`,
+        `https://library-backend.onrender.com/borrow-card/user/${userId}`,
         {
           method: "GET",
         }
@@ -127,7 +127,7 @@ function AddFine() {
     console.log(data);
     try {
       const response = await fetch(
-        `http://localhost:8081/addFine`,
+        `https://library-backend.onrender.com/addFine`,
         {
           method: "POST",
           headers: {
@@ -157,7 +157,7 @@ function AddFine() {
     setUser(selected.at(0))
   }
   const handleEnterBook = async() =>{
-    const selected = await (await fetch(`http://localhost:8081/child/${bookText}`)).json();
+    const selected = await (await fetch(`https://library-backend.onrender.com/child/${bookText}`)).json();
     if(!selected) {
       toast.error("Không tìm thấy sách con với id này")
       return;

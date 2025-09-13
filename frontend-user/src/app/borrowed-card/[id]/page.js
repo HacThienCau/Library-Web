@@ -131,7 +131,7 @@ const ChiTietPhieuMuon = () => {
     const fetchBorrowCardDetail = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8081/borrow-card/${id}`
+          `https://library-backend.onrender.com/borrow-card/${id}`
         );
         setBorrowDetail(response.data);
       } catch (error) {
@@ -147,7 +147,7 @@ const ChiTietPhieuMuon = () => {
   const handleDelete = async (info) => {
     try {
       await axios.delete(
-        `http://localhost:8081/borrow-card/${info.borrowCardId}`
+        `https://library-backend.onrender.com/borrow-card/${info.borrowCardId}`
       );
       toast.success("Xóa phiếu thành công");
       setPopUpOpen(false);
@@ -183,7 +183,7 @@ const ChiTietPhieuMuon = () => {
       }
 
       await axios.put(
-        `http://localhost:8081/borrow-card/${borrowDetail.borrowCardId}/remove-book`,
+        `https://library-backend.onrender.com/borrow-card/${borrowDetail.borrowCardId}/remove-book`,
         {
           bookId: bookToRemove.id,
         }
