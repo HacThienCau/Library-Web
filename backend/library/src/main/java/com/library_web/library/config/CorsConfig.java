@@ -14,7 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**") // cho tất cả route
-                        .allowedOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:3002") // chấp nhận từ React
+                        .allowedOrigins("https://library-web-admin.vercel.app/", "https://library-web-readhub.vercel.app/", "https://library-web-scanner.vercel.app/") // chấp nhận từ React
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH" , "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true); // nếu bạn dùng cookie / auth header
