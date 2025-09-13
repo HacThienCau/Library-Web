@@ -145,7 +145,7 @@ const Page = () => {
             {filteredCards.length === 0 && (
               <p className="mt-5 text-center text-gray-500 text-[1.125rem]">
                 Không có phiếu mượn nào trong trạng thái{" "}
-                <span className="font-medium">"&quot;{selectedButton}&quot;"</span>.
+                <span className="font-medium">{selectedButton}</span>.
               </p>
             )}
             <section className="gap-y-2.5 mt-5">
