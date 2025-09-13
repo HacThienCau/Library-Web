@@ -55,11 +55,11 @@ function page() {
     const getBook = async() =>{
       setLoading(true);
       try {
-        const res = await fetch("https://library-backend.onrender.com/books/categories");
+        const res = await fetch("https://library-backend-ydnf.onrender.com/books/categories");
         const cates = await res.json();
         setTotalCate(cates)
         setCateList([...new Set(cates.map(item => item.tenTheLoaiCha))])  
-        const response = await fetch(`https://library-backend.onrender.com/book/${id}`, {
+        const response = await fetch(`https://library-backend-ydnf.onrender.com/book/${id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -140,7 +140,7 @@ function page() {
       }
     });
     if(!flag) return [];  
-    const res = await fetch("https://library-backend.onrender.com/upload/image", {
+    const res = await fetch("https://library-backend-ydnf.onrender.com/upload/image", {
       method: "POST",
       body: formData,
     });
@@ -214,7 +214,7 @@ function page() {
       soTrang: pages,
     };
     try {
-      const res = await fetch(`https://library-backend.onrender.com/book/${id}`, {
+      const res = await fetch(`https://library-backend-ydnf.onrender.com/book/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

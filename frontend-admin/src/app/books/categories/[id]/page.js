@@ -42,7 +42,7 @@ const encoded = safeEncode(tenTheLoaiCon);
     const fetchCategory = async () => {
       try {
         console.log("Encoded param:", encoded);
-        const res = await fetch(`https://library-backend.onrender.com/books/categories/${encoded}`);
+        const res = await fetch(`https://library-backend-ydnf.onrender.com/books/categories/${encoded}`);
   
         if (!res.ok) {
           toast.error("Không tìm thấy thể loại");
@@ -70,7 +70,7 @@ const encoded = safeEncode(tenTheLoaiCon);
   const handleSave = async () => {
     try {
       const res = await fetch(
-        `https://library-backend.onrender.com/books/categories/updateCategory/{id}`,
+        `https://library-backend-ydnf.onrender.com/books/categories/updateCategory/{id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

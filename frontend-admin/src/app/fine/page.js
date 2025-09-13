@@ -60,7 +60,7 @@ const page = () => {
     //Hàm lấy ds phiếu phạt, sau đó chia theo trangThai
     setLoading(true);
     try {
-      const response = await fetch(`https://library-backend.onrender.com/fines`, {
+      const response = await fetch(`https://library-backend-ydnf.onrender.com/fines`, {
         method: "GET",
       });
       if (!response.ok) {

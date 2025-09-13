@@ -93,7 +93,7 @@ const Dashboard = () => {
     fines: { percentage: 0, status: "up" },
   });
   useEffect(() => {
-    fetch("https://library-backend.onrender.com/dashboard/books-import")
+    fetch("https://library-backend-ydnf.onrender.com/dashboard/books-import")
       .then((res) => res.json())
       .then((data) => {
         const monthLabels = data.map((item) => item._id);
@@ -101,7 +101,7 @@ const Dashboard = () => {
         setChartData({ monthLabels, importCounts });
       });
 
-    fetch("https://library-backend.onrender.com/dashboard/stats")
+    fetch("https://library-backend-ydnf.onrender.com/dashboard/stats")
       .then((res) => res.json())
       .then((data) => {
         setStats(data);

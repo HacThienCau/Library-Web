@@ -94,8 +94,8 @@ const Page = () => {
     const fetchInitialData = async () => {
       try {
         const [categoriesRes, booksRes] = await Promise.all([
-          fetch("https://library-backend.onrender.com/books/categories"),
-          fetch("https://library-backend.onrender.com/books"),
+          fetch("https://library-backend-ydnf.onrender.com/books/categories"),
+          fetch("https://library-backend-ydnf.onrender.com/books"),
         ]);
         const categoriesData = await categoriesRes.json();
         const grouped = groupCategories(categoriesData);
@@ -115,12 +115,12 @@ const Page = () => {
 
   const fetchBooks = async (subcategory, sortKey) => {
     try {
-      let url = "https://library-backend.onrender.com/books";
+      let url = "https://library-backend-ydnf.onrender.com/books";
 
       if (subcategory !== "all") {
-        url = `https://library-backend.onrender.com/books/categories/id/${subcategory.id}`;
+        url = `https://library-backend-ydnf.onrender.com/books/categories/id/${subcategory.id}`;
       } else {
-        url = `https://library-backend.onrender.com/books/filter`;
+        url = `https://library-backend-ydnf.onrender.com/books/filter`;
       }
 
       if (sortKey) {

@@ -141,9 +141,9 @@ export const Header = () => {
       let res;
 
       if (!searchTerm.trim()) {
-        res = await axios.get("https://library-backend.onrender.com/books");
+        res = await axios.get("https://library-backend-ydnf.onrender.com/books");
       } else {
-        res = await axios.get("https://library-backend.onrender.com/search", {
+        res = await axios.get("https://library-backend-ydnf.onrender.com/search", {
           params: { query: searchTerm },
         });
       }
@@ -178,7 +178,7 @@ export const Header = () => {
 
   const fetchUserInfo = async (id) => {
     try {
-      const response = await axios.get(`https://library-backend.onrender.com/user/${id}`);
+      const response = await axios.get(`https://library-backend-ydnf.onrender.com/user/${id}`);
       setUserInfo(response.data);
     } catch (error) {
       console.error("Lỗi khi lấy thông tin người dùng:", error);
@@ -205,7 +205,7 @@ export const Header = () => {
 
   const fetchCart = async () => {
     try {
-      const response = await fetch(`https://library-backend.onrender.com/carts/user/${userId}`);
+      const response = await fetch(`https://library-backend-ydnf.onrender.com/carts/user/${userId}`);
       if (response.ok) {
         const data = await response.json();
         const booksInCart = data.books || [];
@@ -220,7 +220,7 @@ export const Header = () => {
 
   const fetchNotifications = async () => {
   try {
-    const response = await fetch(`https://library-backend.onrender.com/notification/${userId}`);
+    const response = await fetch(`https://library-backend-ydnf.onrender.com/notification/${userId}`);
     if (response.ok) {
       const notifications = await response.json();
       const unread = notifications.filter(n => !n.read);

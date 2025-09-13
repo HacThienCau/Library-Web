@@ -198,7 +198,7 @@ if (/^[a-f\d]{24}$/.test(latestMessage.trim())) {
 
   if (cardToDelete) {
     try {
-      await axios.delete(`https://library-backend.onrender.com/borrow-card/${cardToDelete._id}`);
+      await axios.delete(`https://library-backend-ydnf.onrender.com/borrow-card/${cardToDelete._id}`);
       return {
         role: "assistant",
         content: `✅ Đã hủy thành công phiếu mượn có ID: \`${cardToDelete._id}\`.`,
@@ -233,7 +233,7 @@ if (
 
   const bookIds = matchedBooks.map((b) => b._id);
   try {
-    const response = await axios.post("https://library-backend.onrender.com/borrow-card/create", {
+    const response = await axios.post("https://library-backend-ydnf.onrender.com/borrow-card/create", {
       userId,
       bookIds,
     });

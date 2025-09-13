@@ -120,7 +120,7 @@ const ChiTietPhieuMuon = () => {
     const fetchBorrowCardDetail = async () => {
       try {
         const response = await fetch(
-          `https://library-backend.onrender.com/borrow-card/${id}`,{
+          `https://library-backend-ydnf.onrender.com/borrow-card/${id}`,{
             method:'GET'
           }
         );
@@ -138,7 +138,7 @@ const ChiTietPhieuMuon = () => {
 
   const handleDelete = async (info) => {
     try {
-      await fetch(`https://library-backend.onrender.com/borrow-card/${info.borrowCardId}`,{method:'DELETE'});
+      await fetch(`https://library-backend-ydnf.onrender.com/borrow-card/${info.borrowCardId}`,{method:'DELETE'});
       toast.success("Xóa phiếu thành công");
       setPopUpOpen(false);
 

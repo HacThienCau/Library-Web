@@ -78,7 +78,7 @@ const Page = () => {
 const onSubmitRegister = async (data) => {
   try {
     // Gửi yêu cầu POST đến backend để đăng ký
-    const response = await fetch('https://library-backend.onrender.com/signup', {
+    const response = await fetch('https://library-backend-ydnf.onrender.com/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ const onSubmitRegister = async (data) => {
 const onSubmitLogin = async (data) => {
   try {
     // Gửi yêu cầu POST đến backend để đăng nhập
-    const response = await fetch('https://library-backend.onrender.com/signin', {
+    const response = await fetch('https://library-backend-ydnf.onrender.com/signin', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

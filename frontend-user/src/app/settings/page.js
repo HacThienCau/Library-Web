@@ -25,7 +25,7 @@ const userId = localStorage.getItem("id");
 
   const fetchUserInfo = async (id) => {
     try {
-      const response = await axios.get(`https://library-backend.onrender.com/user/${id}`);
+      const response = await axios.get(`https://library-backend-ydnf.onrender.com/user/${id}`);
       setUserInfo(response.data);
     } catch (error) {
       console.error("Lỗi khi lấy thông tin người dùng:", error);
@@ -64,7 +64,7 @@ const userId = localStorage.getItem("id");
 
     try {
       const response = await axios.put(
-        `https://library-backend.onrender.com/user/${userId}/change-password`,
+        `https://library-backend-ydnf.onrender.com/user/${userId}/change-password`,
         {
           oldPassword: data.currentPassword,
           newPassword: data.newPassword,

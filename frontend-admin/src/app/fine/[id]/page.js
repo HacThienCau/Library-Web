@@ -13,7 +13,7 @@ function page() {
   const [borrowInfo, setBorrowInfo] = useState([])
   const fetchFine = async () => {
     try {
-      const response = await fetch(`https://library-backend.onrender.com/fine/${id}`)
+      const response = await fetch(`https://library-backend-ydnf.onrender.com/fine/${id}`)
       const res = await response.json();
       setFine(res)
     } catch (error) {
@@ -21,7 +21,7 @@ function page() {
     }
   };
   const fetchBookInfo = async (bookId) => {
-    const res = await fetch(`https://library-backend.onrender.com/book/${bookId}`);
+    const res = await fetch(`https://library-backend-ydnf.onrender.com/book/${bookId}`);
     return res.json();
   };
   const fetchInfo = async() =>{
@@ -29,7 +29,7 @@ function page() {
     try {
       const books = await Promise.all(
         fine?.cardId?.childBookIds?.map(async (childBook) => {
-          const parentId = (await (await fetch(`https://library-backend.onrender.com/child/${childBook}`)).json())?.idParent;
+          const parentId = (await (await fetch(`https://library-backend-ydnf.onrender.com/child/${childBook}`)).json())?.idParent;
           const data = await fetchBookInfo(parentId);
           return {parentBook:{...data},childBook:{id:childBook}};
         })
@@ -70,7 +70,7 @@ function page() {
     return date.toLocaleDateString("vi-VN"); // Kết quả: 22/04/2025
   };
   const handleThanhToan = async()=>{
-    const response = await fetch(`https://library-backend.onrender.com/fine/pay/${id}`,{
+    const response = await fetch(`https://library-backend-ydnf.onrender.com/fine/pay/${id}`,{
       method: 'PUT'
     })  
     toast.success("Thanh toán thành công.")

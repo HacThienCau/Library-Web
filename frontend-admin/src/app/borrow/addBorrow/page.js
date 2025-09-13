@@ -25,7 +25,7 @@ function page() {
     const fetchUser = async()=>{
       setLoading(true)
       try{
-        const res = await fetch('https://library-backend.onrender.com/users',{method:'GET'})
+        const res = await fetch('https://library-backend-ydnf.onrender.com/users',{method:'GET'})
         if (!res.ok) {
           throw new Error("Không thể lấy danh sách người dùng");
         }    
@@ -40,7 +40,7 @@ function page() {
     const fetchBook = async()=>{
       setLoading(true)
       try{
-        const res = await fetch('https://library-backend.onrender.com/books',{method:'GET'})
+        const res = await fetch('https://library-backend-ydnf.onrender.com/books',{method:'GET'})
         if (!res.ok) {
           throw new Error("Không thể lấy danh sách sách");
         }    
@@ -105,7 +105,7 @@ function page() {
         userId: user?.id,
         bookIds: idList
       }
-      const response = await fetch("https://library-backend.onrender.com/borrow-card/create", {
+      const response = await fetch("https://library-backend-ydnf.onrender.com/borrow-card/create", {
         method:"POST",
         headers: {
           'Content-Type': 'application/json'

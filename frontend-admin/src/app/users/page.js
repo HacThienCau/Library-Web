@@ -42,7 +42,7 @@ const page = () => {
   const fetchUser = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("https://library-backend.onrender.com/users");
+      const response = await axios.get("https://library-backend-ydnf.onrender.com/users");
       setUserList(response.data); // Giả sử backend trả về mảng user
       setLoading(false)
     } catch (error) {
@@ -57,7 +57,7 @@ const page = () => {
 
   const handleDelete = async (user) => {
     try {
-      await axios.delete(`https://library-backend.onrender.com/user/${user.id}`);
+      await axios.delete(`https://library-backend-ydnf.onrender.com/user/${user.id}`);
       toast.success("Xóa người dùng thành công");
       setPopUpOpen(false);
       setDeleteOne(null);

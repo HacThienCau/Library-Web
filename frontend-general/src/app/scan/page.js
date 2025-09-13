@@ -37,7 +37,7 @@ const UploadImage = () => {
     formData.append("type", "user");
     try {
       const response = await fetch(
-        "https://library-backend.onrender.com/upload/barcodeImage",
+        "https://library-backend-ydnf.onrender.com/upload/barcodeImage",
         {
           method: "POST",
           body: formData,
@@ -73,7 +73,7 @@ const UploadImage = () => {
 
       try {
         const response = await fetch(
-          "https://library-backend.onrender.com/upload/barcodeImage",
+          "https://library-backend-ydnf.onrender.com/upload/barcodeImage",
           {
             method: "POST",
             body: formData,
@@ -128,7 +128,7 @@ const UploadImage = () => {
     setLoading(true);
     try{
       const response = await fetch(
-        `https://library-backend.onrender.com/user/${text}`,
+        `https://library-backend-ydnf.onrender.com/user/${text}`,
         {
           method: "GET",
         }
@@ -152,7 +152,7 @@ const UploadImage = () => {
     try{
       const userId = result?.id;
       var response = await fetch(
-        `https://library-backend.onrender.com/borrow-card/user/${userId}`,
+        `https://library-backend-ydnf.onrender.com/borrow-card/user/${userId}`,
         {
           method: "GET",
         }
@@ -179,7 +179,7 @@ const UploadImage = () => {
   },[result])
   //hàm lấy thông tin sách cha
   const fetchBookInfo = async (bookId) => {
-    const res = await fetch(`https://library-backend.onrender.com/book/${bookId}`);
+    const res = await fetch(`https://library-backend-ydnf.onrender.com/book/${bookId}`);
     return res.json();
   };
   //hàm lấy thông tin sách của phiếu mượn
@@ -203,7 +203,7 @@ const UploadImage = () => {
         try {
           const books = await Promise.all(
             currentChoose.childBookIds.map(async (childBook) => {
-              const parentId = (await (await fetch(`https://library-backend.onrender.com/child/${childBook}`)).json())?.idParent;
+              const parentId = (await (await fetch(`https://library-backend-ydnf.onrender.com/child/${childBook}`)).json())?.idParent;
               const data = await fetchBookInfo(parentId);
               return {...data,childId:childBook,checked:false};
             })
@@ -373,7 +373,7 @@ const UploadImage = () => {
     try {
       if(currentChoose.status==="Đang yêu cầu"){
       const response = await fetch(
-        `https://library-backend.onrender.com/borrow-card/borrow/${currentChoose?.id}`,
+        `https://library-backend-ydnf.onrender.com/borrow-card/borrow/${currentChoose?.id}`,
         {
           method: "PUT",
           headers: {
@@ -390,7 +390,7 @@ const UploadImage = () => {
      }
      else{
       const response = await fetch(
-        `https://library-backend.onrender.com/borrow-card/return/${currentChoose?.id}`,
+        `https://library-backend-ydnf.onrender.com/borrow-card/return/${currentChoose?.id}`,
         {
           method: "PUT",
         }
@@ -426,7 +426,7 @@ const UploadImage = () => {
               soTien: 0,
               cardId: book?.childId
             }
-            const response = await fetch('https://library-backend.onrender.com/addFine',{
+            const response = await fetch('https://library-backend-ydnf.onrender.com/addFine',{
               method: 'POST',
               headers: {
                 "Content-Type": "application/json"

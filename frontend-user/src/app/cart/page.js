@@ -80,7 +80,7 @@ const page = () => {
     try {
       setLoading(true); // Bắt đầu tải dữ liệu
       const response = await fetch(
-        `https://library-backend.onrender.com/carts/user/${userId}`
+        `https://library-backend-ydnf.onrender.com/carts/user/${userId}`
       ); // Endpoint API lấy giỏ hàng theo userId
       if (response.ok) {
         const data = await response.json();
@@ -119,7 +119,7 @@ const page = () => {
     try {
       // Gửi request xóa các sách đã chọn, dùng `selected` để lấy các book ID
       const response = await axios.delete(
-        `https://library-backend.onrender.com/carts/user/${userId}`,
+        `https://library-backend-ydnf.onrender.com/carts/user/${userId}`,
         {
           data: selected, // Truyền danh sách các ID sách cần xóa
         }
@@ -144,7 +144,7 @@ const page = () => {
       const userId = localStorage.getItem("id"); // Lấy userId từ localStorage
   
       // Gửi yêu cầu đến backend để tạo phiếu mượn
-      const response = await axios.post("https://library-backend.onrender.com/borrow-card/create", {
+      const response = await axios.post("https://library-backend-ydnf.onrender.com/borrow-card/create", {
         userId: userId,
         bookIds: booksInCart,
       });
@@ -154,7 +154,7 @@ const page = () => {
         console.log(response.data); // Xem chi tiết phiếu mượn
 
         const deleteResponse = await axios.delete(
-          `https://library-backend.onrender.com/carts/user/${userId}`,
+          `https://library-backend-ydnf.onrender.com/carts/user/${userId}`,
           {
             data: booksInCart, 
           }

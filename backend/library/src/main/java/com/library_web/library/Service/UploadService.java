@@ -169,7 +169,7 @@ public class UploadService {
             RestTemplate restTemplate = new RestTemplate();
 
             if (type.equals("book")) {
-                String apiUrl = "https://library-backend.onrender.com/child/" + decodedText;
+                String apiUrl = "https://library-backend-ydnf.onrender.com/child/" + decodedText;
                 ResponseEntity<ChildBook> response = restTemplate.getForEntity(apiUrl, ChildBook.class);
                 if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
                     return ResponseEntity.status(404).body(Map.of("error", "Không tìm thấy sách con"));
@@ -179,7 +179,7 @@ public class UploadService {
                 Map<String, Object> parentBook = null;
 
                 if (child != null && child.getIdParent() != null) {
-                    String parentUrl = "https://library-backend.onrender.com/book/" + child.getIdParent();
+                    String parentUrl = "https://library-backend-ydnf.onrender.com/book/" + child.getIdParent();
                     ResponseEntity<Map<String, Object>> parentResponse = restTemplate.exchange(
                             parentUrl,
                             HttpMethod.GET,
@@ -190,7 +190,7 @@ public class UploadService {
 
                 return ResponseEntity.ok(Map.of("childBook", child, "parentBook", parentBook));
             } else {
-                String apiUrl = "https://library-backend.onrender.com/user/" + decodedText;
+                String apiUrl = "https://library-backend-ydnf.onrender.com/user/" + decodedText;
                 ResponseEntity<User> response = restTemplate.getForEntity(apiUrl, User.class);
                 return ResponseEntity.ok(response.getBody());
             }

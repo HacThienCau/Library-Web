@@ -18,7 +18,7 @@ export default function BookSection({ title, books, slug }) {
   const handleAddToCart = async (book) => {
     try {
       const res = await axios.patch(
-        `https://library-backend.onrender.com/carts/user/${userId}`,
+        `https://library-backend-ydnf.onrender.com/carts/user/${userId}`,
         {
           books: [{ id: book.id }], // đưa vào mảng 1 phần tử
         }
@@ -42,7 +42,7 @@ export default function BookSection({ title, books, slug }) {
 
       // Gửi yêu cầu đến backend để tạo phiếu mượn
       const response = await axios.post(
-        "https://library-backend.onrender.com/borrow-card/create",
+        "https://library-backend-ydnf.onrender.com/borrow-card/create",
         {
           userId: userId,
           bookIds: [book.id],
