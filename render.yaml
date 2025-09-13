@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: library-backend
+    env: docker
+    plan: free
+    rootDir: backend/library
+    dockerfilePath: Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 8081
