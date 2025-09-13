@@ -17,7 +17,7 @@ Link repo gốc: https://github.com/WinYoon0101/Library-Web
 ### 1. Backend (Spring Boot)
 
 ```bash
-cd backend
+cd backend/library
 mvn clean install
 mvn spring-boot:run
 ```
@@ -46,5 +46,10 @@ npm install
 npm run dev
 ```
 
-## 📬 Liên hệ
-Nếu bạn có câu hỏi hoặc cần quyền truy cập vào các file nhạy cảm, vui lòng liên hệ người quản lý dự án.
+## Deployment
+Readhub hiện đã được deploy. Bạn có thể xem tại các đường dẫn sau:
+```
+User: https://library-web-readhub.vercel.app/
+Admin: https://library-web-admin.vercel.app/
+General: https://library-web-scanner.vercel.app/
+
