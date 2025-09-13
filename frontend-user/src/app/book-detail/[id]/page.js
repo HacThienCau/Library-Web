@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 import BookCarousel from "@/app/components/BookCarousel";
 
 
-function page() {
+function Page() {
   const { id } = useParams();
   const [details, setDetails] = useState(null);
   const userId = localStorage.getItem("id"); // Lấy userId từ localStorage
@@ -259,4 +259,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

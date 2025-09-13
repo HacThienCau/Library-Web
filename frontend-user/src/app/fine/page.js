@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { TbListDetails } from "react-icons/tb";
 
-const page = () => {
+const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterFines, setFilterFines] = useState([]);
   const [needToPay, setNeedToPay] = useState([]);
@@ -231,4 +231,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -6,7 +6,7 @@ import UploadButton from "./UploadButton";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-const page = () => {
+const Page = () => {
   const [showUploadButton, setShowUploadButton] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
@@ -187,4 +187,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -65,7 +65,7 @@ const books = [
   },
 ];
 
-const page = () => {
+const Page = () => {
   return (
     <div className="flex flex-col min-h-screen text-foreground">
       <main className="pt-16 flex">
@@ -96,4 +96,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

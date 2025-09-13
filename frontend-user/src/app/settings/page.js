@@ -5,7 +5,7 @@ import ChatBotButton from "../components/ChatBotButton";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-const page = () => {
+const Page = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -229,4 +229,4 @@ const userId = localStorage.getItem("id");
   );
 };
 
-export default page;
+export default Page;

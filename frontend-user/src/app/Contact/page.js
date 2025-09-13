@@ -1,7 +1,7 @@
 import React from 'react'
 
 
-const page = () => {
+const Page = () => {
   return (
     <div className="flex flex-col min-h-screen text-foreground">
 
@@ -12,4 +12,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

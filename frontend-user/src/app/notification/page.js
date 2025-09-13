@@ -53,7 +53,7 @@ const NotiCard = ({ id, message, timestamp, read , refreshNoti}) => {
   );
 };
 
-const page = () => {
+const Page = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true); // Trạng thái loading
   const userId = localStorage.getItem("id");
@@ -127,4 +127,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

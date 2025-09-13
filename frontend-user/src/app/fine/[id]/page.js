@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-function page() {
+function Page() {
   const params = useParams();
   const MaPhieuPhat = params.id;
   const [fine, setFine] = useState(null);
@@ -217,4 +217,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

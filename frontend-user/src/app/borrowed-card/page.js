@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { set } from "react-hook-form";
 
-const page = () => {
+const Page = () => {
   const [allBorrowCards, setAllBorrowCards] = useState([]);
 
   const [selectedButton, setSelectedButton] = useState("Đang yêu cầu");
@@ -235,4 +235,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
